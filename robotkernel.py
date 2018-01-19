@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
+import uuid
 from io import BytesIO
+from io import StringIO
 
 from ipykernel.kernelbase import Kernel
 
@@ -10,6 +12,7 @@ from robot.parsing import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.tablepopulators import NullPopulator
 from robot.parsing.txtreader import TxtReader
+from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
 
@@ -30,56 +33,84 @@ class RobotKernel(Kernel):
 
     def __init__(self, **kwargs):
         super(RobotKernel, self).__init__(**kwargs)
-        self._history = []
+        self.robot_history = []
+        self.display_id = None
+
+    def send_display_data(self, data=None, silent=False):
+        if not silent:
+            self._send_display_data(data)
+
+    def _send_display_data(self, data=None):
+        if self.display_id:
+            message = 'update_display_data'
+        else:
+            message = 'display_data'
+        if not self.display_id:
+            self.display_id = str(uuid.uuid4())
+        self.send_response(self.iopub_socket, message, {
+            'data': data or {},
+            'metadata': {},
+            'transient': {'display_id': self.display_id}
+        })
+
+    def send_execute_result(self, data=None, metadata=None):
+        self.send_response(self.iopub_socket, 'execute_result', {
+            'data': data or {},
+            'metadata': metadata or {},
+            'transient': {'display_id': self.display_id},
+            'execution_count': self.execution_count
+        })
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
+        self.display_id = None
+        status = 'ok'
 
-        self._history.append(code)
-        data = TestCaseString(code)
-        for source in self._history[:-1]:
-            data.populate(source)
+        # Populate
+        data = TestCaseString()
+        for historical in self.robot_history:
+            data.populate(historical)
         data.testcase_table.tests.clear()
-        data.populate(self._history[-1])
+        data.populate(code)
 
+        # Build
         builder = TestSuiteBuilder()
         suite = builder._build_suite(data)
+        suite._name = 'Jupyter'
 
         if suite.tests:
-            if not silent:
-                self.send_response(self.iopub_socket, 'stream', {
-                    'name': 'stdout',
-                    'text': 'Running...\n'
-                })
-            results = suite.run()
-            if not silent:
-                stats = results.statistics
-                self.send_response(self.iopub_socket, 'stream', {
-                    'name': 'stdout',
-                    'text': 'Critical failed: {}\n'.format(
-                        stats.total.critical.failed)
-                })
-                self.send_response(self.iopub_socket, 'stream', {
-                    'name': 'stdout',
-                    'text': 'Critical passed: {}\n'.format(
-                        stats.total.critical.passed)
-                })
-        else:
-            self.send_response(self.iopub_socket, 'stream', {
-                'name': 'stdout',
-                'text': 'No test cases'
+            self.send_display_data({'text/plain': '...'})
+
+            # Execute
+            stdout = StringIO()
+            results = suite.run(output='output.xml', stdout=stdout)
+            writer = ResultWriter('output.xml')
+            writer.write_results()
+            stats = results.statistics
+
+            # Toggle status on error
+            if stats.total.critical.failed:
+                status = 'error'
+                self.send_display_data({'text/plain': stdout.getvalue()})
+                self.display_id = False
+
+            # Clear status and send result
+            self.send_display_data({
+                'text/html':
+                '<a href="report.html" target="_blank">Test Report</a>'
             })
 
+        # Save history
+        if status == 'ok':
+            self.robot_history.append(code)
         return {
-            'status': 'ok',
-            # The base class increments the execution count
-            'execution_count': self.execution_count,
-            'payload': [],
-            'user_expressions': {},
+            'status': status,
+            'execution_count': self.execution_count
         }
 
     def do_shutdown(self, restart):
-        self._history = []
+        self.robot_history = []
+        self.display_id = None
 
 
 class TestCaseString(TestCaseFile):
