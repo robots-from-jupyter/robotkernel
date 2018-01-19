@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+import base64
 import os
+import re
 import uuid
 from io import BytesIO
 from io import StringIO
 
+from PIL import Image
 from ipykernel.kernelbase import Kernel
 
 from robot.errors import DataError
@@ -36,11 +39,11 @@ class RobotKernel(Kernel):
         self.robot_history = []
         self.display_id = None
 
-    def send_display_data(self, data=None, silent=False):
+    def send_display_data(self, data=None, metadata=None, silent=False):
         if not silent:
-            self._send_display_data(data)
+            self._send_display_data(data, metadata)
 
-    def _send_display_data(self, data=None):
+    def _send_display_data(self, data=None, metadata=None):
         if self.display_id:
             message = 'update_display_data'
         else:
@@ -49,7 +52,7 @@ class RobotKernel(Kernel):
             self.display_id = str(uuid.uuid4())
         self.send_response(self.iopub_socket, message, {
             'data': data or {},
-            'metadata': {},
+            'metadata': metadata or {},
             'transient': {'display_id': self.display_id}
         })
 
@@ -60,6 +63,22 @@ class RobotKernel(Kernel):
             'transient': {'display_id': self.display_id},
             'execution_count': self.execution_count
         })
+
+    def send_screenshots(self, output, silent=False):
+        for src in re.findall('img src="([^"]+)', output):
+            im = Image.open(src)
+            self.display_id = None
+            with open(src, 'rb') as fp:
+                self.send_display_data(
+                    {Image.MIME[im.format]:
+                     base64.b64encode(fp.read()).decode('utf-8')},
+                    {Image.MIME[im.format]: {
+                        'height': im.height,
+                        'width': im.width,
+                    }},
+                    silent=silent
+                )
+        self.display_id = None
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
@@ -79,7 +98,7 @@ class RobotKernel(Kernel):
         suite._name = 'Jupyter'
 
         if suite.tests:
-            self.send_display_data({'text/plain': '...'})
+            self.send_display_data({'text/plain': '...'}, silent=silent)
 
             # Execute
             stdout = StringIO()
@@ -91,7 +110,8 @@ class RobotKernel(Kernel):
             # Toggle status on error
             if stats.total.critical.failed:
                 status = 'error'
-                self.send_display_data({'text/plain': stdout.getvalue()})
+                self.send_display_data({'text/plain': stdout.getvalue()},
+                                       silent=silent)
                 self.display_id = False
 
             # Clear status and send result
@@ -101,7 +121,11 @@ class RobotKernel(Kernel):
                     '<span> | </span>'
                     '<a href="report.html" target="_blank">Report</a>'
                 )
-            })
+            }, silent=silent)
+
+            if not silent:
+                with open('output.xml') as fp:
+                    self.send_screenshots(fp.read())
 
         # Save history
         if status == 'ok':
