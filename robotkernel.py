@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
-from io import StringIO
 from io import BytesIO
 
 from ipykernel.kernelbase import Kernel
 
 from robot.errors import DataError
-from robot.libraries.BuiltIn import BuiltIn
 from robot.output import LOGGER
-from robot.parsing import TestData, TestCaseFile
-from robot.parsing.model import TestCaseTable
+from robot.parsing import TestCaseFile
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.tablepopulators import NullPopulator
 from robot.parsing.txtreader import TxtReader
-from robot.running import TestCase, TestSuiteBuilder
+from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
 
 
@@ -26,6 +23,7 @@ class RobotKernel(Kernel):
         'mimetype': 'text/plain',
         'name': 'robotframework',
         'file_extension': '.robot',
+        'codemirror_mode': 'robotframework',
         'pygments_lexer': 'robotframework'
     }
     banner = 'Robot Framework kernel'
@@ -39,16 +37,38 @@ class RobotKernel(Kernel):
 
         self._history.append(code)
         data = TestCaseString(code)
-        for source in self._history:
+        for source in self._history[:-1]:
             data.populate(source)
+        data.testcase_table.tests.clear()
+        data.populate(self._history[-1])
+
         builder = TestSuiteBuilder()
         suite = builder._build_suite(data)
-        if suite.tests:
-            suite.run()
 
-        if not silent:
-            stream_content = {'name': 'stdout', 'text': code}
-            self.send_response(self.iopub_socket, 'stream', stream_content)
+        if suite.tests:
+            if not silent:
+                self.send_response(self.iopub_socket, 'stream', {
+                    'name': 'stdout',
+                    'text': 'Running...\n'
+                })
+            results = suite.run()
+            if not silent:
+                stats = results.statistics
+                self.send_response(self.iopub_socket, 'stream', {
+                    'name': 'stdout',
+                    'text': 'Critical failed: {}\n'.format(
+                        stats.total.critical.failed)
+                })
+                self.send_response(self.iopub_socket, 'stream', {
+                    'name': 'stdout',
+                    'text': 'Critical passed: {}\n'.format(
+                        stats.total.critical.passed)
+                })
+        else:
+            self.send_response(self.iopub_socket, 'stream', {
+                'name': 'stdout',
+                'text': 'No test cases'
+            })
 
         return {
             'status': 'ok',
@@ -59,10 +79,6 @@ class RobotKernel(Kernel):
         }
 
     def do_shutdown(self, restart):
-        #try:
-        #    BuiltIn().get_library_instance('SeleniumLibrary').close_all_browsers()
-        #except Exception:
-        #    pass
         self._history = []
 
 
