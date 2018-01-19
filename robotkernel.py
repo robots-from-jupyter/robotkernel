@@ -96,8 +96,11 @@ class RobotKernel(Kernel):
 
             # Clear status and send result
             self.send_display_data({
-                'text/html':
-                '<a href="report.html" target="_blank">Test Report</a>'
+                'text/html': (
+                    '<a href="log.html" target="_blank">Log</a>'
+                    '<span> | </span>'
+                    '<a href="report.html" target="_blank">Report</a>'
+                )
             })
 
         # Save history
