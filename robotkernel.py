@@ -182,15 +182,18 @@ class RobotKernel(Kernel):
     def process_screenshots(self, path, silent):
         with open(os.path.join(path, 'output.xml')) as fp:
             xml = fp.read()
-        for src in re.findall('img src="([^"]+)', xml):
+        for src in [name for name in re.findall('img src="([^"]+)', xml)
+                    if os.path.exists(os.path.join(path, name))]:
             im = Image.open(os.path.join(path, src))
             mimetype = Image.MIME[im.format]
             with open(os.path.join(path, src), 'rb') as fp:
                 data = fp.read()
             uri = data_uri(mimetype, data)
             xml = xml.replace('a href="{}"'.format(src), 'a')
+            xml = xml.replace('img src="{}" width="800px"'.format(src),
+                              'img src="{}" style="max-width:800px;"'.format(uri))  # noqa: E501
             xml = xml.replace('img src="{}"'.format(src),
-                              'img src="{}" style="width:100%;"'.format(uri))
+                              'img src="{}"'.format(uri))
             if not silent:
                 self.send_display_data(
                     {mimetype: base64.b64encode(data).decode('utf-8')},
