@@ -3,12 +3,14 @@ from io import BytesIO
 from io import StringIO
 from ipykernel.kernelbase import Kernel
 from PIL import Image
+from pygments.formatters import HtmlFormatter
+from pygments.lexers import get_lexer_by_name
 from robot.errors import DataError
 from robot.output import LOGGER
 from robot.parsing import TestCaseFile
+from robot.parsing.model import _TestData
 from robot.parsing.model import KeywordTable
 from robot.parsing.model import TestCaseFileSettingTable
-from robot.parsing.model import _TestData
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.settings import Fixture
 from robot.parsing.tablepopulators import NullPopulator
@@ -18,7 +20,10 @@ from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
 
 import base64
+import inspect
+import json
 import os
+import pygments
 import re
 import shutil
 import tempfile
@@ -44,6 +49,12 @@ def data_uri(mimetype, data):
         mimetype, base64.b64encode(data).decode('utf-8'))
 
 
+def highlight(language, data):
+    lexer = get_lexer_by_name(language)
+    formatter = HtmlFormatter(noclasses=True, nowrap=True)
+    return pygments.highlight(data, lexer, formatter)
+
+
 class TemporaryDirectory(object):
     def __enter__(self):
         self.name = tempfile.mkdtemp()
@@ -62,6 +73,31 @@ class StatusEventListener:
     # noinspection PyUnusedLocal
     def end_keyword(self, name, attributes):
         self.callback(attributes['status'])
+
+
+class ReturnValueListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, callback):
+        self.callback = callback
+        self.return_value = None
+
+    # noinspection PyUnusedLocal
+    def end_keyword(self, name, attributes):
+        frame = inspect.currentframe()
+        while frame is not None:
+            if 'return_value' in frame.f_locals:
+                self.return_value = frame.f_locals.get('return_value')
+                break
+            frame = frame.f_back
+
+    # noinspection PyUnusedLocal
+    def start_test(self, name, attributes):
+        self.return_value = None
+
+    # noinspection PyUnusedLocal
+    def end_test(self, name, attributes):
+        self.callback(self.return_value)
 
 
 # noinspection PyAbstractClass
@@ -91,10 +127,17 @@ class RobotKernel(Kernel):
 
         # Populate
         data = TestCaseString()
-        for historical in self.robot_history:
-            data.populate(historical)
-        data.testcase_table.tests.clear()
-        data.populate(code)
+        try:
+            for historical in self.robot_history:
+                data.populate(historical)
+            data.testcase_table.tests.clear()
+            data.populate(code)
+        except Exception as e:
+            self.send_display_data(str(e))
+            return {
+                'status': 'error',
+                'execution_count': self.execution_count
+            }
 
         # Build
         builder = TestSuiteBuilder()
@@ -123,6 +166,7 @@ class RobotKernel(Kernel):
         listener = []
         status = 'ok'
         display_id = str(uuid.uuid4())
+        return_values = []
 
         def update_progress(progress_, status_):
             progress_.append({'PASS': '.'}.get(status_, 'F'))
@@ -136,6 +180,9 @@ class RobotKernel(Kernel):
                     'text/plain': ''.join(update_progress(progress, s))
                 }, display_id=display_id))
             )
+            listener.append(ReturnValueListener(
+                lambda v: return_values.append(v)
+            ))
 
         # Run suite
         stdout = StringIO()
@@ -150,6 +197,17 @@ class RobotKernel(Kernel):
         # Display console log
         if stats.total.critical.failed and not silent:
             self.send_display_data({'text/plain': stdout.getvalue()})
+        # Display result of the last keyword, if it was JSON
+        elif return_values and return_values[-1] and not silent:
+            try:
+                result = json.dumps(json.loads(return_values[-1].strip()),
+                                    sort_keys=False, indent=4)
+                self.send_execute_result({
+                    'text/html': '<pre>{}</pre>'.format(
+                        highlight('json', result))
+                })
+            except ValueError:
+                pass
 
         # Process screenshots
         self.process_screenshots(path, silent)
