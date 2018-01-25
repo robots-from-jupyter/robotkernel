@@ -18,6 +18,7 @@ from robot.parsing.txtreader import TxtReader
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
+from traceback import format_exc
 
 import base64
 import inspect
@@ -26,7 +27,9 @@ import os
 import pygments
 import re
 import shutil
+import sys
 import tempfile
+import types
 import uuid
 
 
@@ -124,7 +127,13 @@ class RobotKernel(Kernel):
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
-
+        # Support %%python module ModuleName cell magic
+        match = re.match('^%%python module ([a-zA-Z_]+)', code)
+        if match is not None:
+            module = match.groups()[0]
+            return self.do_execute_python(
+                code[len('%%python module {0:s}'.format(module)):], module,
+                silent, store_history, user_expressions, allow_stdin)
         # Populate
         data = TestCaseString()
         try:
@@ -133,10 +142,17 @@ class RobotKernel(Kernel):
             data.testcase_table.tests.clear()
             data.populate(code)
         except Exception as e:
-            self.send_display_data(str(e))
+            if not silent:
+                self.send_error({
+                    'ename': e.__class__.__name__,
+                    'evalue': str(e),
+                    'traceback': list(format_exc().splitlines()),
+                })
             return {
                 'status': 'error',
-                'execution_count': self.execution_count
+                'ename': e.__class__.__name__,
+                'evalue': str(e),
+                'traceback': list(format_exc().splitlines()),
             }
 
         # Build
@@ -146,17 +162,42 @@ class RobotKernel(Kernel):
 
         # Run
         if suite.tests:
-            status = self.run_robot_suite(suite, silent)
+            reply = self.run_robot_suite(suite, silent)
         else:
-            status = 'ok'
+            reply = {
+                'status': 'ok',
+                'execution_count': self.execution_count,
+            }
 
         # Save history
-        if status == 'ok':
+        if reply['status'] == 'ok':
             self.robot_history.append(code)
-        return {
-            'status': status,
-            'execution_count': self.execution_count
-        }
+
+        return reply
+
+    def do_execute_python(self, code, module, silent, store_history=True,
+                          user_expressions=None, allow_stdin=False):
+        if module not in sys.modules:
+            sys.modules[module] = types.ModuleType(module)
+        try:
+            exec(code, sys.modules[module].__dict__)
+            return {
+                'status': 'ok',
+                'execution_count': self.execution_count
+            }
+        except Exception as e:
+            if not silent:
+                self.send_error({
+                    'ename': e.__class__.__name__,
+                    'evalue': str(e),
+                    'traceback': list(format_exc().splitlines())
+                })
+            return {
+                'status': 'error',
+                'ename': e.__class__.__name__,
+                'evalue': str(e),
+                'traceback': list(format_exc().splitlines())
+            }
 
     def run_robot_suite(self, suite, silent):
         with TemporaryDirectory() as path:
@@ -164,12 +205,11 @@ class RobotKernel(Kernel):
 
     def _run_robot_suite(self, suite, silent, path):
         listener = []
-        status = 'ok'
         display_id = str(uuid.uuid4())
         return_values = []
 
-        def update_progress(progress_, status_):
-            progress_.append({'PASS': '.'}.get(status_, 'F'))
+        def update_progress(progress_, status):
+            progress_.append({'PASS': '.'}.get(status, 'F'))
             return progress_
 
         # Init status
@@ -190,13 +230,15 @@ class RobotKernel(Kernel):
         results = suite.run(outputdir=path, stdout=stdout, listener=listener)
         stats = results.statistics
 
-        # Toggle status on error
+        # Reply error on error
         if stats.total.critical.failed:
-            status = 'error'
+            if not silent:
+                self.send_error({
+                    'ename': '',
+                    'evalue': '',
+                    'traceback': stdout.getvalue().splitlines(),
+                })
 
-        # Display console log
-        if stats.total.critical.failed and not silent:
-            self.send_display_data({'text/plain': stdout.getvalue()})
         # Display result of the last keyword, if it was JSON
         elif return_values and return_values[-1] and not silent:
             try:
@@ -206,7 +248,7 @@ class RobotKernel(Kernel):
                     'text/html': '<pre>{}</pre>'.format(
                         highlight('json', result))
                 })
-            except ValueError:
+            except (AttributeError, ValueError):
                 pass
 
         # Process screenshots
@@ -227,7 +269,7 @@ class RobotKernel(Kernel):
             report = report.replace(b'"logURL":"log.html"',
                                     b'"logURL":null')
 
-        # Clear status and send result
+        # Clear status and display results
         if not silent:
             self.send_update_display_data({
                 'text/html':
@@ -235,7 +277,19 @@ class RobotKernel(Kernel):
                     .format(javascript_uri(log), javascript_uri(report))
             }, display_id=display_id)
 
-        return status
+        # Reply ok on pass
+        if stats.total.critical.failed:
+            return {
+                'status': 'error',
+                'ename': '',
+                'evalue': '',
+                'traceback': stdout.getvalue().splitlines(),
+            }
+        else:
+            return {
+                'status': 'ok',
+                'execution_count': self.execution_count,
+            }
 
     def process_screenshots(self, path, silent):
         with open(os.path.join(path, 'output.xml')) as fp:
@@ -259,6 +313,9 @@ class RobotKernel(Kernel):
                 )
         with open(os.path.join(path, 'output.xml'), 'w') as fp:
             fp.write(xml)
+
+    def send_error(self, content=None):
+        self.send_response(self.iopub_socket, 'error', content)
 
     def send_display_data(self, data=None, metadata=None, display_id=None):
         if isinstance(data, str):
