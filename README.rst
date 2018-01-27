@@ -15,8 +15,8 @@ See also: http://jupyter.readthedocs.io/en/latest/install.html
 
 Create and activate clean Python virtual environment::
 
-    $ venv jupyter
-    $ source venv/bin/activate
+    $ venv myenv
+    $ source myenv/bin/activate
 
 Install Jupyter::
 
