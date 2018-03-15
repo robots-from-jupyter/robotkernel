@@ -41,7 +41,7 @@ Install the kernel into virtualenv in develop mode::
 
 Install the kernel into jupyter::
 
-    $ jupyter kernelspec install $PWD/kernelspec --user
+    $ jupyter kernelspec install $PWD/kernelspec/robotkernel--user
 
 Launch the jupyter::
 

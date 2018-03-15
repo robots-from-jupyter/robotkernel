@@ -14,13 +14,13 @@ RUN python3 -c "from urllib.request import urlretrieve; urlretrieve('https://git
 RUN tar -xzf geckodriver.tar.gz -C /opt/jupyter/bin
 
 # Install Robotkernel
-RUN mkdir -p /var/src/robotkernel/kernelspec
+RUN mkdir -p /var/src/robotkernel/kernelspec/robotkernel
 ADD setup.py /var/src/robotkernel
 ADD setup.cfg /var/src/robotkernel
 ADD robotkernel.py /var/src/robotkernel
-ADD kernelspec/kernel.json /var/src/robotkernel/kernelspec
+ADD kernelspec/robotkernel/kernel.json /var/src/robotkernel/kernelspec/robotkernel
 RUN /opt/jupyter/bin/pip install /var/src/robotkernel
-RUN /opt/jupyter/bin/jupyter kernelspec install /var/src/robotkernel/kernelspec
+RUN /opt/jupyter/bin/jupyter kernelspec install /var/src/robotkernel/kernelspec/robotkernel
 RUN mkdir /opt/jupyter/lib/python3.6/site-packages/notebook/static/components/codemirror/mode/robotframework
 ADD robotframework.js /opt/jupyter/lib/python3.6/site-packages/notebook/static/components/codemirror/mode/robotframework/robotframework.js
 
