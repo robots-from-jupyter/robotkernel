@@ -1,15 +1,22 @@
 Robot Framework kernel for Jupyter notebooks
 ============================================
 
-Work in progress.
+Proof-of-concept that adds Robot Framework language support for Jupyter
+notebooks.
 
-Proof of concept.
-
-Experimental.
+Currently for Python >= 3.6 only.
 
 
-Hacking
--------
+Try it out with Docker
+----------------------
+
+::
+
+    $ docker run --rm -p 8888:8888 datakurre/robotkernel
+
+
+Local install and development
+-----------------------------
 
 See also: http://jupyter.readthedocs.io/en/latest/install.html
 
