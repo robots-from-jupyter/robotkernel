@@ -32,7 +32,7 @@ Install Jupyter::
 
 Clone this kernel::
 
-    $ git clone https://github.com/datakurre/robotkernel
+    $ git clone https://github.com/datakurre/robotkernel.git
     $ cd robotkernel
 
 Install the kernel into virtualenv in develop mode::
