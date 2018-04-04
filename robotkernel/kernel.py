@@ -1,16 +1,35 @@
 # -*- coding: utf-8 -*-
-from io import BytesIO
-from io import StringIO
-from ipykernel.kernelbase import Kernel
-from PIL import Image
+import base64
+import inspect
+import json
+import os
+import re
+import shutil
+import sys
+import tempfile
+import types
+import uuid
+from io import BytesIO, StringIO
+from traceback import format_exc
+
+import pygments
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
+
+from PIL import Image
+
+from ipykernel.kernelbase import Kernel
+from IPython.utils.tempdir import TemporaryDirectory
+
+import robot
 from robot.errors import DataError
 from robot.output import LOGGER
 from robot.parsing import TestCaseFile
-from robot.parsing.model import _TestData
-from robot.parsing.model import KeywordTable
-from robot.parsing.model import TestCaseFileSettingTable
+from robot.parsing.model import (
+    _TestData,
+    KeywordTable,
+    TestCaseFileSettingTable,
+)
 from robot.parsing.populators import FromFilePopulator
 from robot.parsing.settings import Fixture
 from robot.parsing.tablepopulators import NullPopulator
@@ -18,19 +37,8 @@ from robot.parsing.txtreader import TxtReader
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
-from traceback import format_exc
 
-import base64
-import inspect
-import json
-import os
-import pygments
-import re
-import shutil
-import sys
-import tempfile
-import types
-import uuid
+from ._version import __version__
 
 
 def javascript_uri(html):
@@ -56,15 +64,6 @@ def highlight(language, data):
     lexer = get_lexer_by_name(language)
     formatter = HtmlFormatter(noclasses=True, nowrap=True)
     return pygments.highlight(data, lexer, formatter)
-
-
-class TemporaryDirectory(object):
-    def __enter__(self):
-        self.name = tempfile.mkdtemp()
-        return self.name
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        shutil.rmtree(self.name)
 
 
 class StatusEventListener:
@@ -106,9 +105,9 @@ class ReturnValueListener:
 # noinspection PyAbstractClass
 class RobotKernel(Kernel):
     implementation = 'IRobot'
-    implementation_version = '1.0'
+    implementation_version = __version__
     language = 'robotframework'
-    language_version = '1.0'
+    language_version = robot.__version__
     language_info = {
         'mimetype': 'text/plain',
         'name': 'robotframework',

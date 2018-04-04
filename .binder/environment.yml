@@ -1,0 +1,19 @@
+name: robotkernel
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - jupyterlab >=0.31.12,<0.32
+  - opencv
+  - pillow
+  - python >=3.6,<3.7
+  - robotframework
+  - selenium
+  - pip:
+    - robotframework-archivelibrary
+    - robotframework-faker
+    - robotframework-selenium2library
+    - robotframework-selenium2screenshots
+    - robotframework-seleniumlibrary
+    - robotframework-webpack
+    - RESTinstance
