@@ -1,5 +1,4 @@
 #!/bin/bash
-curl https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz > geckodriver.tar.gz
-tar -xzf geckodriver.tar.gz -C /opt/conda/bin/
+curl https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz | tar -xa -C /srv/conda/bin/
 pip install -e . --ignore-installed --no-dependencies
 python -m robotkernel.install --sys-prefix
