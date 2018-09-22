@@ -49,7 +49,9 @@ def javascript_uri(html):
 
 def data_uri(mimetype, data):
     return 'data:{};base64,{}'.format(
-        mimetype, base64.b64encode(data).decode('utf-8'))
+        mimetype,
+        base64.b64encode(data).decode('utf-8'),
+    )
 
 
 def highlight(language, data):
@@ -114,7 +116,7 @@ class RobotKernel(Kernel):
         'name': 'robotframework',
         'file_extension': '.robot',
         'codemirror_mode': 'robotframework',
-        'pygments_lexer': 'robotframework'
+        'pygments_lexer': 'robotframework',
     }
     banner = 'Robot Framework kernel'
 
@@ -125,15 +127,26 @@ class RobotKernel(Kernel):
     def do_shutdown(self, restart):
         self.robot_history = []
 
-    def do_execute(self, code, silent, store_history=True,
-                   user_expressions=None, allow_stdin=False):
+    def do_execute(
+            self,
+            code,
+            silent,
+            store_history=True,
+            user_expressions=None,
+            allow_stdin=False,
+    ):
         # Support %%python module ModuleName cell magic
         match = re.match('^%%python module ([a-zA-Z_]+)', code)
         if match is not None:
             module = match.groups()[0]
             return self.do_execute_python(
-                code[len('%%python module {0:s}'.format(module)):], module,
-                silent, store_history, user_expressions, allow_stdin)
+                code[len('%%python module {0:s}'.format(module)):],
+                module,
+                silent,
+                store_history,
+                user_expressions,
+                allow_stdin,
+            )
         # Populate
         data = TestCaseString()
         try:
@@ -175,28 +188,32 @@ class RobotKernel(Kernel):
 
         return reply
 
-    def do_execute_python(self, code, module, silent, store_history=True,
-                          user_expressions=None, allow_stdin=False):
+    def do_execute_python(
+            self,
+            code,
+            module,
+            silent,
+            store_history=True,
+            user_expressions=None,
+            allow_stdin=False,
+    ):
         if module not in sys.modules:
             sys.modules[module] = types.ModuleType(module)
         try:
             exec(code, sys.modules[module].__dict__)
-            return {
-                'status': 'ok',
-                'execution_count': self.execution_count
-            }
+            return {'status': 'ok', 'execution_count': self.execution_count}
         except Exception as e:
             if not silent:
                 self.send_error({
                     'ename': e.__class__.__name__,
                     'evalue': str(e),
-                    'traceback': list(format_exc().splitlines())
+                    'traceback': list(format_exc().splitlines()),
                 })
             return {
                 'status': 'error',
                 'ename': e.__class__.__name__,
                 'evalue': str(e),
-                'traceback': list(format_exc().splitlines())
+                'traceback': list(format_exc().splitlines()),
             }
 
     def run_robot_suite(self, suite, silent):
@@ -215,14 +232,20 @@ class RobotKernel(Kernel):
         # Init status
         if not silent:
             self.send_display_data({'text/plain': '.'}, display_id=display_id)
-            listener.append(StatusEventListener(
-                lambda s: self.send_update_display_data({
-                    'text/plain': ''.join(update_progress(progress, s))
-                }, display_id=display_id))
+            listener.append(
+                StatusEventListener(
+                    lambda s: self.send_update_display_data(
+                        {
+                            'text/plain': ''.
+                            join(update_progress(progress, s)),
+                        },
+                        display_id=display_id,
+                    ),
+                ),
             )
-            listener.append(ReturnValueListener(
-                lambda v: return_values.append(v)
-            ))
+            listener.append(
+                ReturnValueListener(lambda v: return_values.append(v)),
+            )
 
         # Run suite
         stdout = StringIO()
@@ -242,11 +265,15 @@ class RobotKernel(Kernel):
         # Display result of the last keyword, if it was JSON
         elif return_values and return_values[-1] and not silent:
             try:
-                result = json.dumps(json.loads(return_values[-1].strip()),
-                                    sort_keys=False, indent=4)
+                result = json.dumps(
+                    json.loads(return_values[-1].strip()),
+                    sort_keys=False,
+                    indent=4,
+                )
                 self.send_execute_result({
                     'text/html': '<pre>{}</pre>'.format(
-                        highlight('json', result))
+                        highlight('json', result),
+                    ),
                 })
             except (AttributeError, ValueError):
                 pass
@@ -256,26 +283,32 @@ class RobotKernel(Kernel):
 
         # Generate report
         writer = ResultWriter(os.path.join(path, 'output.xml'))
-        writer.write_results(log=os.path.join(path, 'log.html'),
-                             report=os.path.join(path, 'report.html'))
+        writer.write_results(
+            log=os.path.join(path, 'log.html'),
+            report=os.path.join(path, 'report.html'),
+        )
 
         with open(os.path.join(path, 'log.html'), 'rb') as fp:
             log = fp.read()
-            log = log.replace(b'"reportURL":"report.html"',
-                              b'"reportURL":null')
+            log = log.replace(
+                b'"reportURL":"report.html"',
+                b'"reportURL":null',
+            )
 
         with open(os.path.join(path, 'report.html'), 'rb') as fp:
             report = fp.read()
-            report = report.replace(b'"logURL":"log.html"',
-                                    b'"logURL":null')
+            report = report.replace(b'"logURL":"log.html"', b'"logURL":null')
 
         # Clear status and display results
         if not silent:
-            self.send_update_display_data({
-                'text/html':
-                    '<a href="{}">Log</a> | <a href="{}">Report</a>'
-                    .format(javascript_uri(log), javascript_uri(report))
-            }, display_id=display_id)
+            self.send_update_display_data(
+                {
+                    'text/html': ''
+                    '<a href="{}">Log</a> | <a href="{}">Report</a>'.
+                    format(javascript_uri(log), javascript_uri(report)),
+                },
+                display_id=display_id,
+            )
 
         # Reply ok on pass
         if stats.total.critical.failed:
@@ -302,15 +335,21 @@ class RobotKernel(Kernel):
                 data = fp.read()
             uri = data_uri(mimetype, data)
             xml = xml.replace('a href="{}"'.format(src), 'a')
-            xml = xml.replace('img src="{}" width="800px"'.format(src),
-                              'img src="{}" style="max-width:800px;"'.format(uri))  # noqa: E501
-            xml = xml.replace('img src="{}"'.format(src),
-                              'img src="{}"'.format(uri))
+            xml = xml.replace(
+                'img src="{}" width="800px"'.format(src),
+                'img src="{}" style="max-width:800px;"'.format(uri),
+            )  # noqa: E501
+            xml = xml.replace(
+                'img src="{}"'.format(src),
+                'img src="{}"'.format(uri),
+            )
             if not silent:
-                self.send_display_data(
-                    {mimetype: base64.b64encode(data).decode('utf-8')},
-                    {mimetype: {'height': im.height, 'width': im.width}}
-                )
+                self.send_display_data({
+                    mimetype: base64.b64encode(data).decode('utf-8'),
+                }, {mimetype: {
+                    'height': im.height,
+                    'width': im.width,
+                }})
         with open(os.path.join(path, 'output.xml'), 'w') as fp:
             fp.write(xml)
 
@@ -319,30 +358,57 @@ class RobotKernel(Kernel):
 
     def send_display_data(self, data=None, metadata=None, display_id=None):
         if isinstance(data, str):
-            self.send_response(self.iopub_socket, 'display_data', {
-                'data': {'text/plain': data}
-            })
+            self.send_response(
+                self.iopub_socket,
+                'display_data',
+                {'data': {
+                    'text/plain': data,
+                }},
+            )
         else:
-            self.send_response(self.iopub_socket, 'display_data', {
+            self.send_response(
+                self.iopub_socket,
+                'display_data',
+                {
+                    'data': data or {},
+                    'metadata': metadata or {},
+                    'transient': {
+                        'display_id': display_id,
+                    },
+                },
+            )
+
+    def send_update_display_data(
+            self,
+            data=None,
+            metadata=None,
+            display_id=None,
+    ):
+        self.send_response(
+            self.iopub_socket,
+            'update_display_data',
+            {
                 'data': data or {},
                 'metadata': metadata or {},
-                'transient': {'display_id': display_id}
-            })
-
-    def send_update_display_data(self, data=None, metadata=None, display_id=None):  # noqa: E501
-        self.send_response(self.iopub_socket, 'update_display_data', {
-            'data': data or {},
-            'metadata': metadata or {},
-            'transient': {'display_id': display_id}
-        })
+                'transient': {
+                    'display_id': display_id,
+                },
+            },
+        )
 
     def send_execute_result(self, data=None, metadata=None, display_id=None):
-        self.send_response(self.iopub_socket, 'execute_result', {
-            'data': data or {},
-            'metadata': metadata or {},
-            'transient': {'display_id': display_id},
-            'execution_count': self.execution_count
-        })
+        self.send_response(
+            self.iopub_socket,
+            'execute_result',
+            {
+                'data': data or {},
+                'metadata': metadata or {},
+                'transient': {
+                    'display_id': display_id,
+                },
+                'execution_count': self.execution_count,
+            },
+        )
 
 
 class TestCaseString(TestCaseFile):
