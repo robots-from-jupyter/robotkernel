@@ -4,5 +4,6 @@
 /.jupyter
 /result
 __pycache__
+node_modules
 *.pyc
 *.egg-info/
