@@ -8,6 +8,8 @@ with pkgs;
 
 let self = rec {
 
+  # kernels
+
   robotkernel =  import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
@@ -15,45 +17,11 @@ let self = rec {
 
   pythonPackages = robotkernel.pythonPackages;
 
-  # patches
-
-  robot_mode = ./robotframework.js;
-
-  notebook = pythonPackages.notebook.overridePythonAttrs(old: { 
-    postInstall = ''
-      ls $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/
-      mkdir $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework
-      cp ${robot_mode} $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework/robotframework.js
-    '';
-    doCheck = false;
-  });
-
-  # kernels
-
   python_with_packages = pythonPackages.python.buildEnv.override {
     extraLibs = with pythonPackages; [
       ipykernel
       ipywidgets
     ];
-  };
-
-  python_kernel = stdenv.mkDerivation rec {
-    name = "python3";
-    buildInputs = [ python_with_packages ];
-    json = builtins.toJSON {
-      argv = [ "${python_with_packages}/bin/python3"
-               "-m" "ipykernel" "-f" "{connection_file}" ];
-      display_name = "Python 3";
-      language = "python";
-      env = { PYTHONPATH = ""; };
-    };
-    builder = builtins.toFile "builder.sh" ''
-      source $stdenv/setup
-      mkdir -p $out
-      cat > $out/kernel.json << EOF
-      $json
-      EOF
-    '';
   };
 
   robot_with_packages = buildEnv {
@@ -70,25 +38,6 @@ let self = rec {
     ];
   };
 
-  robot_kernel = stdenv.mkDerivation rec {
-    name = "robot";
-    buildInputs = [ robot_with_packages ];
-    json = builtins.toJSON {
-      argv = [ "${robot_with_packages}/bin/python3.6"
-               "-m" "robotkernel" "-f" "{connection_file}" ];
-      display_name = "Robot Framework";
-      language = "robotframework";
-      env = { PYTHONPATH = ""; };
-    };
-    builder = builtins.toFile "builder.sh" ''
-      source $stdenv/setup
-      mkdir -p $out
-      cat > $out/kernel.json << EOF
-      $json
-      EOF
-    '';
-  };
-
   # extensions
 
   rise = pythonPackages.buildPythonPackage rec {
@@ -99,7 +48,7 @@ let self = rec {
       url = "mirror://pypi/${builtins.substring 0 1 pname}/${pname}/${name}.tar.gz";
       sha256 = "0b5rimnzd6zkgs7f286vr58a5rlzv275zd49xw48mn4dc06wfpz9";
     };
-    buildInputs = [ notebook ];
+    buildInputs = [ pythonPackages.notebook ];
     postPatch = ''
       sed -i "s|README.md'|README.md', encoding='utf-8'|" setup.py
     '';
@@ -145,14 +94,8 @@ let self = rec {
       jupyter_contrib_nbextensions
       jupyter_nbextensions_configurator
       rise
+      pythonPackages.jupyterlab
     ];
-    postInstall = with pythonPackages; ''
-      mkdir -p $out/bin
-      ln -s ${jupyter_core}/bin/jupyter $out/bin
-      wrapProgram $out/bin/jupyter \
-        --prefix PYTHONPATH : "${notebook}/${python.sitePackages}:$PYTHONPATH" \
-        --prefix PATH : "${notebook}/bin:$PATH"
-    '';
   });
 
   jupyter_nbconfig = stdenv.mkDerivation rec {
@@ -185,33 +128,27 @@ let self = rec {
   jupyter_config_dir = stdenv.mkDerivation {
     name = "jupyter";
     buildInputs = [
-      python_kernel
-      robot_kernel
+      python_with_packages
+      robot_with_packages
       rise
       vim_binding
     ];
     builder = writeText "builder.sh" ''
       source $stdenv/setup
-      mkdir -p $out/etc/jupyter/nbextensions
-      mkdir -p $out/etc/jupyter/kernels
-      mkdir -p $out/etc/jupyter/migrated
-      ln -s ${python_kernel} $out/etc/jupyter/kernels/${python_kernel.name}
-      ln -s ${robot_kernel} $out/etc/jupyter/kernels/${robot_kernel.name}
-      ln -s ${jupyter_nbconfig} $out/etc/jupyter/nbconfig
-      ln -s ${jupyter_contrib_nbextensions}/${pythonPackages.python.sitePackages}/jupyter_contrib_nbextensions/nbextensions/* $out/etc/jupyter/nbextensions
-      ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/etc/jupyter/nbextensions/rise
-      ln -s ${vim_binding} $out/etc/jupyter/nbextensions/vim_binding
-      cat > $out/etc/jupyter/jupyter_notebook_config.py << EOF
+      mkdir -p $out/share/jupyter/nbextensions
+      mkdir -p $out/share/jupyter/migrated
+      ${robot_with_packages}/bin/python -m robotkernel.install --prefix=$out
+      ln -s ${jupyter_nbconfig} $out/share/jupyter/nbconfig
+      ln -s ${jupyter_contrib_nbextensions}/${pythonPackages.python.sitePackages}/jupyter_contrib_nbextensions/nbextensions/* $out/share/jupyter/nbextensions
+      ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
+      ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
+      cat > $out/share/jupyter/jupyter_notebook_config.py << EOF
       import os
       import rise
-      c.KernelSpecManager.whitelist = {
-        '${python_kernel.name}',
-        '${robot_kernel.name}'
-      }
       c.NotebookApp.ip = os.environ.get('JUPYTER_NOTEBOOK_IP', 'localhost')
       EOF
 
-      cat > $out/etc/jupyter/jupyter_nbconvert_config.py << EOF
+      cat > $out/share/jupyter/jupyter_nbconvert_config.py << EOF
       c = get_config()
       c.Exporter.preprocessors = ['jupyter_contrib_nbextensions.nbconvert_support.pre_pymarkdown.PyMarkdownPreprocessor']
       EOF
@@ -234,8 +171,8 @@ stdenv.mkDerivation rec {
   ] ++ stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ];
   shellHook = ''
     mkdir -p $PWD/.jupyter
-    export JUPYTER_CONFIG_DIR=${jupyter_config_dir}/etc/jupyter
-    export JUPYTER_PATH=${jupyter_config_dir}/etc/jupyter
+    export JUPYTER_CONFIG_DIR=${jupyter_config_dir}/share/jupyter
+    export JUPYTER_PATH=${jupyter_config_dir}/share/jupyter
     export JUPYTER_DATA_DIR=$PWD/.jupyter
     export JUPYTER_RUNTIME_DIR=$PWD/.jupyter
   '';

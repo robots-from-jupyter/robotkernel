@@ -1,0 +1,5 @@
+graft src/robotkernel
+recursive-include src *.js
+include LICENSE *.rst *.nix
+ignore Makefile Dockerfile requirements.txt
+prune examples

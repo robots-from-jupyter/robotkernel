@@ -4,18 +4,6 @@
 // brackets-robotframework, copyright (c) by Bryan Oakley
 // Distributed under a MIT license
 
-// TODO: restore tab-syntax support, push code-mirror upstream
-
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror"], mod);
-  else // Plain browser env
-    mod(CodeMirror);
-})(function(CodeMirror) {
-"use strict";
-
 CodeMirror.defineMode("robotframework", function() {
 
     function canonicalTableName(name) {
@@ -28,6 +16,7 @@ CodeMirror.defineMode("robotframework", function() {
         name = name.trim().toLowerCase();
         if (name.match("settings?|metadata")) {return "settings"; }
         if (name.match("test ?cases?"))       {return "test_cases"; }
+        if (name.match("tasks"))              {return "test_cases"; }
         if (name.match("(user )?keywords?"))  {return "keywords"; }
         if (name.match("variables?"))         {return "variables"; }
         return null;
@@ -39,7 +28,7 @@ CodeMirror.defineMode("robotframework", function() {
         // can have more than one asterisk, and trailing asterisks are optional,
         // and the table names must be one of the recognized table names
         if (stream.sol()) {
-            var match = stream.match(/^\s*\*+\s*(settings?|metadata|variables?|test ?cases?|(user )?keywords?)[ *]*$/i);
+            var match = stream.match(/^\s*\*+\s*(settings?|metadata|variables?|test ?cases?|tasks|(user )?keywords?)[ *]*$/i);
             if (match !== null) {
                 state.table_name = canonicalTableName(match[1]);
                 state.tc_or_kw_name = null;
@@ -76,7 +65,10 @@ CodeMirror.defineMode("robotframework", function() {
                     "suite setup|suite teardown|suite precondition|" +
                     "suite postcondition|force tags|default tags|test setup|" +
                     "test teardown|test precondition|test postcondition|" +
-                    "test template|test timeout)$")) {
+                    "test template|test timeout|" +
+                    "task setup|" +
+                    "task teardown|task precondition|task postcondition|" +
+                    "task template|task timeout)$")) {
                 return true;
             }
         }
@@ -232,6 +224,4 @@ CodeMirror.defineMode("robotframework", function() {
             return null;
         }
     };
-});
-
 });

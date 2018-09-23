@@ -2,6 +2,7 @@
 from io import BytesIO
 from io import StringIO
 from ipykernel.kernelbase import Kernel
+from IPython.utils.tempdir import TemporaryDirectory
 from PIL import Image
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
@@ -18,6 +19,7 @@ from robot.parsing.txtreader import TxtReader
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
+from robotkernel import __version__
 from traceback import format_exc
 
 import base64
@@ -26,9 +28,8 @@ import json
 import os
 import pygments
 import re
-import shutil
+import robot
 import sys
-import tempfile
 import types
 import uuid
 
@@ -58,15 +59,6 @@ def highlight(language, data):
     lexer = get_lexer_by_name(language)
     formatter = HtmlFormatter(noclasses=True, nowrap=True)
     return pygments.highlight(data, lexer, formatter)
-
-
-class TemporaryDirectory(object):
-    def __enter__(self):
-        self.name = tempfile.mkdtemp()
-        return self.name
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        shutil.rmtree(self.name)
 
 
 class StatusEventListener:
@@ -108,9 +100,9 @@ class ReturnValueListener:
 # noinspection PyAbstractClass
 class RobotKernel(Kernel):
     implementation = 'IRobot'
-    implementation_version = '1.0'
+    implementation_version = __version__
     language = 'robotframework'
-    language_version = '1.0'
+    language_version = robot.__version__
     language_info = {
         'mimetype': 'text/plain',
         'name': 'robotframework',

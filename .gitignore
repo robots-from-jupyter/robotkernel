@@ -1,5 +1,6 @@
 /.idea
 /.ipynb_checkpoints/
+/examples/.ipynb_checkpoints/
 /.jupyter
 /result
 __pycache__
