@@ -9,9 +9,9 @@ Requires Python 3.6 or later.
 Try it at binder
 ----------------
 
-Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/binderize?urlpath=/tree/example.ipynb
+Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=tree/example.ipynb
 
-Jupyter Lab: https://mybinder.org/v2/gh/datakurre/robotkernel/binderize?urlpath=lab/tree/example.ipynb
+Jupyter Lab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
 
 
 Kernel installation
