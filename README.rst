@@ -6,16 +6,16 @@ Robot Framework language support for Jupyter notebooks.
 Requires Python 3.6 or later.
 
 
-Try it at binder
-----------------
+Try Robot Framework kernel at Binder
+------------------------------------
 
 Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=tree/example.ipynb
 
 Jupyter Lab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
 
 
-Kernel installation
--------------------
+Install Robot Framework kernel
+------------------------------
 
 .. code:: bash
 
@@ -23,16 +23,28 @@ Kernel installation
    $ python -m robotkernel.install
 
 
-Disposable Nix-shell
---------------------
+Install Robot Framework kernel from Python 3 notebook
+-----------------------------------------------------
+
+.. code:: bash
+
+   !pip install robotkernel
+   !python -m robotkernel.install
+
+After refreshing the notebook, it is possible change the kernel to Robot
+Framework kernel or create a new notebook with Robot Framework kernel.
+
+
+Nix-shell (https://nixos.org/nix/)
+----------------------------------
 
 .. code:: bash
 
    $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
 
 
-Local install and development
------------------------------
+Local installation and development
+----------------------------------
 
 See also: http://jupyter.readthedocs.io/en/latest/install.html
 
