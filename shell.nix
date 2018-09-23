@@ -2,6 +2,7 @@
     url = "https://github.com/NixOS/nixpkgs-channels/archive/ef450efb9df5260e54503509d2fd638444668713.tar.gz";
     sha256 = "1k9f3n2pmdh7sap79c8nqpz7cjx9930fcpk27pvp6lwmr4qigmxg";
   }) {}
+, sikuli ? false
 }:
 
 with pkgs;
@@ -16,6 +17,14 @@ let self = rec {
   };
 
   pythonPackages = robotkernel.pythonPackages;
+
+  sikulilibrary = (import ./pkgs/sikulixlibrary {
+    inherit pkgs pythonPackages jdk;
+    sikulix = import ./pkgs/sikulix {
+      inherit stdenv fetchurl makeWrapper utillinux jre jdk opencv;
+      inherit tesseract xdotool wmctrl;
+    };
+  });
 
   python_with_packages = pythonPackages.python.buildEnv.override {
     extraLibs = with pythonPackages; [
@@ -34,10 +43,10 @@ let self = rec {
           ipywidgets
           robotkernel.build
           RESTinstance
+          robotframework-seleniumlibrary
           robotframework-selenium2library
           robotframework-selenium2screenshots
-          robotframework-seleniumlibrary
-        ];
+        ] ++ stdenv.lib.optionals sikuli [ sikulilibrary ];
       })
     ];
   };
@@ -172,7 +181,8 @@ stdenv.mkDerivation rec {
     jupyter
     jupyter_config_dir
     geckodriver
-  ] ++ stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ];
+  ] ++ stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ]
+    ++ stdenv.lib.optionals sikuli [ jre8 ];
   shellHook = ''
     mkdir -p $PWD/.jupyter
     export JUPYTER_CONFIG_DIR=${jupyter_config_dir}/share/jupyter
