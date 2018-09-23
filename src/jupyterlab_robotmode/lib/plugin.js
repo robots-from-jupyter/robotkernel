@@ -234,7 +234,7 @@ CodeMirror.modeInfo.push({
     ext: ['robot'],
     mime: 'text/x-robotframework',
     mode: 'robotframework',
-    name: 'Robot Framework'
+    name: 'robotframework'
 });
 
 module.exports = [{
