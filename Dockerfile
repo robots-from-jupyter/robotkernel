@@ -10,7 +10,7 @@ RUN /opt/jupyter/bin/pip install -U setuptools pip
 RUN /opt/jupyter/bin/pip install jupyter Pillow robotframework robotframework-archivelibrary robotframework-faker robotframework-seleniumlibrary robotframework-selenium2library robotframework-selenium2screenshots robotframework-webpack RESTinstance
 
 # Install Geckodriver
-RUN python3 -c "from urllib.request import urlretrieve; urlretrieve('https://github.com/mozilla/geckodriver/releases/download/v0.20.0/geckodriver-v0.20.0-linux64.tar.gz', 'geckodriver.tar.gz')"
+RUN python3 -c "from urllib.request import urlretrieve; urlretrieve('https://github.com/mozilla/geckodriver/releases/download/v0.22.0/geckodriver-v0.22.0-linux64.tar.gz', 'geckodriver.tar.gz')"
 RUN tar -xzf geckodriver.tar.gz -C /opt/jupyter/bin
 
 # Install Robotkernel
