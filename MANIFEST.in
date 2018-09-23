@@ -1,6 +1,8 @@
 graft src/robotkernel
 recursive-include src *.js
 include LICENSE *.rst *.nix
-ignore Makefile Dockerfile requirements.txt
+exclude Makefile Dockerfile requirements.txt *.ipynb
+prune binder
 prune examples
 prune src/jupyterlab_robotmode
+global-exclude *.py[co]
