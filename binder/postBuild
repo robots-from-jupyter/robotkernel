@@ -1,0 +1,6 @@
+#!/bin/bash
+curl -L https://github.com/mozilla/geckodriver/releases/download/v0.22.0/geckodriver-v0.22.0-linux64.tar.gz > geckodriver.tar.gz
+tar -xzf geckodriver.tar.gz -C /srv/conda/bin/
+pip install -e .
+python -m robotkernel.install --sys-prefix
+jupyter labextension install src/jupyterlab_robotmode

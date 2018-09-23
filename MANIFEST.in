@@ -3,3 +3,4 @@ recursive-include src *.js
 include LICENSE *.rst *.nix
 ignore Makefile Dockerfile requirements.txt
 prune examples
+prune src/jupyterlab_robotmode

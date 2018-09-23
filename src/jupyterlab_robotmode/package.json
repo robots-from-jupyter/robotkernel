@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "name": "jupyterlab_robotmode",
+  "version": "0.0.1",
+  "description": "A JupyterLab extensions, which adds CodeMirror mode for Robot Framework syntax",
+  "author": "Asko Soukka",
+  "main": "lib/plugin.js",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "jupyterlab": {
+    "extension": true
+  },
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}

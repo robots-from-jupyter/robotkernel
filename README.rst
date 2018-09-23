@@ -1,18 +1,26 @@
 Robot Framework kernel for Jupyter notebooks
 ============================================
 
-Proof-of-concept that adds Robot Framework language support for Jupyter
-notebooks.
+Robot Framework language support for Jupyter notebooks.
 
-Currently for Python >= 3.6 only.
+Requires Python 3.6 or later.
 
 
-Try it out with Docker
-----------------------
+Try it at binder
+----------------
 
-::
+Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/binderize?urlpath=/tree/example.ipynb
 
-    $ docker run --rm -p 8888:8888 datakurre/robotkernel
+Jupyter Lab: https://mybinder.org/v2/gh/datakurre/robotkernel/binderize?urlpath=lab/tree/example.ipynb
+
+
+Kernel installation
+-------------------
+
+.. code:: bash
+
+   $ pip install robotkernel
+   $ python -m robotkernel.install
 
 
 Local install and development
@@ -41,7 +49,7 @@ Install the kernel into virtualenv in develop mode::
 
 Install the kernel into jupyter::
 
-    $ jupyter kernelspec install $PWD/kernelspec/robotkernel --user
+    $ python -m robotkernel.install
 
 Launch the jupyter::
 
