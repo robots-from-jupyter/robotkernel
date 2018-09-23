@@ -228,6 +228,15 @@ CodeMirror.defineMode("robotframework", function() {
   };
 });
 
+CodeMirror.defineMIME('text/x-robotframework', 'robotframework');
+
+CodeMirror.modeInfo.push({
+    ext: ['robot'],
+    mime: 'text/x-robotframework',
+    mode: 'robotframework',
+    name: 'Robot Framework'
+});
+
 module.exports = [{
     id: 'jupyterlab_robotmode',
     autoStart: true,
