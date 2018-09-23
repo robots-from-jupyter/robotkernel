@@ -23,6 +23,14 @@ Kernel installation
    $ python -m robotkernel.install
 
 
+Disposable Nix-shell
+--------------------
+
+.. code:: bash
+
+   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
+
+
 Local install and development
 -----------------------------
 
