@@ -33,6 +33,10 @@ let self = rec {
           ipykernel
           ipywidgets
           robotkernel.build
+          RESTinstance
+          robotframework-selenium2library
+          robotframework-selenium2screenshots
+          robotframework-seleniumlibrary
         ];
       })
     ];
