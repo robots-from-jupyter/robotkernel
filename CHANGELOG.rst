@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.4 (unreleased)
+0.3.4 (2018-09-25)
 ------------------
 
 - Update README
