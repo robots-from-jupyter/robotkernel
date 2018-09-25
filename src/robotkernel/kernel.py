@@ -223,13 +223,19 @@ class RobotKernel(Kernel):
 
         # Init status
         if not silent:
-            self.send_display_data({'text/plain': '.'}, display_id=display_id)
+            self.send_display_data(
+                {
+                    'text/html': '<span>.</span>'
+                },
+                display_id=display_id,
+            )
             listener.append(
                 StatusEventListener(
                     lambda s: self.send_update_display_data(
                         {
-                            'text/plain': ''.
-                            join(update_progress(progress, s)),
+                            'text/html': '<span>' + (
+                                ''.join(update_progress(progress, s))
+                            ) + '</span>',
                         },
                         display_id=display_id,
                     ),
