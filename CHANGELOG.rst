@@ -4,8 +4,9 @@ Changelog
 0.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Change to always send display data updates in text/html to workaround a bug
+  that caused 'undefined' to be rendered in JupyterLab
+  [datakurre]
 
 0.3.1 (2018-09-24)
 ------------------
