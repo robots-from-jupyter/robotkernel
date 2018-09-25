@@ -43,6 +43,17 @@ Nix-shell (https://nixos.org/nix/)
 
    $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
 
+.. code:: bash
+
+   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter lab"
+
+Add ``--arg sikuli true`` to include SikuliLibrary_.
+
+Add ``--arg vim true`` to enable `vim bindings`_.
+
+.. _SikuliLibrary: https://github.com/rainmanwy/robotframework-SikuliLibrary
+.. _vim bindings: https://github.com/lambdalisue/jupyter-vim-binding
+
 
 Local installation and development
 ----------------------------------

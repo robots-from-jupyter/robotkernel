@@ -2,6 +2,7 @@
     url = "https://github.com/NixOS/nixpkgs-channels/archive/ef450efb9df5260e54503509d2fd638444668713.tar.gz";
     sha256 = "1k9f3n2pmdh7sap79c8nqpz7cjx9930fcpk27pvp6lwmr4qigmxg";
   }) {}
+, vim ? false
 , sikuli ? false
 }:
 
@@ -117,7 +118,7 @@ let self = rec {
       load_extensions = {
         "rise/main" = true;
         "python-markdown/main" = true;
-        "vim_binding/vim_binding" = true;
+        "vim_binding/vim_binding" = if vim then true else false;
       };
       keys = {
         command = {
