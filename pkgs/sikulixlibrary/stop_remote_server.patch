@@ -1,0 +1,40 @@
+diff --git a/target/src/SikuliLibrary/sikuli.py b/target/src/SikuliLibrary/sikuli.py
+index 0348e7f..a2461d3 100644
+--- a/target/src/SikuliLibrary/sikuli.py
++++ b/target/src/SikuliLibrary/sikuli.py
+@@ -50,6 +50,7 @@ class SikuliLibrary(object):
+         self.port = None
+         self.remote = None
+         self.mode = mode.upper().strip()
++        self.process = None
+         if mode == 'OLD':
+             self.start_sikuli_process(port)
+         if mode.upper().strip() == 'DOC':
+@@ -154,6 +155,8 @@ class SikuliLibrary(object):
+         sikuliJar = jarList[0]
+         java = 'java'
+         arguments = ['-jar', sikuliJar, str(self.port), self._get_output_folder()]
++        if self.process:
++            self.process.terminate_process()
+         self.process = Process()
+         if os.getenv("DISABLE_SIKULI_LOG"):
+             self.process.start_process(java, *arguments, shell=True)
+@@ -247,6 +250,10 @@ class SikuliLibrary(object):
+     def run_keyword(self, name, arguments=[], kwargs={}):
+         if name == 'start_sikuli_process':
+             return self.start_sikuli_process(*arguments)
++        elif name == 'stop_remote_server':
++            value = self.remote.run_keyword(name, arguments, kwargs)
++            self.process.terminate_process()
++            return value
+         return self.remote.run_keyword(name, arguments, kwargs)
+ 
+     def _stop_thread(self, timeout):
+@@ -256,3 +263,7 @@ class SikuliLibrary(object):
+ 
+         thread = threading.Thread(target=stop, args=())
+         thread.start()
++
++    def __del__(self):
++        if self.process:
++            self.process.terminate_process()
