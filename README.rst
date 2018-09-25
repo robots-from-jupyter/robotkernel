@@ -36,6 +36,24 @@ After refreshing the notebook, it is possible change the kernel to Robot
 Framework kernel or create a new notebook with Robot Framework kernel.
 
 
+Executing notebooks
+-------------------
+
+It is possible to export test suites from Jupyter Notebook or Lab user interface (into traditional ``.robot`` files), but it is also possible to execute saved Jupyter notebook as such:
+
+.. code:: bash
+
+   $ jupyter nbconvert --to notebook --execute example.ipynb
+
+This will stop the execution at first failing test case.
+
+After execution with errors, to get a notebook with execution logs saved, an extra flag ``--ExecutePreprocessor.allow_errors=True`` must be set:
+
+.. code:: bash
+
+   $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute example.ipynb
+
+
 Nix-shell (https://nixos.org/nix/)
 ----------------------------------
 
