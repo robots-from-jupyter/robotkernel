@@ -4,8 +4,11 @@ Changelog
 0.3.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Note on README that Log | Report -links require trusting the notebook
+  [datakurre]
 
+- Fix to wrap test execution updates with '<pre>' for better readability
+  [datakurre]
 
 0.3.2 (2018-09-25)
 ------------------
