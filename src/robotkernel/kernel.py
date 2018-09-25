@@ -44,7 +44,7 @@ def javascript_uri(html):
         'w.document.open();'
         'w.document.write(window.atob(\'{}\'));'
         'w.document.close();'
-        '}})();" '.format(base64.b64encode(html).decode('utf-8'))
+        '}})();'.format(base64.b64encode(html).decode('utf-8'))
     )
 
 
@@ -225,7 +225,7 @@ class RobotKernel(Kernel):
         if not silent:
             self.send_display_data(
                 {
-                    'text/html': '<span>.</span>'
+                    'text/html': '<pre>.</pre>'
                 },
                 display_id=display_id,
             )
@@ -233,9 +233,9 @@ class RobotKernel(Kernel):
                 StatusEventListener(
                     lambda s: self.send_update_display_data(
                         {
-                            'text/html': '<span>' + (
+                            'text/html': '<pre>' + (
                                 ''.join(update_progress(progress, s))
-                            ) + '</span>',
+                            ) + '</pre>',
                         },
                         display_id=display_id,
                     ),
@@ -302,7 +302,7 @@ class RobotKernel(Kernel):
             self.send_update_display_data(
                 {
                     'text/html': ''
-                    '<a href="{}">Log</a> | <a href="{}">Report</a>'.
+                    '<p><a href="{}">Log</a> | <a href="{}">Report</a></p>'.
                     format(javascript_uri(log), javascript_uri(report)),
                 },
                 display_id=display_id,
