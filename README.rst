@@ -5,6 +5,7 @@ Robot Framework language support for Jupyter notebooks.
 
 Requires Python 3.6 or later.
 
+Log | Report -links on existing notebooks are only active on trusted notebooks.
 
 Try Robot Framework kernel at Binder
 ------------------------------------
