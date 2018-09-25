@@ -4,8 +4,8 @@ Changelog
 0.3.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Update README
+  [datakurre]
 
 0.3.3 (2018-09-25)
 ------------------
