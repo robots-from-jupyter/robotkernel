@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.3 (unreleased)
+0.3.3 (2018-09-25)
 ------------------
 
 - Note on README that Log | Report -links require trusting the notebook
