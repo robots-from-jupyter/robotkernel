@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.2 (unreleased)
+0.3.2 (2018-09-25)
 ------------------
 
 - Change to always send display data updates in text/html to workaround a bug
