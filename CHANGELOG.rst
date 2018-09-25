@@ -4,8 +4,8 @@ Changelog
 0.3.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Update README with notebook execution instructions
+  [datakurre]
 
 0.3.4 (2018-09-25)
 ------------------
