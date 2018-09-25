@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.5 (unreleased)
+0.3.5 (2018-09-25)
 ------------------
 
 - Update README with notebook execution instructions
