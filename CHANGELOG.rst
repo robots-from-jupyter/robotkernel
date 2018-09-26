@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3.6 (unreleased)
+0.4.0 (2018-09-26)
 ------------------
 
 - Add support for robotframework 3.1a2
