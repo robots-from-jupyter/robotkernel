@@ -14,6 +14,5 @@ setup {
   src = ./.;
   propagatedBuildInputs = with pkgs; [
     geckodriver
-    pythonPackages.opencv3
   ];
 }
