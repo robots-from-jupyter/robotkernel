@@ -4,8 +4,11 @@ Changelog
 0.3.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for robotframework 3.1a2
+  [datakurre]
 
+- Add support for reporting RPA suites with "Tasks" instead of "Tests"
+  [datakurre]
 
 0.3.5 (2018-09-25)
 ------------------
