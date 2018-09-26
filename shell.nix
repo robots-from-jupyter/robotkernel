@@ -192,5 +192,6 @@ stdenv.mkDerivation rec {
     export JUPYTER_PATH=${jupyter_config_dir}/share/jupyter
     export JUPYTER_DATA_DIR=$PWD/.jupyter
     export JUPYTER_RUNTIME_DIR=$PWD/.jupyter
+    export PATH=$PATH:${robot_with_packages}/bin
   '';
 }
