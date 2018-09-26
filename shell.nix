@@ -40,6 +40,7 @@ let self = rec {
       pkgs.geckodriver
       (pythonPackages.python.buildEnv.override {
         extraLibs = with pythonPackages; [
+          tkinter
           ipykernel
           ipywidgets
           robotkernel.build
