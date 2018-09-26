@@ -45,6 +45,7 @@ let self = rec {
           ipywidgets
           robotkernel.build
           RESTinstance
+          robotframework-debuglibrary
           robotframework-seleniumlibrary
           robotframework-selenium2library
           robotframework-selenium2screenshots

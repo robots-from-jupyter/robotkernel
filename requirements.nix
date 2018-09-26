@@ -32,17 +32,17 @@ self: super: {
     name = "RESTinstance-1.0.0b35";
     doCheck = false;
     propagatedBuildInputs = [
-      self."pytz"
-      self."GenSON"
-      self."strict-rfc3339"
-      self."robotframework"
-      self."requests"
       self."rfc3987"
-      self."tzlocal"
-      self."jsonpath-ng"
       self."flex"
       self."jsonschema"
+      self."robotframework"
+      self."tzlocal"
+      self."jsonpath-ng"
+      self."pytz"
+      self."strict-rfc3339"
+      self."requests"
       self."pygments"
+      self."GenSON"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/a0/4e/554ff115a5e6ecabc69720bb55ad1d47c753179cc21fbbc5ef71715b4f15/RESTinstance-1.0.0b35.tar.gz";
@@ -199,9 +199,9 @@ self: super: {
     name = "flake8-3.5.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."mccabe"
-      self."pycodestyle"
       self."pyflakes"
+      self."pycodestyle"
+      self."mccabe"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/1e/ab/7730f6d6cdf73a3b7f98a2fe3b2cdf68e9e760a4a133e083607497d4c3a6/flake8-3.5.0.tar.gz";
@@ -279,14 +279,14 @@ self: super: {
     name = "flex-6.12.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."rfc3987"
       self."requests"
+      self."rfc3987"
       self."jsonpointer"
-      self."six"
-      self."strict-rfc3339"
       self."click"
-      self."PyYAML"
       self."validate-email"
+      self."strict-rfc3339"
+      self."six"
+      self."PyYAML"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/bc/03/d9d4bd3852bc259b31519ff939c3758b488136dfa65a6b02472c97a930a7/flex-6.12.0.tar.gz";
@@ -339,16 +339,16 @@ self: super: {
     name = "ipython-6.5.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."pexpect"
+      self."traitlets"
       self."jedi"
-      self."pickleshare"
       self."decorator"
+      self."backcall"
       self."simplegeneric"
-      self."prompt-toolkit"
       self."setuptools"
       self."pygments"
-      self."traitlets"
-      self."backcall"
+      self."prompt-toolkit"
+      self."pickleshare"
+      self."pexpect"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/1a/76/0b51dc7dd3a801477d00e6db065f50cce9fe5bdbea3c911fce62c9f02c23/ipython-6.5.0.tar.gz";
@@ -368,10 +368,10 @@ self: super: {
     doCheck = false;
     propagatedBuildInputs = [
       self."nbformat"
-      self."ipython"
-      self."ipykernel"
       self."traitlets"
       self."widgetsnbextension"
+      self."ipykernel"
+      self."ipython"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/88/8d/c5d3ac1bdcd74c7327c733c9d02354ff12d7d72744f262ed1e26560962b2/ipywidgets-7.4.2.tar.gz";
@@ -412,9 +412,9 @@ self: super: {
     name = "jsonpath-ng-1.4.3";
     doCheck = false;
     propagatedBuildInputs = [
-      self."ply"
-      self."six"
       self."decorator"
+      self."six"
+      self."ply"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/ba/f3/cd8f8a0bb345985b83e76721e6f64222f92f34a217a4e9720f70427a1b4c/jsonpath-ng-1.4.3.tar.gz";
@@ -441,12 +441,12 @@ self: super: {
     name = "jupyter-1.0.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."qtconsole"
-      self."notebook"
       self."nbconvert"
       self."jupyter-console"
-      self."ipywidgets"
+      self."notebook"
+      self."qtconsole"
       self."ipykernel"
+      self."ipywidgets"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/c9/a9/371d0b8fe37dd231cf4b2cff0a9f0f25e98f3a73c3771742444be27f2944/jupyter-1.0.0.tar.gz";
@@ -457,11 +457,11 @@ self: super: {
     name = "jupyter-client-5.2.3";
     doCheck = false;
     propagatedBuildInputs = [
-      self."python-dateutil"
+      self."tornado"
       self."traitlets"
       self."pyzmq"
       self."jupyter-core"
-      self."tornado"
+      self."python-dateutil"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/4c/df/1e8df7f4de63cc667a7a9aa234539c0419513bf94ac57d36d73b3b434786/jupyter_client-5.2.3.tar.gz";
@@ -472,11 +472,11 @@ self: super: {
     name = "jupyter-console-5.2.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."ipython"
-      self."pygments"
-      self."ipykernel"
       self."prompt-toolkit"
+      self."ipython"
       self."jupyter-client"
+      self."ipykernel"
+      self."pygments"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/cd/bb/fa8901715c009a00ea4c42897da8585189d4781c64f4617a8bd65ca01a3a/jupyter_console-5.2.0.tar.gz";
@@ -498,8 +498,8 @@ self: super: {
     name = "jupyterlab-0.34.12";
     doCheck = false;
     propagatedBuildInputs = [
-      self."notebook"
       self."jupyterlab-launcher"
+      self."notebook"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/38/cb/1b3fe08b58765e11abbbfaa9acfaa8629404236bf9c0f43c1e7b17b56fb4/jupyterlab-0.34.12.tar.gz";
@@ -549,17 +549,17 @@ self: super: {
     name = "nbconvert-5.4.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."jinja2"
-      self."testpath"
-      self."defusedxml"
-      self."pandocfilters"
-      self."bleach"
-      self."entrypoints"
-      self."mistune"
-      self."pygments"
-      self."nbformat"
       self."traitlets"
+      self."bleach"
+      self."defusedxml"
+      self."testpath"
+      self."pygments"
+      self."entrypoints"
+      self."pandocfilters"
+      self."mistune"
+      self."jinja2"
       self."jupyter-core"
+      self."nbformat"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/88/68/0417164f344ad702245424d8f998b5c99f1c6147ad1ad645a465ae932134/nbconvert-5.4.0.tar.gz";
@@ -570,10 +570,10 @@ self: super: {
     name = "nbformat-4.4.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."jsonschema"
-      self."jupyter-core"
-      self."traitlets"
       self."ipython-genutils"
+      self."traitlets"
+      self."jupyter-core"
+      self."jsonschema"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/6e/0e/160754f7ae3e984863f585a3743b0ed1702043a81245907c8fae2d537155/nbformat-4.4.0.tar.gz";
@@ -584,19 +584,19 @@ self: super: {
     name = "notebook-5.7.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."Send2Trash"
-      self."jupyter-core"
-      self."jinja2"
-      self."traitlets"
-      self."nbformat"
-      self."jupyter-client"
-      self."pyzmq"
-      self."tornado"
-      self."terminado"
-      self."prometheus-client"
       self."ipython-genutils"
+      self."pyzmq"
+      self."traitlets"
+      self."jupyter-core"
       self."nbconvert"
+      self."prometheus-client"
+      self."nbformat"
+      self."Send2Trash"
       self."ipykernel"
+      self."terminado"
+      self."jinja2"
+      self."tornado"
+      self."jupyter-client"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/cd/41/b04ddb3020bdb55431f2a06c87ff98bf68fb27cd0c165ae6421c17d3b5cb/notebook-5.7.0.tar.gz";
@@ -765,12 +765,12 @@ self: super: {
     name = "pytest-3.8.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."attrs"
-      self."setuptools"
-      self."py"
-      self."more-itertools"
-      self."six"
       self."pluggy"
+      self."attrs"
+      self."more-itertools"
+      self."setuptools"
+      self."six"
+      self."py"
       self."atomicwrites"
     ];
     src = fetchurl {
@@ -782,8 +782,8 @@ self: super: {
     name = "pytest-cov-2.6.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."pytest"
       self."coverage"
+      self."pytest"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/d9/e2/58f90a316fbd94dd50bf5c826a23f3f5d079fb3cc448c1e9f0e3c33a3d2a/pytest-cov-2.6.0.tar.gz";
@@ -829,11 +829,11 @@ self: super: {
     name = "qtconsole-4.4.1";
     doCheck = false;
     propagatedBuildInputs = [
-      self."jupyter-client"
-      self."ipykernel"
-      self."pygments"
       self."ipython-genutils"
+      self."ipykernel"
+      self."jupyter-client"
       self."traitlets"
+      self."pygments"
       self."jupyter-core"
     ];
     src = fetchurl {
@@ -845,12 +845,12 @@ self: super: {
     name = "readme-renderer-22.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."bleach"
-      self."docutils"
-      self."pygments"
-      self."future"
-      self."cmarkgfm"
       self."six"
+      self."bleach"
+      self."cmarkgfm"
+      self."future"
+      self."pygments"
+      self."docutils"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/aa/b6/384c1dfe9b3ac3404817ac32fa44abbe0b51c2494ba118e0ad7ff3e72efb/readme_renderer-22.0.tar.gz";
@@ -861,10 +861,10 @@ self: super: {
     name = "requests-2.18.4";
     doCheck = false;
     propagatedBuildInputs = [
-      self."urllib3"
       self."chardet"
-      self."certifi"
       self."idna"
+      self."certifi"
+      self."urllib3"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/b0/e1/eab4fc3752e3d240468a8c0b284607899d2fbfb236a56b7377a329aa8d09/requests-2.18.4.tar.gz";
@@ -898,6 +898,19 @@ self: super: {
       sha256 = "1mx97vcpm93bg4d9aswq327pjmlr9m43r7lia8a8flapkjznvgn3";
     };
   };
+  "robotframework-debuglibrary" = super.buildPythonPackage {
+    name = "robotframework-debuglibrary-1.1.4";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."pygments"
+      self."prompt-toolkit"
+      self."robotframework"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/ba/81/11c294693b9c51550fe57b62aed60ec393a40d3bbeb06da3869517cdc48c/robotframework-debuglibrary-1.1.4.tar.gz";
+      sha256 = "0n96kcaspfya5dm3nk68mf1c3d7xf8pd00kvplv4skchcw69s7p9";
+    };
+  };
   "robotframework-selenium2library" = super.buildPythonPackage {
     name = "robotframework-selenium2library-3.0.0";
     doCheck = false;
@@ -913,9 +926,9 @@ self: super: {
     name = "robotframework-selenium2screenshots-0.8.1";
     doCheck = false;
     propagatedBuildInputs = [
-      self."setuptools"
       self."robotframework"
       self."robotframework-selenium2library"
+      self."setuptools"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/6d/65/588adf91f3ba1fcbe57fd67c1e1022fe599194fc171ec1275a0d947acbab/robotframework-selenium2screenshots-0.8.1.tar.gz";
@@ -926,8 +939,8 @@ self: super: {
     name = "robotframework-seleniumlibrary-3.2.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."robotframework"
       self."selenium"
+      self."robotframework"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/e9/15/03f51c0ee6285dbf9ebdca176dd2bac6dfbc9cf5a2f54201c9fcdab4a078/robotframework-seleniumlibrary-3.2.0.tar.gz";
@@ -1026,8 +1039,8 @@ self: super: {
     doCheck = false;
     propagatedBuildInputs = [
       self."ipython-genutils"
-      self."six"
       self."decorator"
+      self."six"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/a5/98/7f5ef2fe9e9e071813aaf9cb91d1a732e0a68b6c44a32b38cb8e14c3f069/traitlets-4.3.2.tar.gz";
@@ -1038,11 +1051,11 @@ self: super: {
     name = "twine-1.11.0";
     doCheck = false;
     propagatedBuildInputs = [
-      self."tqdm"
-      self."requests"
-      self."pkginfo"
       self."requests-toolbelt"
+      self."pkginfo"
       self."setuptools"
+      self."requests"
+      self."tqdm"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/9e/89/2971f240b9fc102b2e56ee8b0a9d7c9c3a7cf081b851eb02d85891de20d1/twine-1.11.0.tar.gz";
@@ -1131,11 +1144,11 @@ self: super: {
     name = "zest.releaser-6.15.2";
     doCheck = false;
     propagatedBuildInputs = [
-      self."requests"
-      self."setuptools"
-      self."colorama"
       self."six"
+      self."setuptools"
+      self."requests"
       self."twine"
+      self."colorama"
     ];
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/51/d5/e5e45d6c50e363d66ab1588c91998d002573d58774fec44cc84d6e6fd581/zest.releaser-6.15.2.tar.gz";
