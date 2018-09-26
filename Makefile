@@ -14,7 +14,7 @@ upgrade:
 	echo "Updating nixpkgs $$rev hash"; \
 	sha=$$(nix-prefetch-url --unpack https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz); \
 	sed -i "2s|.*|    url = \"https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz\";|" setup.nix; \
-	sed -i "3s|.*|    sha256 = \"$$sha\";|" setup.nix
+	sed -i "3s|.*|    sha256 = \"$$sha\";|" setup.nix; \
 	sed -i "2s|.*|    url = \"https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz\";|" shell.nix; \
 	sed -i "3s|.*|    sha256 = \"$$sha\";|" shell.nix
 	@echo "Updating setup.nix version"; \

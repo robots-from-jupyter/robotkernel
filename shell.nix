@@ -1,6 +1,6 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/ef450efb9df5260e54503509d2fd638444668713.tar.gz";
-    sha256 = "1k9f3n2pmdh7sap79c8nqpz7cjx9930fcpk27pvp6lwmr4qigmxg";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/29660a208552a1e32f872333d6eb52e13226effa.tar.gz";
+    sha256 = "1rv87f7kqrnl16m64h4148c6nnnl3r3m860d0f08dwk1d5f6ffmd";
   }) {}
 , vim ? false
 , sikuli ? false
@@ -49,7 +49,7 @@ let self = rec {
           robotframework-seleniumlibrary
           robotframework-selenium2library
           robotframework-selenium2screenshots
-          opencv3
+#         opencv3
         ] ++ stdenv.lib.optionals sikuli [ sikulilibrary ];
       })
     ];

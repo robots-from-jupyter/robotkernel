@@ -81,7 +81,7 @@ readme-renderer==22.0
 requests==2.18.4
 requests-toolbelt==0.8.0
 rfc3987==1.3.7
-robotframework==3.1a1
+robotframework==3.1a2
 robotframework-debuglibrary==1.1.4
 robotframework-selenium2library==3.0.0
 robotframework-selenium2screenshots==0.8.1

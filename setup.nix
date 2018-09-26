@@ -1,11 +1,11 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/ef450efb9df5260e54503509d2fd638444668713.tar.gz";
-    sha256 = "1k9f3n2pmdh7sap79c8nqpz7cjx9930fcpk27pvp6lwmr4qigmxg";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/29660a208552a1e32f872333d6eb52e13226effa.tar.gz";
+    sha256 = "1rv87f7kqrnl16m64h4148c6nnnl3r3m860d0f08dwk1d5f6ffmd";
   }) {}
 , setup ? import (fetchTarball {
-    url = "https://github.com/datakurre/setup.nix/archive/53dee902050e2f3d57619ea78dcc19578640b055.tar.gz";
-    sha256 = "0w4zh0xf05kd5i5pqx2ki78x5n2mhxrwi20wpv3zhlfgydxqwrrn";
-  })
+    url = "https://github.com/datakurre/setup.nix/archive/d991abe23efde4a0bc5de2a0b4672cca0126c151.tar.gz";
+    sha256 = "0zglrif1hncs84ia28m03ca324y8aqnjqygzsji7x0bnfn77hpqm";
+ })
 , pythonPackages ? pkgs.python3Packages
 }:
 

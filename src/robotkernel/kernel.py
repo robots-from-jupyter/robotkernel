@@ -162,7 +162,9 @@ class RobotKernel(Kernel):
 
         # Build
         builder = TestSuiteBuilder()
-        suite = builder._build_suite(data)
+        with TemporaryDirectory() as path:
+            data.source = path
+            suite = builder._build_suite(data)
         suite._name = 'Jupyter'
 
         # Run
@@ -284,6 +286,7 @@ class RobotKernel(Kernel):
         writer.write_results(
             log=os.path.join(path, 'log.html'),
             report=os.path.join(path, 'report.html'),
+            rpa=suite.rpa,
         )
 
         with open(os.path.join(path, 'log.html'), 'rb') as fp:
