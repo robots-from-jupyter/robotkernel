@@ -49,7 +49,7 @@ let self = rec {
           robotframework-seleniumlibrary
           robotframework-selenium2library
           robotframework-selenium2screenshots
-#         opencv3
+          opencv3
         ] ++ stdenv.lib.optionals sikuli [ sikulilibrary ];
       })
     ];
