@@ -195,6 +195,19 @@ self: super: {
       sha256 = "17q21k8igjb47b73jn4w6lgzza1nscn3sf1sn5gm96bgw3fqgmfj";
     };
   };
+  "faker" = super.buildPythonPackage {
+    name = "faker-0.9.1";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."python-dateutil"
+      self."six"
+      self."text-unidecode"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/46/87/3dc0e705e72f6e414067fb114347c5295525847d7c745521491691ecc699/Faker-0.9.1.tar.gz";
+      sha256 = "0n3pznvh0hjq15khica2hqy4cqi5adbxf1k04y9d7rk1hgfl5kn2";
+    };
+  };
   "flake8" = super.buildPythonPackage {
     name = "flake8-3.5.0";
     doCheck = false;
@@ -911,6 +924,19 @@ self: super: {
       sha256 = "0n96kcaspfya5dm3nk68mf1c3d7xf8pd00kvplv4skchcw69s7p9";
     };
   };
+  "robotframework-faker" = super.buildPythonPackage {
+    name = "robotframework-faker-4.2.0";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."faker"
+      self."robotframework"
+      self."wrapt"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/c1/3f/6db0f8a180bf5a62d25f6e30288565e1d5f75e39ece5f53bafa91db5344b/robotframework-faker-4.2.0.tar.gz";
+      sha256 = "08bllg496wzbfm87ymbd7qzv8qjhhs3xbqmpxik63xmcikaf0yb1";
+    };
+  };
   "robotframework-selenium2library" = super.buildPythonPackage {
     name = "robotframework-selenium2library-3.0.0";
     doCheck = false;
@@ -1016,6 +1042,14 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/f4/8b/b71e9ee10e5f751e9d959bc750ab122ba04187f5aa52aabdc4e63b0e31a7/testpath-0.3.1.tar.gz";
       sha256 = "02bnmkvm6a8a1p5kcygylcd19v2s040qw3zp1n8ab3bqkj1kflqd";
+    };
+  };
+  "text-unidecode" = super.buildPythonPackage {
+    name = "text-unidecode-1.2";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/f0/a2/40adaae7cbdd007fb12777e550b5ce344b56189921b9f70f37084c021ca4/text-unidecode-1.2.tar.gz";
+      sha256 = "0v9r3834c82ygm21rjqk561s12gqw698vqwaa108g5m75fxpa4ss";
     };
   };
   "tornado" = super.buildPythonPackage {
@@ -1130,6 +1164,14 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/cb/37/ec01aac3e510645959795337bf652155cd7efb28aecc940b0773e8ba8e4d/widgetsnbextension-3.4.2.tar.gz";
       sha256 = "0rc2nivdy7k4m3vljx7wdh2jh11djapcgwhvzlbs0isl8gl8nqgs";
+    };
+  };
+  "wrapt" = super.buildPythonPackage {
+    name = "wrapt-1.10.11";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/a0/47/66897906448185fcb77fc3c2b1bc20ed0ecca81a0f2f88eda3fc5a34fc3d/wrapt-1.10.11.tar.gz";
+      sha256 = "1ip3dwib39xhp79kblskgvz3fjzcwxgx3fs3ahdixhpjg7a61mfl";
     };
   };
   "yapf" = super.buildPythonPackage {
