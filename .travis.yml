@@ -1,0 +1,16 @@
+language: nix
+script:
+- nix-shell setup.nix -A shell --run "flake8 src"
+after_success:
+- nix-shell setup.nix -A shell --run "sphinx-build docs build"
+deploy:
+  provider: pages
+  github-token: "$GITHUB_TOKEN"
+  local-dir: "./build"
+  target-branch: gh-pages
+  keep-history: false
+  skip-cleanup: true
+  on:
+    branch: master
+env:
+  secure: eQmcZzmQ0Sw+Eb/4rmjX0FAWyJeKkno2StRQoqSmiax8nT5iLRQnfg+3picC2RAEm+Qjg+ESz0NHRkmmf/ZPiXmn7csIJLbbj68un6gnapoeWB7GM/+cOKDGpg1SKScare3U6A8J0poKcpx66jnxLoXjlp5vKSWuhNoajsxE7fcfu0PEVJUac8uCia/jZE2UqD5W66bQK38axEN0in6HBEqsoN6TQNlREgCkYR9Y+yaYXB7QxD2/+1N8hcd4PuceSOV4mCD8ERPbi2e/j+PbJ5Sa6RswJdUwYAdOoFGK7dP42fPJen8C9HNlclCM7+vZr7Dnh1DTNuR7+2inXbKMjnF9Ww6f9kj+AZ4j8Qyy5eq6RkSdSOZ8UnpwLCDAFslhX8vc0INnyNmlRcpqtp8uwj2aWuSKBt+HlsjL2+MGbvLRpEqebaVBVKEtrYlH36ZV2NXMGOa3OQYSYObDgiPg1qmXDekUccKscTGHde4aXSdXEgkM6Slmbh1GecpkFQoGJaI+6xo6VfeJe3/Z8Bre9ccsYIrRkYf+RYUGrBY1jr1ijVc038MADlyhbQd45cATUJNXJNv84j7BvQInbKHkemnI+CKzeu9dpOZYjLTw35EkvmDon6YQaNwg59dCQXGAFrNzs71mbC6Lgsqpa99qjZW7vstCQEKBo0hGuvars6s=
