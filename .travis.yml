@@ -7,6 +7,7 @@ script:
 - nix-shell setup.nix -A shell --run "flake8 src"
 after_success:
 - nix-shell setup.nix -A shell --run "LC_ALL=C sphinx-build docs build"
+- touch build/.nojekyll
 deploy:
   provider: pages
   github-token: "$GITHUB_TOKEN"
