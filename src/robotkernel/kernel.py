@@ -179,7 +179,9 @@ class RobotKernel(Kernel):
             if ref.startswith('__') and not ref.startswith(context):
                 continue
             elif not ref.startswith(context) and context not in [
-                    '__tasks__', '__keywords__'
+                    '__tasks__',
+                    '__keywords__',
+                    '__settings__',
             ]:
                 continue
             elif not needle.count('.'):
