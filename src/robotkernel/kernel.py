@@ -35,18 +35,20 @@ import uuid
 CONTEXT_LIBRARIES = {
     '__root__': list(
         map(
-            KeywordDoc, [
+            KeywordDoc,
+            [
                 '*** Settings ***',
                 '*** Variables ***',
                 '*** Test Cases ***',
                 '*** Tasks ***',
                 '*** Keywords ***',
-            ]
-        )
+            ],
+        ),
     ),
     '__settings__': list(
         map(
-            KeywordDoc, [
+            KeywordDoc,
+            [
                 'Library',
                 'Resource',
                 'Variables',
@@ -64,33 +66,35 @@ CONTEXT_LIBRARIES = {
                 'Task Timeout',
                 'Force Tags',
                 'Default Tags',
-            ]
-        )
+            ],
+        ),
     ),
     '__tasks__': list(
         map(
-            KeywordDoc, [
+            KeywordDoc,
+            [
                 '[Documentation]',
                 '[Tags]',
                 '[Setup]',
                 '[Teardown]',
                 '[Template]',
                 '[Timeout]',
-            ]
-        )
+            ],
+        ),
     ),
     '__keywords__': list(
         map(
-            KeywordDoc, [
+            KeywordDoc,
+            [
                 '[Documentation]',
                 '[Tags]',
                 '[Arguments]',
                 '[Return]',
                 '[Teardown]',
                 '[Timeout]',
-            ]
-        )
-    )
+            ],
+        ),
+    ),
 }
 
 DOC_TO_HTML = DocToHtml('ROBOT')
@@ -141,11 +145,11 @@ class RobotKernel(Kernel):
             driver['instance'].quit()
         self.robot_webdrivers = []
 
-    def do_complete(self, code, cursor_pos):
+    def do_complete(self, code, cursor_pos):  # noqa: C901 (too complex)
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = re.split(r"\W{2,}|\t| \| ", line[:line_cursor])[-1].lstrip()
+        needle = re.split(r'\W{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
         def normalize(s):
             return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
@@ -196,14 +200,14 @@ class RobotKernel(Kernel):
             'cursor_end': cursor_pos,
             'cursor_start': cursor_pos - len(needle),
             'metadata': {},
-            'status': 'ok'
+            'status': 'ok',
         }
 
     def do_inspect(self, code, cursor_pos, detail_level=0):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = re.split(r"\W{2,}|\t| \| ", line[:line_cursor])[-1].lstrip()
+        needle = re.split(r'\W{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
         needle = needle.strip().lower()
 
         def normalize(s):
@@ -360,7 +364,7 @@ class RobotKernel(Kernel):
         if not silent:
             self.send_display_data(
                 {
-                    'text/html': '<pre>.</pre>'
+                    'text/html': '<pre>.</pre>',
                 },
                 display_id=display_id,
             )

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Derived from bash_kernel
 # https://github.com/takluyver/bash_kernel/blob/master/bash_kernel/install.py
 # Contributed by https://github.com/bollwyvl
@@ -40,7 +41,11 @@ def install_my_kernel_spec(user=False, prefix=None):
 
         print('Installing kernelspec for robotkernel')
         KernelSpecManager().install_kernel_spec(
-            td, 'robotkernel', user=user, replace=True, prefix=prefix
+            td,
+            'robotkernel',
+            user=user,
+            replace=True,
+            prefix=prefix,
         )
 
 
@@ -53,23 +58,25 @@ def _is_root():
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description='Install kernelspec for Robot Kernel'
+        description='Install kernelspec for Robot Kernel',
     )
     prefix_locations = parser.add_mutually_exclusive_group()
 
     prefix_locations.add_argument(
         '--user',
         help='Install KernelSpec in user home directory',
-        action='store_true'
+        action='store_true',
     )
     prefix_locations.add_argument(
         '--sys-prefix',
         help='Install KernelSpec in sys.prefix. Useful in conda / virtualenv',
         action='store_true',
-        dest='sys_prefix'
+        dest='sys_prefix',
     )
     prefix_locations.add_argument(
-        '--prefix', help='Install KernelSpec in this prefix', default=None
+        '--prefix',
+        help='Install KernelSpec in this prefix',
+        default=None,
     )
 
     args = parser.parse_args(argv)
