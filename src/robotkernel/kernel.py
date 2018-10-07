@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 from io import StringIO
 from ipykernel.kernelbase import Kernel
 from IPython.utils.tempdir import TemporaryDirectory
+from IPython.utils.tokenutil import line_at_cursor
 from PIL import Image
+from robot.libdocpkg.htmlwriter import DocToHtml
+from robot.libdocpkg.model import KeywordDoc
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robotkernel import __version__
 from robotkernel.listeners import ReturnValueListener
+from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
 from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
 from robotkernel.utils import data_uri
 from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
+from robotkernel.utils import lunr_builder
 from traceback import format_exc
 
 import base64
@@ -23,6 +29,71 @@ import robot
 import sys
 import types
 import uuid
+
+
+# TODO: Add context awareness (root, settings, test case, keywords ...)
+CONTEXT_LIBRARIES = {
+    '__root__': list(
+        map(
+            KeywordDoc, [
+                '*** Settings ***',
+                '*** Variables ***',
+                '*** Test Cases ***',
+                '*** Tasks ***',
+                '*** Keywords ***',
+            ]
+        )
+    ),
+    '__settings__': list(
+        map(
+            KeywordDoc, [
+                'Library',
+                'Resource',
+                'Variables',
+                'Documentation',
+                'Metadata',
+                'Suite Setup',
+                'Suite Teardown',
+                'Test Setup',
+                'Test Teardown',
+                'Test Template',
+                'Test Timeout',
+                'Task Setup',
+                'Task Teardown',
+                'Task Template',
+                'Task Timeout',
+                'Force Tags',
+                'Default Tags',
+            ]
+        )
+    ),
+    '__tasks__': list(
+        map(
+            KeywordDoc, [
+                '[Documentation]',
+                '[Tags]',
+                '[Setup]',
+                '[Teardown]',
+                '[Template]',
+                '[Timeout]',
+            ]
+        )
+    ),
+    '__keywords__': list(
+        map(
+            KeywordDoc, [
+                '[Documentation]',
+                '[Tags]',
+                '[Arguments]',
+                '[Return]',
+                '[Teardown]',
+                '[Timeout]',
+            ]
+        )
+    )
+}
+
+DOC_TO_HTML = DocToHtml('ROBOT')
 
 
 # noinspection PyAbstractClass
@@ -42,14 +113,133 @@ class RobotKernel(Kernel):
 
     def __init__(self, **kwargs):
         super(RobotKernel, self).__init__(**kwargs)
-        self.robot_history = []
+
+        # History to repeat after kernel restart
+        self.robot_history = OrderedDict()
+        self.robot_cell_id = None  # current cell id from init_metadata
+        self.robot_inspect_data = {}
+
+        # Persistent storage for selenium library webdrivers
         self.robot_webdrivers = []
 
+        # Searchable index for keyword autocomplete documentation
+        builder = lunr_builder('dottedname', ['dottedname', 'name'])
+        self.robot_catalog = {
+            'builder': builder,
+            'index': None,
+            'libraries': {},
+            'keywords': {},
+        }
+        populator = RobotKeywordsIndexerListener(self.robot_catalog)
+        populator.library_import('BuiltIn', [])
+        for name, keywords in CONTEXT_LIBRARIES.items():
+            populator._library_import(keywords, name)
+
     def do_shutdown(self, restart):
-        self.robot_history = []
+        self.robot_history = OrderedDict()
         for driver in self.robot_webdrivers:
             driver['instance'].quit()
         self.robot_webdrivers = []
+
+    def do_complete(self, code, cursor_pos):
+        cursor_pos = cursor_pos is None and len(code) or cursor_pos
+        line, offset = line_at_cursor(code, cursor_pos)
+        line_cursor = cursor_pos - offset
+        needle = line[:line_cursor].lstrip()
+
+        def normalize(s):
+            return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
+                    '*').rstrip().lower()
+
+        def title(s):
+            if s and not s.startswith('*'):
+                return s[0].title() + s[1:].lower()
+            else:
+                return s
+
+        context = ''
+        context_parts = code.rsplit('***', 2)
+        if len(context_parts) != 3:
+            context = '__root__'
+        else:
+            context_name = context_parts[1].strip().lower()
+            if context_name == 'settings':
+                context = '__settings__'
+            elif context_name in ['tasks', 'test cases']:
+                context = '__tasks__'
+            elif context_name == 'keywords':
+                context = '__keywords__'
+
+        matches = []
+        results = []
+        if needle.rstrip():
+            results = self.robot_catalog['index'].search(normalize(needle))
+        for result in results:
+            ref = result['ref']
+            if ref.startswith('__') and not ref.startswith(context):
+                continue
+            elif not ref.startswith(context) and context not in [
+                    '__tasks__', '__keywords__'
+            ]:
+                continue
+            elif not needle.count('.'):
+                keyword = self.robot_catalog['keywords'][ref].name
+                if keyword not in matches:
+                    matches.append(title(keyword))
+            else:
+                matches.append(title(ref))
+
+        return {
+            'matches': matches,
+            'cursor_end': cursor_pos,
+            'cursor_start': cursor_pos - len(needle),
+            'metadata': {},
+            'status': 'ok'
+        }
+
+    def do_inspect(self, code, cursor_pos, detail_level=0):
+        cursor_pos = cursor_pos is None and len(code) or cursor_pos
+        line, offset = line_at_cursor(code, cursor_pos)
+        line_cursor = cursor_pos - offset
+        needle = line[:line_cursor].strip().lower()
+
+        def normalize(s):
+            return re.sub(r'([:*])', r'\\\1', s, re.U)
+
+        reply_content = {
+            'status': 'ok',
+            'data': self.robot_inspect_data,
+            'metadata': {},
+            'found': bool(self.robot_inspect_data),
+        }
+
+        results = []
+        if needle:
+            results = self.robot_catalog['index'].search(normalize(needle))
+        for result in results:
+            keyword = self.robot_catalog['keywords'][result['ref']]
+            if needle not in [keyword.name.lower(), result['ref'].lower()]:
+                continue
+            if keyword.doc:
+                reply_content['found'] = True
+                self.robot_inspect_data['text/plain'] = keyword.doc
+                self.robot_inspect_data['text/html'] = DOC_TO_HTML(keyword.doc)
+            break
+
+        return reply_content
+
+    def init_metadata(self, parent):
+        # Jupyter Lab sends deleted cells and the currently updated cell
+        # id as message metadata, that allows to keep robot history in
+        # sync with the displayed notebook:
+        deleted_cells = \
+            (parent.get('metadata') or {}).get('deletedCells') or []
+        for cell_id in deleted_cells:
+            if cell_id in self.robot_history:
+                del self.robot_history[cell_id]
+        self.robot_cell_id = \
+            (parent.get('metadata') or {}).get('cellId') or None
+        return super(RobotKernel, self).init_metadata(parent)
 
     def do_execute(
             self,
@@ -74,7 +264,7 @@ class RobotKernel(Kernel):
         # Populate
         data = TestCaseString()
         try:
-            for historical in self.robot_history:
+            for historical in self.robot_history.values():
                 data.populate(historical)
             data.testcase_table.tests.clear()
             data.populate(code)
@@ -91,6 +281,9 @@ class RobotKernel(Kernel):
                 'evalue': str(e),
                 'traceback': list(format_exc().splitlines()),
             }
+
+        # Update catalog
+        RobotKeywordsIndexerListener(self.robot_catalog)._resource_import(data)
 
         # Build
         builder = TestSuiteBuilder()
@@ -110,7 +303,7 @@ class RobotKernel(Kernel):
 
         # Save history
         if reply['status'] == 'ok':
-            self.robot_history.append(code)
+            self.robot_history[self.robot_cell_id or str(uuid.uuid4())] = code
 
         return reply
 
@@ -178,6 +371,7 @@ class RobotKernel(Kernel):
                 ReturnValueListener(lambda v: return_values.append(v)),
             )
         listener.append(WebdriverConnectionsListener(self.robot_webdrivers))
+        listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
         # Run suite
         stdout = StringIO()

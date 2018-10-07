@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from lunr.builder import Builder
+from lunr.stemmer import stemmer
+from lunr.stop_word_filter import stop_word_filter
+from lunr.trimmer import trimmer
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
@@ -31,3 +35,18 @@ def highlight(language, data):
     lexer = get_lexer_by_name(language)
     formatter = HtmlFormatter(noclasses=True, nowrap=True)
     return pygments.highlight(data, lexer, formatter)
+
+
+def lunr_builder(ref, fields):
+    """A convenience function to configure and construct a lunr.Builder.
+
+    Returns:
+        Index: The populated Index ready to search against.
+    """
+    builder = Builder()
+    builder.pipeline.add(trimmer, stop_word_filter, stemmer)
+    builder.search_pipeline.add(stemmer)
+    builder.ref(ref)
+    for field in fields:
+        builder.field(field)
+    return builder

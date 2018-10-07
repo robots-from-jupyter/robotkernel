@@ -57,6 +57,14 @@ self: super: {
       sha256 = "1ci8vcwjmjlp11ljj1ckrfmml9fkq1mclx2gr53y4zvhgp01q030";
     };
   };
+  "alabaster" = super.buildPythonPackage {
+    name = "alabaster-0.7.12";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/cc/b4/ed8dcb0d67d5cfb7f83c4d5463a7614cb1d078ad7ae890c9143edebbf072/alabaster-0.7.12.tar.gz";
+      sha256 = "00nwwjj2d2ym4s2kk217x7jkx1hnczc3fvm8yxbqmsp6b0nxfqd6";
+    };
+  };
   "atomicwrites" = super.buildPythonPackage {
     name = "atomicwrites-1.2.1";
     doCheck = false;
@@ -71,6 +79,17 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/0f/9e/26b1d194aab960063b266170e53c39f73ea0d0d3f5ce23313e0ec8ee9bdf/attrs-18.2.0.tar.gz";
       sha256 = "0s9ydh058wmmf5v391pym877x4ahxg45dw6a0w4c7s5wgpigdjqh";
+    };
+  };
+  "babel" = super.buildPythonPackage {
+    name = "babel-2.6.0";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."pytz"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/be/cc/9c981b249a455fa0c76338966325fc70b7265521bad641bf2932f77712f4/Babel-2.6.0.tar.gz";
+      sha256 = "08rxmbx2s4irp0w0gmn498vns5xy0fagm0fg33xa772jiks51flc";
     };
   };
   "backcall" = super.buildPythonPackage {
@@ -334,6 +353,14 @@ self: super: {
       sha256 = "13qaab6d0s15gknz8v3zbcfmbj6v86hn9pjxgkdf62ch13imssic";
     };
   };
+  "imagesize" = super.buildPythonPackage {
+    name = "imagesize-1.1.0";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/41/f5/3cf63735d54aa9974e544aa25858d8f9670ac5b4da51020bbfc6aaade741/imagesize-1.1.0.tar.gz";
+      sha256 = "1dg3wn7qpwmhgqc0r9na2ding1wif9q5spz3j9zn2riwphc2k0zk";
+    };
+  };
   "ipykernel" = super.buildPythonPackage {
     name = "ipykernel-4.9.0";
     doCheck = false;
@@ -531,6 +558,18 @@ self: super: {
       sha256 = "1w65d7fylnzvfmyj92pwjyc1cfyiw356zp2ib56m47wb1gdfm07q";
     };
   };
+  "lunr" = super.buildPythonPackage {
+    name = "lunr-0.5.3";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."future"
+      self."six"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/6c/5a/b737c000e49419c27315a75ea05d7212318e09d8824afe58a979c86f9f17/lunr-0.5.3.tar.gz";
+      sha256 = "0m32ni1kr5ylvkaw5s35va73ny3b7hkyq8967rxi9ybshmzkq523";
+    };
+  };
   "mccabe" = super.buildPythonPackage {
     name = "mccabe-0.6.1";
     doCheck = false;
@@ -614,6 +653,18 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/cd/41/b04ddb3020bdb55431f2a06c87ff98bf68fb27cd0c165ae6421c17d3b5cb/notebook-5.7.0.tar.gz";
       sha256 = "19xia16kgdjg1p6504njrpadsjfb1jc5llfhw57z3x2cspilspmq";
+    };
+  };
+  "packaging" = super.buildPythonPackage {
+    name = "packaging-18.0";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."pyparsing"
+      self."six"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/cf/50/1f10d2626df0aa97ce6b62cf6ebe14f605f4e101234f7748b8da4138a8ed/packaging-18.0.tar.gz";
+      sha256 = "01wq9c53ix5rz6qg2c98gy8n4ff768rmanifm8m5jpjiaizj51h8";
     };
   };
   "pandocfilters" = super.buildPythonPackage {
@@ -760,6 +811,14 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/71/2a/2e4e77803a8bd6408a2903340ac498cb0a2181811af7c9ec92cb70b0308a/Pygments-2.2.0.tar.gz";
       sha256 = "1k78qdvir1yb1c634nkv6rbga8wv4289xarghmsbbvzhvr311bnv";
+    };
+  };
+  "pyparsing" = super.buildPythonPackage {
+    name = "pyparsing-2.2.2";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1a/e2/4a7ad8f2808e03caebd3ec0a250b4afbb26d4ba063c39c3286185dd06dd1/pyparsing-2.2.2.tar.gz";
+      sha256 = "02m3gk70i8npyi9m7ky4zrgx81xwc31sxbkdrxkzbwqsp5372v5w";
     };
   };
   "pyroma" = super.buildPythonPackage {
@@ -1014,6 +1073,55 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/16/d8/bc6316cf98419719bd59c91742194c111b6f2e85abac88e496adefaf7afe/six-1.11.0.tar.gz";
       sha256 = "1scqzwc51c875z23phj48gircqjgnn3af8zy2izjwmnlxrxsgs3h";
+    };
+  };
+  "snowballstemmer" = super.buildPythonPackage {
+    name = "snowballstemmer-1.2.1";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/20/6b/d2a7cb176d4d664d94a6debf52cd8dbae1f7203c8e42426daa077051d59c/snowballstemmer-1.2.1.tar.gz";
+      sha256 = "0a0idq4y5frv7qsg2x62jd7rd272749xk4x99misf5rcifk2d7wi";
+    };
+  };
+  "sphinx" = super.buildPythonPackage {
+    name = "sphinx-1.8.1";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."alabaster"
+      self."babel"
+      self."docutils"
+      self."imagesize"
+      self."jinja2"
+      self."packaging"
+      self."pygments"
+      self."requests"
+      self."setuptools"
+      self."six"
+      self."snowballstemmer"
+      self."sphinxcontrib-websupport"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/c7/e9/b1bed881847680cecc70159b8b9d5fd1cd4e85627c534712c2c7b339f8b6/Sphinx-1.8.1.tar.gz";
+      sha256 = "05wz8y57jfmwnlk046m16brnsdldhsy6sjxv4ah2727icv2vhbk5";
+    };
+  };
+  "sphinx-rtd-theme" = super.buildPythonPackage {
+    name = "sphinx-rtd-theme-0.4.2";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."sphinx"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/db/37/f57c7a99827aa03fa8efc24037ff9990deb1c6a7bb2f23c388bd36b8748a/sphinx_rtd_theme-0.4.2.tar.gz";
+      sha256 = "02bax2pv56wf70dpvq0k9zvf0j46smws9ir0i9svpakbdmkjmw02";
+    };
+  };
+  "sphinxcontrib-websupport" = super.buildPythonPackage {
+    name = "sphinxcontrib-websupport-1.1.0";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/07/7a/e74b06dce85555ffee33e1d6b7381314169ebf7e31b62c18fcb2815626b7/sphinxcontrib-websupport-1.1.0.tar.gz";
+      sha256 = "1ff3ix76xi1y6m99qxhaq5161ix9swwzydilvdya07mgbcvpzr4x";
     };
   };
   "strict-rfc3339" = super.buildPythonPackage {

@@ -1,7 +1,54 @@
 # -*- coding: utf-8 -*-
+from robot.errors import DataError
+from robot.libdocpkg import LibraryDocumentation
 from robot.libraries.BuiltIn import BuiltIn
 
 import inspect
+
+
+class RobotKeywordsIndexerListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, catalog):
+        self.catalog = catalog
+
+    # noinspection PyUnusedLocal
+    def library_import(self, name, attributes):
+        if name not in self.catalog['libraries']:
+            try:
+                self.catalog[name] = LibraryDocumentation(name).keywords
+                self._library_import(self.catalog[name], name)
+            except DataError:
+                self.catalog[name] = None
+
+    def _library_import(self, keywords, name):
+        for keyword in keywords:
+            self.catalog['builder'].add({
+                'name': keyword.name,
+                'dottedname': f'{name}.{keyword.name}',
+            })
+            self.catalog['keywords'][f'{name}.{keyword.name}'] = keyword
+        if len(self.catalog['keywords']):
+            self.catalog['index'] = self.catalog['builder'].build()
+
+    # noinspection PyUnusedLocal
+    def resource_import(self, name, attributes):
+        if name not in self.catalog['libraries']:
+            try:
+                resource = LibraryDocumentation(name)
+                self._resource_import(resource.keywords)
+            except DataError:
+                pass
+
+    def _resource_import(self, keywords):
+        for keyword in keywords:
+            self.catalog['builder'].add({
+                'name': keyword.name,
+                'dottedname': keyword.name,
+            })
+            self.catalog['keywords'][keyword.name] = keyword
+        if len(self.catalog['keywords']):
+            self.catalog['index'] = self.catalog['builder'].build()
 
 
 class StatusEventListener:
