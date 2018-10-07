@@ -145,7 +145,7 @@ class RobotKernel(Kernel):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = line[:line_cursor].lstrip()
+        needle = re.split(r"\W{2,}|\t| \| ", line[:line_cursor])[-1].lstrip()
 
         def normalize(s):
             return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
@@ -201,7 +201,8 @@ class RobotKernel(Kernel):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = line[:line_cursor].strip().lower()
+        needle = re.split(r"\W{2,}|\t| \| ", line[:line_cursor])[-1].lstrip()
+        needle = needle.strip().lower()
 
         def normalize(s):
             return re.sub(r'([:*])', r'\\\1', s, re.U)
@@ -224,6 +225,9 @@ class RobotKernel(Kernel):
                 reply_content['found'] = True
                 self.robot_inspect_data['text/plain'] = keyword.doc
                 self.robot_inspect_data['text/html'] = DOC_TO_HTML(keyword.doc)
+            else:
+                reply_content['found'] = True
+                self.robot_inspect_data = {}
             break
 
         return reply_content
@@ -283,7 +287,9 @@ class RobotKernel(Kernel):
             }
 
         # Update catalog
-        RobotKeywordsIndexerListener(self.robot_catalog)._resource_import(data)
+        RobotKeywordsIndexerListener(self.robot_catalog)._resource_import(
+            data.keywords,
+        )
 
         # Build
         builder = TestSuiteBuilder()
