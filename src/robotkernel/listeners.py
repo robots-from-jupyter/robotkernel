@@ -13,30 +13,33 @@ class RobotKeywordsIndexerListener:
         self.catalog = catalog
 
     # noinspection PyUnusedLocal
-    def library_import(self, name, attributes):
-        if name not in self.catalog['libraries']:
+    def library_import(self, alias, attributes):
+        name = attributes.get('originalName') or alias
+        if alias not in self.catalog['libraries']:
+            self.catalog['libraries'].append(alias)
             try:
-                self.catalog[name] = LibraryDocumentation(name).keywords
-                self._library_import(self.catalog[name], name)
+                lib_doc = LibraryDocumentation(name)
+                self._library_import(lib_doc.keywords, alias)
             except DataError:
-                self.catalog[name] = None
+                pass
 
-    def _library_import(self, keywords, name):
+    def _library_import(self, keywords, alias):
         for keyword in keywords:
             self.catalog['builder'].add({
                 'name': keyword.name,
-                'dottedname': f'{name}.{keyword.name}',
+                'dottedname': f'{alias}.{keyword.name}',
             })
-            self.catalog['keywords'][f'{name}.{keyword.name}'] = keyword
+            self.catalog['keywords'][f'{alias}.{keyword.name}'] = keyword
         if len(self.catalog['keywords']):
             self.catalog['index'] = self.catalog['builder'].build()
 
     # noinspection PyUnusedLocal
     def resource_import(self, name, attributes):
         if name not in self.catalog['libraries']:
+            self.catalog['libraries'].append(name)
             try:
-                resource = LibraryDocumentation(name)
-                self._resource_import(resource.keywords)
+                resource_doc = LibraryDocumentation(name)
+                self._resource_import(resource_doc.keywords)
             except DataError:
                 pass
 
@@ -49,6 +52,21 @@ class RobotKeywordsIndexerListener:
             self.catalog['keywords'][keyword.name] = keyword
         if len(self.catalog['keywords']):
             self.catalog['index'] = self.catalog['builder'].build()
+
+    def _import_from_suite_data(self, data):
+        self._resource_import(data.keywords)
+        try:
+            for import_data in data.setting_table.imports.data:
+                attributes = {}
+                if import_data.type == 'Library':
+                    alias = import_data.alias or import_data.name
+                    attributes['originalName'] = import_data.name
+                    self.library_import(alias, attributes)
+                else:
+                    name = import_data.name
+                    self.resource_import(name, attributes)
+        except AttributeError:
+            pass
 
 
 class StatusEventListener:

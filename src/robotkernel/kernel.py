@@ -16,9 +16,11 @@ from robotkernel.listeners import StatusEventListener
 from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
 from robotkernel.utils import data_uri
+from robotkernel.utils import detect_robot_context
 from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
+from robotkernel.utils import readable_keyword
 from traceback import format_exc
 
 import base64
@@ -31,7 +33,6 @@ import types
 import uuid
 
 
-# TODO: Add context awareness (root, settings, test case, keywords ...)
 CONTEXT_LIBRARIES = {
     '__root__': list(
         map(
@@ -131,11 +132,11 @@ class RobotKernel(Kernel):
         self.robot_catalog = {
             'builder': builder,
             'index': None,
-            'libraries': {},
+            'libraries': [],
             'keywords': {},
         }
         populator = RobotKeywordsIndexerListener(self.robot_catalog)
-        populator.library_import('BuiltIn', [])
+        populator.library_import('BuiltIn', {})
         for name, keywords in CONTEXT_LIBRARIES.items():
             populator._library_import(keywords, name)
 
@@ -145,7 +146,7 @@ class RobotKernel(Kernel):
             driver['instance'].quit()
         self.robot_webdrivers = []
 
-    def do_complete(self, code, cursor_pos):  # noqa: C901 (too complex)
+    def do_complete(self, code, cursor_pos):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
@@ -155,27 +156,9 @@ class RobotKernel(Kernel):
             return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
                     '*').rstrip().lower()
 
-        def title(s):
-            if s and not s.startswith('*'):
-                return s[0].title() + s[1:].lower()
-            else:
-                return s
-
-        context = ''
-        context_parts = code.rsplit('***', 2)
-        if len(context_parts) != 3:
-            context = '__root__'
-        else:
-            context_name = context_parts[1].strip().lower()
-            if context_name == 'settings':
-                context = '__settings__'
-            elif context_name in ['tasks', 'test cases']:
-                context = '__tasks__'
-            elif context_name == 'keywords':
-                context = '__keywords__'
-
         matches = []
         results = []
+        context = detect_robot_context(code, cursor_pos)
         if needle.rstrip():
             results = self.robot_catalog['index'].search(normalize(needle))
         for result in results:
@@ -191,9 +174,9 @@ class RobotKernel(Kernel):
             elif not needle.count('.'):
                 keyword = self.robot_catalog['keywords'][ref].name
                 if keyword not in matches:
-                    matches.append(title(keyword))
+                    matches.append(readable_keyword(keyword))
             else:
-                matches.append(title(ref))
+                matches.append(readable_keyword(ref))
 
         return {
             'matches': matches,
@@ -228,9 +211,13 @@ class RobotKernel(Kernel):
             if needle not in [keyword.name.lower(), result['ref'].lower()]:
                 continue
             if keyword.doc:
+                doc = f'*{keyword.name}*'
+                if keyword.args:
+                    doc += ' ' + ', '.join(keyword.args)
+                doc += '\n\n' + keyword.doc
                 reply_content['found'] = True
-                self.robot_inspect_data['text/plain'] = keyword.doc
-                self.robot_inspect_data['text/html'] = DOC_TO_HTML(keyword.doc)
+                self.robot_inspect_data['text/plain'] = doc
+                self.robot_inspect_data['text/html'] = DOC_TO_HTML(doc)
             else:
                 reply_content['found'] = True
                 self.robot_inspect_data = {}
@@ -293,9 +280,8 @@ class RobotKernel(Kernel):
             }
 
         # Update catalog
-        RobotKeywordsIndexerListener(self.robot_catalog)._resource_import(
-            data.keywords,
-        )
+        keywords_indexer = RobotKeywordsIndexerListener(self.robot_catalog)
+        keywords_indexer._import_from_suite_data(data)
 
         # Build
         builder = TestSuiteBuilder()

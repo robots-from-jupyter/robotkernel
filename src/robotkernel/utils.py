@@ -50,3 +50,33 @@ def lunr_builder(ref, fields):
     for field in fields:
         builder.field(field)
     return builder
+
+
+def readable_keyword(s):
+    """Return keyword with only the first letter in title case
+    """
+    if s and not s.startswith('*'):
+        if s.count('.'):
+            library, name = s.rsplit('.', 1)
+            return library + '.' + name[0].title() + name[1:].lower()
+        else:
+            return s[0].title() + s[1:].lower()
+    else:
+        return s
+
+
+def detect_robot_context(code, cursor_pos):
+    """Return robot code context in cursor position"""
+    code = code[:cursor_pos]
+    line = code.rsplit('\n')[-1]
+    context_parts = code.rsplit('***', 2)
+    if len(context_parts) != 3 or line.lstrip() == line:
+        return '__root__'
+    else:
+        context_name = context_parts[1].strip().lower()
+        if context_name == 'settings':
+            return '__settings__'
+        elif context_name in ['tasks', 'test cases']:
+            return '__tasks__'
+        elif context_name == 'keywords':
+            return '__keywords__'
