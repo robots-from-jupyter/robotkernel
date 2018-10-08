@@ -104,10 +104,9 @@ def get_keyword_doc(keyword):
         doc += ' ' + ', '.join(keyword.args)
     if keyword.doc:
         if isinstance(keyword.doc, Documentation):
-            doc += '\n\n' + keyword.doc.value
+            doc += '\n\n' + keyword.doc.value.replace('\\n', '\n')
         else:
             doc += '\n\n' + keyword.doc
-
     return {
         'text/plain': doc,
         'text/html': NAME_REGEXP.
