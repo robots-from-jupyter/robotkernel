@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.1 (unreleased)
+0.5.1 (2018-10-08)
 ------------------
 
 - Auto completion and keyword doc inspection enhancements
