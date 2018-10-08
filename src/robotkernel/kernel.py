@@ -50,6 +50,11 @@ CONTEXT_LIBRARIES = {
         map(
             KeywordDoc,
             [
+                '*** Settings ***',
+                '*** Variables ***',
+                '*** Test Cases ***',
+                '*** Tasks ***',
+                '*** Keywords ***',
                 'Library',
                 'Resource',
                 'Variables',
@@ -150,7 +155,7 @@ class RobotKernel(Kernel):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = re.split(r'\W{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
+        needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
         def normalize(s):
             return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
@@ -190,7 +195,7 @@ class RobotKernel(Kernel):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = re.split(r'\W{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
+        needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
         needle = needle.strip().lower()
 
         def normalize(s):

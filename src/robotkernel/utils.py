@@ -70,13 +70,17 @@ def detect_robot_context(code, cursor_pos):
     code = code[:cursor_pos]
     line = code.rsplit('\n')[-1]
     context_parts = code.rsplit('***', 2)
-    if len(context_parts) != 3 or line.lstrip() == line:
+    if len(context_parts) != 3:
         return '__root__'
     else:
         context_name = context_parts[1].strip().lower()
         if context_name == 'settings':
             return '__settings__'
+        elif line.lstrip() == line:
+            return '__root__'
         elif context_name in ['tasks', 'test cases']:
             return '__tasks__'
         elif context_name == 'keywords':
             return '__keywords__'
+        else:
+            return '__root__'

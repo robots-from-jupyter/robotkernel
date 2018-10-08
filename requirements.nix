@@ -598,11 +598,10 @@ self: super: {
     };
   };
   "nbconvert" = super.buildPythonPackage {
-    name = "nbconvert-5.4.0";
+    name = "nbconvert-5.3.1";
     doCheck = false;
     propagatedBuildInputs = [
       self."bleach"
-      self."defusedxml"
       self."entrypoints"
       self."jinja2"
       self."jupyter-core"
@@ -614,8 +613,8 @@ self: super: {
       self."traitlets"
     ];
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/88/68/0417164f344ad702245424d8f998b5c99f1c6147ad1ad645a465ae932134/nbconvert-5.4.0.tar.gz";
-      sha256 = "01vqq099xk4mr6i27r9p4grkfwvbmw2575yva29am4i5jygp98m8";
+      url = "https://files.pythonhosted.org/packages/b9/a4/d0a0938ad6f5eeb4dea4e73d255c617ef94b0b2849d51194c9bbdb838412/nbconvert-5.3.1.tar.gz";
+      sha256 = "1f9dkvpx186xjm4xab0qbph588mncp4vqk3fmxrsnqs43mks9c8j";
     };
   };
   "nbformat" = super.buildPythonPackage {
@@ -630,6 +629,22 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/6e/0e/160754f7ae3e984863f585a3743b0ed1702043a81245907c8fae2d537155/nbformat-4.4.0.tar.gz";
       sha256 = "00nlf08h8yc4q73nphfvfhxrcnilaqanb8z0mdy6nxk0vzq4wjgp";
+    };
+  };
+  "nbsphinx" = super.buildPythonPackage {
+    name = "nbsphinx-0.3.5";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."docutils"
+      self."jinja2"
+      self."nbconvert"
+      self."nbformat"
+      self."sphinx"
+      self."traitlets"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/3a/2b/9f73582f546c5b2dd37c43f6bd496ca356dc0e480919459fe64575538779/nbsphinx-0.3.5.tar.gz";
+      sha256 = "06j7b60jiczjr1bh3va885rywx4jj79pc6cpk2mnjgx9ipvfga9i";
     };
   };
   "notebook" = super.buildPythonPackage {
