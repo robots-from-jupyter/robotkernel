@@ -6,5 +6,5 @@ robotframework-selenium2screenshots==0.8.1
 robotframework-seleniumlibrary==3.2.0
 robotframework==3.1a2
 selenium==3.14.1
-urllib==1.22
+urllib3==1.22
 requests==2.18.4
