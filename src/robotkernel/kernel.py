@@ -5,7 +5,6 @@ from ipykernel.kernelbase import Kernel
 from IPython.utils.tempdir import TemporaryDirectory
 from IPython.utils.tokenutil import line_at_cursor
 from PIL import Image
-from robot.libdocpkg.htmlwriter import DocToHtml
 from robot.libdocpkg.model import KeywordDoc
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
@@ -17,10 +16,12 @@ from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
 from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
+from robotkernel.utils import get_keyword_doc
 from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
 from robotkernel.utils import readable_keyword
+from robotkernel.utils import scored_results
 from traceback import format_exc
 
 import base64
@@ -103,8 +104,6 @@ CONTEXT_LIBRARIES = {
     ),
 }
 
-DOC_TO_HTML = DocToHtml('ROBOT')
-
 
 # noinspection PyAbstractClass
 class RobotKernel(Kernel):
@@ -158,15 +157,14 @@ class RobotKernel(Kernel):
         needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
         def normalize(s):
-            return ('*' + re.sub(r'([:*])', r'\\\1', s, re.U) +
-                    '*').rstrip().lower()
+            return (re.sub(r'([:*])', r'\\\1', s, re.U) + '*').rstrip().lower()
 
         matches = []
         results = []
         context = detect_robot_context(code, cursor_pos)
         if needle.rstrip():
             results = self.robot_catalog['index'].search(normalize(needle))
-        for result in results:
+        for result in scored_results(needle, results):
             ref = result['ref']
             if ref.startswith('__') and not ref.startswith(context):
                 continue
@@ -215,17 +213,8 @@ class RobotKernel(Kernel):
             keyword = self.robot_catalog['keywords'][result['ref']]
             if needle not in [keyword.name.lower(), result['ref'].lower()]:
                 continue
-            if keyword.doc:
-                doc = f'*{keyword.name}*'
-                if keyword.args:
-                    doc += ' ' + ', '.join(keyword.args)
-                doc += '\n\n' + keyword.doc
-                reply_content['found'] = True
-                self.robot_inspect_data['text/plain'] = doc
-                self.robot_inspect_data['text/html'] = DOC_TO_HTML(doc)
-            else:
-                reply_content['found'] = True
-                self.robot_inspect_data = {}
+            self.robot_inspect_data.update(get_keyword_doc(keyword))
+            reply_content['found'] = True
             break
 
         return reply_content

@@ -1,13 +1,22 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+from difflib import SequenceMatcher
 from lunr.builder import Builder
 from lunr.stemmer import stemmer
 from lunr.stop_word_filter import stop_word_filter
 from lunr.trimmer import trimmer
+from operator import itemgetter
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
+from robot.libdocpkg.htmlwriter import DocToHtml
+from robot.parsing.settings import Documentation
 
 import base64
 import pygments
+import re
+
+
+DOC_TO_HTML = DocToHtml('ROBOT')
 
 
 def javascript_uri(html):
@@ -55,7 +64,7 @@ def lunr_builder(ref, fields):
 def readable_keyword(s):
     """Return keyword with only the first letter in title case
     """
-    if s and not s.startswith('*'):
+    if s and not s.startswith('*') and not s.startswith('['):
         if s.count('.'):
             library, name = s.rsplit('.', 1)
             return library + '.' + name[0].title() + name[1:].lower()
@@ -84,3 +93,33 @@ def detect_robot_context(code, cursor_pos):
             return '__keywords__'
         else:
             return '__root__'
+
+
+NAME_REGEXP = re.compile('`(.+?)`')
+
+
+def get_keyword_doc(keyword):
+    doc = f'*{keyword.name}*'
+    if keyword.args:
+        doc += ' ' + ', '.join(keyword.args)
+    if keyword.doc:
+        if isinstance(keyword.doc, Documentation):
+            doc += '\n\n' + keyword.doc.value
+        else:
+            doc += '\n\n' + keyword.doc
+
+    return {
+        'text/plain': doc,
+        'text/html': NAME_REGEXP.
+        sub(lambda m: f'<code>{m.group(1)}</code>', DOC_TO_HTML(doc)),
+    }
+
+
+def scored_results(needle, results):
+    results = deepcopy(results)
+    for result in results:
+        match = SequenceMatcher(
+            None, needle.lower(), result['ref'].lower(), autojunk=False
+        ).find_longest_match(0, len(needle), 0, len(result['ref']))
+        result['score'] = (match.size, match.size / float(len(result['ref'])))
+    return list(reversed(sorted(results, key=itemgetter('score'))))
