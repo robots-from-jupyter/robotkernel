@@ -46,6 +46,7 @@ let self = rec {
           robotkernel.build
           RESTinstance
           robotframework-debuglibrary
+          robotframework-faker
           robotframework-seleniumlibrary
           robotframework-selenium2library
           robotframework-selenium2screenshots

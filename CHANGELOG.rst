@@ -4,8 +4,9 @@ Changelog
 0.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add auto-completion, keyword doc inspection and support for
+  replacing and deleting cell history on Jupyter lab
+  [datakurre]
 
 0.4.0 (2018-09-26)
 ------------------
