@@ -53,56 +53,7 @@ After execution with errors, to get a notebook with execution logs saved, an ext
 
    $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute example.ipynb
 
+.. toctree::
+   :maxdepth: 2
 
-Nix-shell (https://nixos.org/nix/)
-----------------------------------
-
-.. code:: bash
-
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
-
-.. code:: bash
-
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter lab"
-
-Add ``--arg sikuli true`` to include SikuliLibrary_.
-
-Add ``--arg vim true`` to enable `vim bindings`_.
-
-.. _SikuliLibrary: https://github.com/rainmanwy/robotframework-SikuliLibrary
-.. _vim bindings: https://github.com/lambdalisue/jupyter-vim-binding
-
-
-Local installation and development
-----------------------------------
-
-See also: http://jupyter.readthedocs.io/en/latest/install.html
-
-Create and activate clean Python virtual environment::
-
-    $ venv myenv
-    $ source myenv/bin/activate
-
-Install Jupyter::
-
-    $ pip install --upgrade pip setuptools
-    $ pip install jupyter
-
-Clone this kernel::
-
-    $ git clone https://github.com/datakurre/robotkernel.git
-    $ cd robotkernel
-
-Install the kernel into virtualenv in develop mode::
-
-    $ python setup.py develop
-
-Install the kernel into jupyter::
-
-    $ python -m robotkernel.install
-
-Launch the jupyter::
-
-    $ jupyter notebook
-
-Reloading the kernel reloads the code.
+   example.ipynb

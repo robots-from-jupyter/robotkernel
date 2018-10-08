@@ -15,4 +15,7 @@ setup {
   propagatedBuildInputs = with pkgs; [
     geckodriver
   ];
+  buildInputs = [
+    pkgs.pandoc
+  ];
 }

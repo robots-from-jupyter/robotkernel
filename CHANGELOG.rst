@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.4.1 (unreleased)
+0.5.0 (2018-10-08)
 ------------------
 
 - Add auto-completion, keyword doc inspection and support for
