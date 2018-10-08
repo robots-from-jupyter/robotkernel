@@ -1,5 +1,6 @@
 graft src/robotkernel
 graft pkgs
+graft docs
 recursive-include src *.js
 include LICENSE *.rst *.nix
 exclude Makefile Dockerfile requirements.txt *.ipynb
