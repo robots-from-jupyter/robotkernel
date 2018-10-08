@@ -4,8 +4,8 @@ Changelog
 0.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Auto completion and keyword doc inspection enhancements
+  [datakurre]
 
 0.5.0 (2018-10-08)
 ------------------
