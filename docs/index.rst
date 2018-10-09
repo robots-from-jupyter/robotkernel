@@ -53,8 +53,8 @@ For JupyterLab you should also install the companion syntax highlighting:
    !jupyter labextension install jupyterlab_robotmode
 
 
-Exporting robot files
----------------------
+Export robot files
+------------------
 
 It is possible to export test suites direclty from Jupyter Notebook or JupyterLab user interface (into traditional ``.robot`` files), but also from command line:
 
@@ -63,8 +63,8 @@ It is possible to export test suites direclty from Jupyter Notebook or JupyterLa
    $ jupyter nbconvert --to script example.ipynb
 
 
-Executing notebooks
--------------------
+Execute notebooks
+-----------------
 
 In addition, it is also possible to execute notebooks as such, resulting into a new notebook with embedded execution logs and reports:
 
