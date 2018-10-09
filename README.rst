@@ -53,7 +53,7 @@ For JupyterLab you should also install the companion syntax highlighting:
    !jupyter labextension install jupyterlab_robotmode
 
 
-Exporting test suites
+Exporting robot files
 ---------------------
 
 It is possible to export test suites direclty from Jupyter Notebook or JupyterLab user interface (into traditional ``.robot`` files), but also from command line:
