@@ -14,8 +14,9 @@ setup {
   src = ./.;
   propagatedBuildInputs = with pkgs; [
     geckodriver
+    firefox
   ];
-  buildInputs = [
-    pkgs.pandoc
+  buildInputs = with pkgs; [
+    pandoc  # requierd by nbsphinx
   ];
 }

@@ -118,7 +118,10 @@ def scored_results(needle, results):
     results = deepcopy(results)
     for result in results:
         match = SequenceMatcher(
-            None, needle.lower(), result['ref'].lower(), autojunk=False
+            None,
+            needle.lower(),
+            result['ref'].lower(),
+            autojunk=False,
         ).find_longest_match(0, len(needle), 0, len(result['ref']))
         result['score'] = (match.size, match.size / float(len(result['ref'])))
     return list(reversed(sorted(results, key=itemgetter('score'))))
