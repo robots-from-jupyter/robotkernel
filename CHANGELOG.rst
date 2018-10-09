@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.4 (unreleased)
+0.5.4 (2018-10-09)
 ------------------
 
 - Fix issue where single term keywords got no completions
