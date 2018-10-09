@@ -157,7 +157,8 @@ class RobotKernel(Kernel):
         needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
         def normalize(s):
-            return (re.sub(r'([:*])', r'\\\1', s, re.U) + '*').rstrip().lower()
+            normalized = re.sub(r'([:*])', r'\\\1', s, re.U).strip().lower()
+            return f'*{normalized}*'
 
         matches = []
         results = []
