@@ -1,45 +1,72 @@
-Robot Framework kernel for Jupyter notebooks
-============================================
+Robotkernel
+===========
 
-Robot Framework language support for Jupyter notebooks.
+`Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_.
 
 Requires Python 3.6 or later.
 
 Log | Report -links on existing notebooks are only active on trusted notebooks.
 
-Try Robot Framework kernel at Binder
-------------------------------------
+.. _Robot Framework: http://robotframework.org/
+.. _IPython: https://ipython.org/
+.. _Jupyter Notebook: https://jupyter.readthedocs.io/en/latest/
+.. _JupyterLab: https://jupyterlab.readthedocs.io/en/stable/
+
+
+Try Robotkernel at Binder
+-------------------------
 
 Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=tree/example.ipynb
 
-Jupyter Lab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
+JupyterLab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
 
 
-Install Robot Framework kernel
-------------------------------
+Install Robotkernel kernel
+--------------------------
 
 .. code:: bash
 
    $ pip install robotkernel
    $ python -m robotkernel.install
 
+For JupyterLab you should also install the companion syntax highlighting:
 
-Install Robot Framework kernel from Python 3 notebook
------------------------------------------------------
+.. code:: bash
+
+   $ jupyter labextension install jupyterlab_robotmode
+
+
+Install Robotkernel from Python 3 notebook
+------------------------------------------
 
 .. code:: bash
 
    !pip install robotkernel
    !python -m robotkernel.install
 
-After refreshing the notebook, it is possible change the kernel to Robot
-Framework kernel or create a new notebook with Robot Framework kernel.
+After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
+
+For JupyterLab you should also install the companion syntax highlighting:
+
+.. code:: bash
+
+   !jupyter labextension install jupyterlab_robotmode
+
+
+Exporting test suites
+---------------------
+
+It is possible to export test suites direclty from Jupyter Notebook or JupyterLab user interface (into traditional ``.robot`` files), but also from command line:
+
+.. code:: bash
+
+   $ jupyter nbconvert --to script example.ipynb
 
 
 Executing notebooks
 -------------------
 
-It is possible to export test suites from Jupyter Notebook or Lab user interface (into traditional ``.robot`` files), but it is also possible to execute saved Jupyter notebook as such:
+In addition, it is also possible to execute notebooks as such, resulting into a new notebook with embedded execution logs and reports:
 
 .. code:: bash
 
@@ -47,30 +74,17 @@ It is possible to export test suites from Jupyter Notebook or Lab user interface
 
 This will stop the execution at first failing test case.
 
-After execution with errors, to get a notebook with execution logs saved, an extra flag ``--ExecutePreprocessor.allow_errors=True`` must be set:
+When execution with errors, to also get a result notebook with execution logs saved, an extra flag ``--ExecutePreprocessor.allow_errors=True`` must be set:
 
 .. code:: bash
 
    $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute example.ipynb
 
+This `may change`__ in future versions of nbconvert.
 
-Nix-shell (https://nixos.org/nix/)
-----------------------------------
+__ https://github.com/jupyter/nbconvert/issues/626
 
-.. code:: bash
-
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
-
-.. code:: bash
-
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter lab"
-
-Add ``--arg sikuli true`` to include SikuliLibrary_.
-
-Add ``--arg vim true`` to enable `vim bindings`_.
-
-.. _SikuliLibrary: https://github.com/rainmanwy/robotframework-SikuliLibrary
-.. _vim bindings: https://github.com/lambdalisue/jupyter-vim-binding
+Note that when executing a notebook, each cell with tests cases or tasks will be executed as its own suite. It might be more efficient to export notebook into a robot script and execute that with the traditional robot runner.
 
 
 Local installation and development
@@ -106,3 +120,38 @@ Launch the jupyter::
     $ jupyter notebook
 
 Reloading the kernel reloads the code.
+
+
+Nix-shell (https://nixos.org/nix/)
+----------------------------------
+
+This repository includes opinionated instructions for running and developing Robotkernel with Nix for Jupyter Notebook:
+
+.. code:: bash
+
+   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
+
+And for Jupyter Lab:
+
+.. code:: bash
+
+   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")'
+   $ jupyter labextension install jupyterlab_robotmode --app-dir=.jupyterlab
+   $ jupyter lab --app-dir=.jupyterlab
+   $ exit
+
+Add ``--arg sikuli true`` to include SikuliLibrary_.
+
+Add ``--arg vim true`` to enable `vim bindings`_.
+
+.. _SikuliLibrary: https://github.com/rainmanwy/robotframework-SikuliLibrary
+.. _vim bindings: https://github.com/lambdalisue/jupyter-vim-binding
+
+Development environment with Nix:
+
+.. code:: bash
+
+    $ git clone https://github.com/datakurre/robotkernel.git
+    $ cd robotkernel
+    $ nix-build setup.nix -A env  # to generate ./result/bin/python for IDE
+    $ nix-shell setup.nix -A develop
