@@ -21,8 +21,8 @@ Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpat
 JupyterLab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
 
 
-Install Robotkernel kernel
---------------------------
+Install Robotkernel
+-------------------
 
 .. code:: bash
 
