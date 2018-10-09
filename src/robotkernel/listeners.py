@@ -19,12 +19,19 @@ class RobotKeywordsIndexerListener:
             self.catalog['libraries'].append(alias)
             try:
                 lib_doc = LibraryDocumentation(name)
-                self._library_import(lib_doc.keywords, alias)
+                self._library_import(lib_doc, alias)
             except DataError:
                 pass
 
-    def _library_import(self, keywords, alias):
+    def _library_import(self, lib_doc, alias):
+        if isinstance(lib_doc, list):
+            keywords = lib_doc
+            doc_format = 'REST'
+        else:
+            keywords = lib_doc.keywords
+            doc_format = lib_doc.doc_format
         for keyword in keywords:
+            keyword.doc_format = doc_format
             self.catalog['builder'].add({
                 'name': keyword.name,
                 'dottedname': f'{alias}.{keyword.name}',
@@ -45,6 +52,7 @@ class RobotKeywordsIndexerListener:
 
     def _resource_import(self, keywords):
         for keyword in keywords:
+            keyword.doc_format = 'REST'
             self.catalog['builder'].add({
                 'name': keyword.name,
                 'dottedname': keyword.name,

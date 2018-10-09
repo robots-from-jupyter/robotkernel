@@ -16,9 +16,6 @@ import pygments
 import re
 
 
-DOC_TO_HTML = DocToHtml('ROBOT')
-
-
 def javascript_uri(html):
     """Because data-uri for text/html is not supported by IE"""
     if isinstance(html, str):
@@ -99,18 +96,23 @@ NAME_REGEXP = re.compile('`(.+?)`')
 
 
 def get_keyword_doc(keyword):
-    doc = f'*{keyword.name}*'
+    title = keyword.name.strip('*').strip()
+    title_html = f'<strong>{title}</strong>'
     if keyword.args:
-        doc += ' ' + ', '.join(keyword.args)
+        title += ' ' + ', '.join(keyword.args)
+        title_html += ' ' + ', '.join(keyword.args)
+    body = ''
     if keyword.doc:
         if isinstance(keyword.doc, Documentation):
-            doc += '\n\n' + keyword.doc.value.replace('\\n', '\n')
+            body = '\n\n' + keyword.doc.value.replace('\\n', '\n')
         else:
-            doc += '\n\n' + keyword.doc
+            body = '\n\n' + keyword.doc
     return {
-        'text/plain': doc,
-        'text/html': NAME_REGEXP.
-        sub(lambda m: f'<code>{m.group(1)}</code>', DOC_TO_HTML(doc)),
+        'text/plain': title + '\n\n' + body,
+        'text/html': f'<p>{title_html}</p>' + NAME_REGEXP.sub(
+            lambda m: f'<code>{m.group(1)}</code>',
+            DocToHtml(keyword.doc_format)(body),
+        ),
     }
 
 
@@ -125,3 +127,9 @@ def scored_results(needle, results):
         ).find_longest_match(0, len(needle), 0, len(result['ref']))
         result['score'] = (match.size, match.size / float(len(result['ref'])))
     return list(reversed(sorted(results, key=itemgetter('score'))))
+
+
+def lunr_query(query):
+    query = re.sub(r'([:*])', r'\\\1', query, re.U)
+    query = re.sub(r'[\[\]]', r'', query, re.U)
+    return f'*{query.strip().lower()}*'

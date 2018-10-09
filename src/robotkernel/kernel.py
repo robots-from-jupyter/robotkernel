@@ -5,10 +5,10 @@ from ipykernel.kernelbase import Kernel
 from IPython.utils.tempdir import TemporaryDirectory
 from IPython.utils.tokenutil import line_at_cursor
 from PIL import Image
-from robot.libdocpkg.model import KeywordDoc
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robotkernel import __version__
+from robotkernel.constants import CONTEXT_LIBRARIES
 from robotkernel.listeners import ReturnValueListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
@@ -20,6 +20,7 @@ from robotkernel.utils import get_keyword_doc
 from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
+from robotkernel.utils import lunr_query
 from robotkernel.utils import readable_keyword
 from robotkernel.utils import scored_results
 from traceback import format_exc
@@ -32,77 +33,6 @@ import robot
 import sys
 import types
 import uuid
-
-
-CONTEXT_LIBRARIES = {
-    '__root__': list(
-        map(
-            KeywordDoc,
-            [
-                '*** Settings ***',
-                '*** Variables ***',
-                '*** Test Cases ***',
-                '*** Tasks ***',
-                '*** Keywords ***',
-            ],
-        ),
-    ),
-    '__settings__': list(
-        map(
-            KeywordDoc,
-            [
-                '*** Settings ***',
-                '*** Variables ***',
-                '*** Test Cases ***',
-                '*** Tasks ***',
-                '*** Keywords ***',
-                'Library',
-                'Resource',
-                'Variables',
-                'Documentation',
-                'Metadata',
-                'Suite Setup',
-                'Suite Teardown',
-                'Test Setup',
-                'Test Teardown',
-                'Test Template',
-                'Test Timeout',
-                'Task Setup',
-                'Task Teardown',
-                'Task Template',
-                'Task Timeout',
-                'Force Tags',
-                'Default Tags',
-            ],
-        ),
-    ),
-    '__tasks__': list(
-        map(
-            KeywordDoc,
-            [
-                '[Documentation]',
-                '[Tags]',
-                '[Setup]',
-                '[Teardown]',
-                '[Template]',
-                '[Timeout]',
-            ],
-        ),
-    ),
-    '__keywords__': list(
-        map(
-            KeywordDoc,
-            [
-                '[Documentation]',
-                '[Tags]',
-                '[Arguments]',
-                '[Return]',
-                '[Teardown]',
-                '[Timeout]',
-            ],
-        ),
-    ),
-}
 
 
 # noinspection PyAbstractClass
@@ -156,15 +86,13 @@ class RobotKernel(Kernel):
         line_cursor = cursor_pos - offset
         needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
-        def normalize(s):
-            normalized = re.sub(r'([:*])', r'\\\1', s, re.U).strip().lower()
-            return f'*{normalized}*'
-
         matches = []
         results = []
         context = detect_robot_context(code, cursor_pos)
         if needle.rstrip():
-            results = self.robot_catalog['index'].search(normalize(needle))
+            query = lunr_query(needle)
+            results = self.robot_catalog['index'].search(query)
+            results += self.robot_catalog['index'].search(query.strip('*'))
         for result in scored_results(needle, results):
             ref = result['ref']
             if ref.startswith('__') and not ref.startswith(context):
@@ -197,9 +125,6 @@ class RobotKernel(Kernel):
         needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
         needle = needle.strip().lower()
 
-        def normalize(s):
-            return re.sub(r'([:*])', r'\\\1', s, re.U)
-
         reply_content = {
             'status': 'ok',
             'data': self.robot_inspect_data,
@@ -209,7 +134,9 @@ class RobotKernel(Kernel):
 
         results = []
         if needle:
-            results = self.robot_catalog['index'].search(normalize(needle))
+            query = lunr_query(needle)
+            results = self.robot_catalog['index'].search(query)
+            results += self.robot_catalog['index'].search(query.strip('*'))
         for result in results:
             keyword = self.robot_catalog['keywords'][result['ref']]
             if needle not in [keyword.name.lower(), result['ref'].lower()]:
