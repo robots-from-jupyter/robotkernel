@@ -4,8 +4,8 @@ Changelog
 0.5.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix issue where single term keywords got no completions
+  [datakurre]
 
 0.5.3 (2018-10-09)
 ------------------
