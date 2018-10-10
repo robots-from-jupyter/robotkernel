@@ -14,6 +14,8 @@ from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
 from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
+from robotkernel.selectors import get_selector_completions
+from robotkernel.selectors import is_webdriver_selector
 from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
@@ -89,7 +91,13 @@ class RobotKernel(Kernel):
         matches = []
         results = []
         context = detect_robot_context(code, cursor_pos)
-        if needle.rstrip():
+        if is_webdriver_selector(needle):
+            for driver in self.robot_webdrivers:
+                if driver['current']:
+                    driver = driver['instance']
+                    matches = get_selector_completions(needle.rstrip(), driver)
+                    break
+        elif needle.rstrip():
             query = lunr_query(needle)
             results = self.robot_catalog['index'].search(query)
             results += self.robot_catalog['index'].search(query.strip('*'))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from robot.libdocpkg.model import KeywordDoc
 
+
 CONTEXT_LIBRARIES = {
     '__root__': list(
         map(
