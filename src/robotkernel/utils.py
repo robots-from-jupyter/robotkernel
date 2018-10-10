@@ -133,3 +133,29 @@ def lunr_query(query):
     query = re.sub(r'([:*])', r'\\\1', query, re.U)
     query = re.sub(r'[\[\]]', r'', query, re.U)
     return f'*{query.strip().lower()}*'
+
+
+def get_lunr_completions(needle, index, keywords, context):
+    matches = []
+    results = []
+    if needle.rstrip():
+        query = lunr_query(needle)
+        results = index.search(query)
+        results += index.search(query.strip('*'))
+    for result in scored_results(needle, results):
+        ref = result['ref']
+        if ref.startswith('__') and not ref.startswith(context):
+            continue
+        elif not ref.startswith(context) and context not in [
+                '__tasks__',
+                '__keywords__',
+                '__settings__',
+        ]:
+            continue
+        elif not needle.count('.'):
+            keyword = keywords[ref].name
+            if keyword not in matches:
+                matches.append(readable_keyword(keyword))
+        else:
+            matches.append(readable_keyword(ref))
+    return matches

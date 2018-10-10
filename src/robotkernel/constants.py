@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+import re
 from robot.libdocpkg.model import KeywordDoc
 
+VARIABLE_REGEXP = re.compile(r'[$@&%]\{[\w\s]+\}')
 
 CONTEXT_LIBRARIES = {
     '__root__': list(

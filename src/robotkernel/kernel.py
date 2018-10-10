@@ -9,6 +9,7 @@ from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robotkernel import __version__
 from robotkernel.constants import CONTEXT_LIBRARIES
+from robotkernel.constants import VARIABLE_REGEXP
 from robotkernel.listeners import ReturnValueListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
@@ -19,11 +20,11 @@ from robotkernel.selectors import is_webdriver_selector
 from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
+from robotkernel.utils import get_lunr_completions
 from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
 from robotkernel.utils import lunr_query
-from robotkernel.utils import readable_keyword
 from robotkernel.utils import scored_results
 from traceback import format_exc
 
@@ -59,6 +60,7 @@ class RobotKernel(Kernel):
         self.robot_history = OrderedDict()
         self.robot_cell_id = None  # current cell id from init_metadata
         self.robot_inspect_data = {}
+        self.robot_variables = []
 
         # Persistent storage for selenium library webdrivers
         self.robot_webdrivers = []
@@ -78,6 +80,7 @@ class RobotKernel(Kernel):
 
     def do_shutdown(self, restart):
         self.robot_history = OrderedDict()
+        self.robot_variables = []
         for driver in self.robot_webdrivers:
             driver['instance'].quit()
         self.robot_webdrivers = []
@@ -88,35 +91,34 @@ class RobotKernel(Kernel):
         line_cursor = cursor_pos - offset
         needle = re.split(r'\s{2,}|\t| \| ', line[:line_cursor])[-1].lstrip()
 
-        matches = []
-        results = []
-        context = detect_robot_context(code, cursor_pos)
-        if is_webdriver_selector(needle):
+        if needle and needle[0] in '$@&%':  # is variable completion
+            matches = [
+                m['ref'] for m in scored_results(
+                    needle,
+                    [
+                        dict(ref=v) for v in
+                        (self.robot_variables + VARIABLE_REGEXP.findall(code))
+                    ],
+                ) if needle.lower() in m['ref'].lower()
+            ]
+            if len(line) >= line_cursor and line[line_cursor] == '}':
+                cursor_pos += 1
+                needle += '}'
+        elif is_webdriver_selector(needle):
+            matches = []
             for driver in self.robot_webdrivers:
                 if driver['current']:
                     driver = driver['instance']
                     matches = get_selector_completions(needle.rstrip(), driver)
                     break
-        elif needle.rstrip():
-            query = lunr_query(needle)
-            results = self.robot_catalog['index'].search(query)
-            results += self.robot_catalog['index'].search(query.strip('*'))
-        for result in scored_results(needle, results):
-            ref = result['ref']
-            if ref.startswith('__') and not ref.startswith(context):
-                continue
-            elif not ref.startswith(context) and context not in [
-                    '__tasks__',
-                    '__keywords__',
-                    '__settings__',
-            ]:
-                continue
-            elif not needle.count('.'):
-                keyword = self.robot_catalog['keywords'][ref].name
-                if keyword not in matches:
-                    matches.append(readable_keyword(keyword))
-            else:
-                matches.append(readable_keyword(ref))
+        else:
+            context = detect_robot_context(code, cursor_pos)
+            matches = get_lunr_completions(
+                needle,
+                self.robot_catalog['index'],
+                self.robot_catalog['keywords'],
+                context,
+            )
 
         return {
             'matches': matches,
@@ -191,10 +193,17 @@ class RobotKernel(Kernel):
         # Populate
         data = TestCaseString()
         try:
+            self.robot_variables = []
             for historical in self.robot_history.values():
                 data.populate(historical)
+                self.robot_variables.extend(
+                    VARIABLE_REGEXP.findall(historical, re.U & re.M),
+                )
             data.testcase_table.tests.clear()
             data.populate(code)
+            self.robot_variables.extend(
+                VARIABLE_REGEXP.findall(code, re.U & re.M),
+            )
         except Exception as e:
             if not silent:
                 self.send_error({
