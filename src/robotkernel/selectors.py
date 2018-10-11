@@ -37,7 +37,21 @@ def is_webdriver_selector(needle):
 
 def get_selector_completions(needle, driver):
     try:
-        return _get_selector_completions(needle, driver)
+        results = _get_selector_completions(needle, driver)
+        for completion, element in results[:5]:
+            start = 'outline:10px solid red;transition:outline ease-in-out 0s;'
+            end = 'outline:10px solid transparent;transition:outline ease-in-out 1s;'  # noqa: E501
+            style = element.get_attribute('style') or ''
+            style = style and style.split(end)[0] + ';' or ''
+            driver.execute_script(
+                f'arguments[0].style="{style}{start}";',
+                element,
+            )
+            driver.execute_script(
+                f'arguments[0].style="{style}{end}";',
+                element,
+            )
+        return [r[0] for r in results]
     except WebDriverException as e:
         return ['Exception (press esc to clear):', str(e)]
 
@@ -68,7 +82,7 @@ def get_id_selector_completions(needle, driver):
         results = driver.find_elements_by_xpath('//*[@id]')
     for result in results:
         id_ = result.get_attribute('id')
-        matches.append(f'id:{id_}')
+        matches.append((f'id:{id_}', result))
     return matches
 
 
@@ -81,7 +95,7 @@ def get_name_selector_completions(needle, driver):
         results = driver.find_elements_by_xpath('//*[@name]')
     for result in results:
         name = result.get_attribute('name')
-        matches.append(f'name:{name}')
+        matches.append((f'name:{name}', result))
     return matches
 
 
@@ -94,25 +108,27 @@ def get_css_selector_completions(needle, driver):
     for result in results:
         id_ = result.get_attribute('id')
         if id_:
-            matches.append(f'id:{id_}')
+            matches.append((f'id:{id_}', result))
             continue
         if result.tag_name in FORM_TAG_NAMES:
             name = result.get_attribute('name')
             if name:
-                matches.append(f'name:{name}')
+                matches.append((f'name:{name}', result))
                 continue
         class_ = result.get_attribute('class')
         if class_ and result.parent in results:
-            matches.append(
+            matches.append((
                 f'css:{needle} '
                 f'{result.tag_name}.{".".join(class_.split())}',
-            )
+                result,
+            ))
             continue
         elif class_:
-            matches.append(
+            matches.append((
                 f'css:'
                 f'{result.tag_name}.{".".join(class_.split())}',
-            )
+                result,
+            ))
     return matches
 
 
@@ -125,19 +141,20 @@ def get_tag_selector_completions(needle, driver):
     for result in results:
         id_ = result.get_attribute('id')
         if id_:
-            matches.append(f'id:{id_}')
+            matches.append((f'id:{id_}', result))
             continue
         if result.tag_name in FORM_TAG_NAMES:
             name = result.get_attribute('name')
             if name:
-                matches.append(f'name:{name}')
+                matches.append((f'name:{name}', result))
                 continue
         class_ = result.get_attribute('class')
         if class_:
-            matches.append(
+            matches.append((
                 f'css:{result.tag_name}'
                 f'.{".".join(class_.split())}',
-            )
+                result,
+            ))
             continue
     return matches
 
@@ -151,7 +168,7 @@ def get_link_selector_completions(needle, driver):
         results = driver.find_elements_by_xpath('//a')
     for result in results:
         if result.text:
-            matches.append(f'link:{result.text}')
+            matches.append((f'link:{result.text}', result))
     return matches
 
 
@@ -164,17 +181,18 @@ def get_xpath_selector_completions(needle, driver):
     for result in results:
         id_ = result.get_attribute('id')
         if id_:
-            matches.append(f'id:{id_}')
+            matches.append((f'id:{id_}', result))
             continue
         if result.tag_name in FORM_TAG_NAMES:
             name = result.get_attribute('name')
             if name:
-                matches.append(f'name:{name}')
+                matches.append((f'name:{name}', result))
                 continue
         class_ = result.get_attribute('class')
         if class_:
-            matches.append(
+            matches.append((
                 f'css:{result.tag_name}'
                 f'.{".".join(class_.split())}',
-            )
+                result,
+            ))
     return matches
