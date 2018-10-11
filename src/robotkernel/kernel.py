@@ -101,7 +101,7 @@ class RobotKernel(Kernel):
                     ],
                 ) if needle.lower() in m['ref'].lower()
             ]
-            if len(line) >= line_cursor and line[line_cursor] == '}':
+            if len(line) > line_cursor and line[line_cursor] == '}':
                 cursor_pos += 1
                 needle += '}'
         elif is_webdriver_selector(needle):
