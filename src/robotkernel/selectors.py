@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pkg_resources
 import re
 
 
@@ -30,27 +31,72 @@ IS_LINK_SELECTOR_NEEDLE = re.compile(
 IS_XPATH_SELECTOR_NEEDLE = re.compile(r'^xpath=|^xpath:')
 FORM_TAG_NAMES = ['input', 'textarea', 'select', 'button', 'datalist']
 
+SELECTOR_HIGHLIGHT_STYLE_SCRIPT = """
+(function() {
+  var node = document.createElement('style');
+  node.setAttribute('data-name', 'robotkernel');
+  node.innerHTML = '' +
+    '[data-robotkernel] {' +
+    'outline: 2px solid red !important;' +
+    'opacity: 1.0 !important;' +
+    '}';
+  document.head.appendChild(node);
+})();
+"""
+
 
 def is_webdriver_selector(needle):
     return bool(IS_SELECTOR_NEEDLE.match(needle))
 
 
+def get_element_highlight_script(results, old_elements):
+    script = ''
+    counter = 0
+    arguments = []
+    elements = [r[1] for r in results]
+    for element in old_elements:
+        if element not in elements:
+            script += (
+                f'arguments[{counter:d}].removeAttribute("data-robotkernel");'
+            )
+            arguments.append(element)
+            counter += 1
+    for completion, element in results:
+        if element not in old_elements:
+            script += (
+                f'arguments[{counter:d}].setAttribute('
+                f'"data-robotkernel", "{completion}");'
+            )
+            arguments.append(element)
+            counter += 1
+    return script, arguments
+
+
 def get_selector_completions(needle, driver):
     try:
+        # Inject supporting JS and CSS
+        styles = 'style[data-name="robotkernel"]'
+        if not driver.find_elements_by_css_selector(styles):
+            with pkg_resources.resource_stream(
+                    'robotkernel',
+                    'resources/simmerjs/simmer.js',
+            ) as fp:
+                driver.execute_script(
+                    fp.read().decode('utf-8') +
+                    SELECTOR_HIGHLIGHT_STYLE_SCRIPT,
+                )
+
+        # Get results
         results = _get_selector_completions(needle, driver)
-        for completion, element in results[:5]:
-            start = 'outline:10px solid red;transition:outline ease-in-out 0s;'
-            end = 'outline:10px solid transparent;transition:outline ease-in-out 1s;'  # noqa: E501
-            style = element.get_attribute('style') or ''
-            style = style and style.split(end)[0] + ';' or ''
-            driver.execute_script(
-                f'arguments[0].style="{style}{start}";',
-                element,
-            )
-            driver.execute_script(
-                f'arguments[0].style="{style}{end}";',
-                element,
-            )
+
+        # Highlight
+        script, arguments = get_element_highlight_script(
+            results,
+            driver.find_elements_by_css_selector('[data-robotkernel]'),
+        )
+        driver.execute_script(script, *arguments)
+
+        # Return
         return [r[0] for r in results]
     except WebDriverException as e:
         return ['Exception (press esc to clear):', str(e)]
@@ -73,14 +119,37 @@ def _get_selector_completions(needle, driver):
         return []
 
 
+def get_simmer_matches(elements, driver):
+    matches = []
+    if elements:
+        script = 'return ['
+        script += ', '.join([
+            f'window.Simmer(arguments[{idx:d}])'
+            for idx in range(len(elements))
+        ])
+        script += '];'
+        results = driver.execute_script(script, *elements)
+        for idx in range(len(results)):
+            if results[idx]:
+                matches.append((f'css:{results[idx]}', elements[idx]))
+    return matches
+
+
+def visible_or_all(results):
+    return list(filter(lambda e: e.is_displayed(), results)) or results
+
+
 def get_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(f'[id*="{needle}"')
+        results = (
+            driver.find_elements_by_css_selector(f'[id="{needle}"]')
+            or driver.find_elements_by_css_selector(f'[id*="{needle}"]')
+        )
     else:
         results = driver.find_elements_by_xpath('//*[@id]')
-    for result in results:
+    for result in visible_or_all(results):
         id_ = result.get_attribute('id')
         matches.append((f'id:{id_}', result))
     return matches
@@ -90,10 +159,13 @@ def get_name_selector_completions(needle, driver):
     needle = needle[5:]
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(f'[name*="{needle}"')
+        results = (
+            driver.find_elements_by_css_selector(f'[name="{needle}"]')
+            or driver.find_elements_by_css_selector(f'[name*="{needle}"]')
+        )
     else:
         results = driver.find_elements_by_xpath('//*[@name]')
-    for result in results:
+    for result in visible_or_all(results):
         name = result.get_attribute('name')
         matches.append((f'name:{name}', result))
     return matches
@@ -101,11 +173,33 @@ def get_name_selector_completions(needle, driver):
 
 def get_css_selector_completions(needle, driver):
     needle = needle[4:]
+    unresolved = []
     results = []
     matches = []
+    if not needle:
+        result = driver.execute_async_script(
+            """\
+  var node = document.getElementById('robotkernel-autoselect') ||
+             document.createElement('div');
+  node.callback = arguments[arguments.length - 1];
+  node.setAttribute('id', 'robotkernel-autoselect');
+  node.setAttribute('style', '' +
+    'position:fixed;z-index:99999;' +
+    'top:0;right:0;bottom:0;left:0;outline:2px dashed yellow;' +
+    'background:#000;opacity:0.25;cursor:crosshair;');
+  node.setAttribute('onClick', '' +
+    'this.parentNode.removeChild(this);' +
+    'this.callback(Simmer(' +
+    'document.elementFromPoint(event.clientX, event.clientY)' +
+    '));');
+  document.body.appendChild(node);
+        """,
+        )
+        if result:
+            needle = result
     if needle:
         results = driver.find_elements_by_css_selector(needle)
-    for result in results:
+    for result in visible_or_all(results):
         id_ = result.get_attribute('id')
         if id_:
             matches.append((f'id:{id_}', result))
@@ -115,30 +209,22 @@ def get_css_selector_completions(needle, driver):
             if name:
                 matches.append((f'name:{name}', result))
                 continue
-        class_ = result.get_attribute('class')
-        if class_ and result.parent in results:
-            matches.append((
-                f'css:{needle} '
-                f'{result.tag_name}.{".".join(class_.split())}',
-                result,
-            ))
+        if result.tag_name == 'a' and result.text:
+            matches.append((f'link:{result.text}', result))
             continue
-        elif class_:
-            matches.append((
-                f'css:'
-                f'{result.tag_name}.{".".join(class_.split())}',
-                result,
-            ))
+        unresolved.append(result)
+    matches.extend(get_simmer_matches(unresolved, driver))
     return matches
 
 
 def get_tag_selector_completions(needle, driver):
     needle = needle[4:]
+    unresolved = []
     results = []
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(f'{needle}')
-    for result in results:
+        results = driver.find_elements_by_css_selector(needle)
+    for result in visible_or_all(results):
         id_ = result.get_attribute('id')
         if id_:
             matches.append((f'id:{id_}', result))
@@ -148,14 +234,8 @@ def get_tag_selector_completions(needle, driver):
             if name:
                 matches.append((f'name:{name}', result))
                 continue
-        class_ = result.get_attribute('class')
-        if class_:
-            matches.append((
-                f'css:{result.tag_name}'
-                f'.{".".join(class_.split())}',
-                result,
-            ))
-            continue
+        unresolved.append(result)
+    matches.extend(get_simmer_matches(unresolved, driver))
     return matches
 
 
@@ -166,7 +246,7 @@ def get_link_selector_completions(needle, driver):
         results = driver.find_elements_by_partial_link_text(needle)
     else:
         results = driver.find_elements_by_xpath('//a')
-    for result in results:
+    for result in visible_or_all(results):
         if result.text:
             matches.append((f'link:{result.text}', result))
     return matches
@@ -176,9 +256,10 @@ def get_xpath_selector_completions(needle, driver):
     needle = needle[6:]
     results = []
     matches = []
+    unresolved = []
     if needle:
         results = driver.find_elements_by_xpath(needle)
-    for result in results:
+    for result in visible_or_all(results):
         id_ = result.get_attribute('id')
         if id_:
             matches.append((f'id:{id_}', result))
@@ -188,11 +269,6 @@ def get_xpath_selector_completions(needle, driver):
             if name:
                 matches.append((f'name:{name}', result))
                 continue
-        class_ = result.get_attribute('class')
-        if class_:
-            matches.append((
-                f'css:{result.tag_name}'
-                f'.{".".join(class_.split())}',
-                result,
-            ))
+        unresolved.append(result)
+    matches.extend(get_simmer_matches(unresolved, driver))
     return matches
