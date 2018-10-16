@@ -99,7 +99,7 @@ def get_selector_completions(needle, driver):
         if not driver.find_elements_by_css_selector(styles):
             with pkg_resources.resource_stream(
                     'robotkernel',
-                    'resources/simmerjs/simmer.js',
+                    'static/simmerjs/simmer.js',
             ) as fp:
                 driver.execute_script(
                     fp.read().decode('utf-8') +
