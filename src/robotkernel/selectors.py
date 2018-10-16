@@ -37,8 +37,19 @@ SELECTOR_HIGHLIGHT_STYLE_SCRIPT = """
   node.setAttribute('data-name', 'robotkernel');
   node.innerHTML = '' +
     '[data-robotkernel] {' +
-    'outline: 2px solid red !important;' +
-    'opacity: 1.0 !important;' +
+      'outline: 2px solid red !important;' +
+      'opacity: 1.0 !important;' +
+    '}' +
+    '#robotkernel-picker { ' +
+      'position: fixed;' +
+      'top: 0;' +
+      'right: 0;' +
+      'bottom: 0;' +
+      'left: 0;' +
+      'z-index: 99999;' +
+      'background: black;' +
+      'opacity: 0.25;' +
+      'cursor: crosshair;' +
     '}';
   document.head.appendChild(node);
 })();
@@ -70,6 +81,15 @@ def get_element_highlight_script(results, old_elements):
             arguments.append(element)
             counter += 1
     return script, arguments
+
+
+def clear_selector_highlights(driver):
+    script, arguments = get_element_highlight_script(
+        [],
+        driver.find_elements_by_css_selector('[data-robotkernel]'),
+    )
+    if script:
+        driver.execute_script(script, *arguments)
 
 
 def get_selector_completions(needle, driver):
@@ -179,20 +199,19 @@ def get_css_selector_completions(needle, driver):
     if not needle:
         result = driver.execute_async_script(
             """\
-  var node = document.getElementById('robotkernel-autoselect') ||
-             document.createElement('div');
-  node.callback = arguments[arguments.length - 1];
-  node.setAttribute('id', 'robotkernel-autoselect');
-  node.setAttribute('style', '' +
-    'position:fixed;z-index:99999;' +
-    'top:0;right:0;bottom:0;left:0;outline:2px dashed yellow;' +
-    'background:#000;opacity:0.25;cursor:crosshair;');
-  node.setAttribute('onClick', '' +
-    'this.parentNode.removeChild(this);' +
-    'this.callback(Simmer(' +
-    'document.elementFromPoint(event.clientX, event.clientY)' +
-    '));');
-  document.body.appendChild(node);
+var node = document.getElementById('robotkernel-picker') ||
+           document.createElement('div');
+node.callback = arguments[arguments.length - 1];
+node.setAttribute('id', 'robotkernel-picker');
+node.setAttribute('onClick',
+  'this.parentNode.removeChild(this);' +
+  'this.callback(' +
+    'Simmer(' +
+      'document.elementFromPoint(event.clientX, event.clientY)' +
+    ')' +
+  ');'
+);
+document.body.appendChild(node);
         """,
         )
         if result:

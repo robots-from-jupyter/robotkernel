@@ -15,6 +15,7 @@ from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
 from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
+from robotkernel.selectors import clear_selector_highlights
 from robotkernel.selectors import get_selector_completions
 from robotkernel.selectors import is_webdriver_selector
 from robotkernel.utils import data_uri
@@ -112,6 +113,12 @@ class RobotKernel(Kernel):
                     matches = get_selector_completions(needle.rstrip(), driver)
                     break
         else:
+            # Clear selector completion highlights
+            for driver in self.robot_webdrivers:
+                if driver['current']:
+                    driver = driver['instance']
+                    clear_selector_highlights(driver)
+                    break
             context = detect_robot_context(code, cursor_pos)
             matches = get_lunr_completions(
                 needle,
@@ -141,6 +148,13 @@ class RobotKernel(Kernel):
             'metadata': {},
             'found': bool(self.robot_inspect_data),
         }
+
+        # Clear selector completion highlights
+        for driver in self.robot_webdrivers:
+            if driver['current']:
+                driver = driver['instance']
+                clear_selector_highlights(driver)
+                break
 
         results = []
         if needle:
@@ -178,6 +192,12 @@ class RobotKernel(Kernel):
             user_expressions=None,
             allow_stdin=False,
     ):
+        # Clear selector completion highlights
+        for driver in self.robot_webdrivers:
+            if driver['current']:
+                driver = driver['instance']
+                clear_selector_highlights(driver)
+                break
         # Support %%python module ModuleName cell magic
         match = re.match('^%%python module ([a-zA-Z_]+)', code)
         if match is not None:
