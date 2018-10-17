@@ -149,13 +149,6 @@ class RobotKernel(Kernel):
             'found': bool(self.robot_inspect_data),
         }
 
-        # Clear selector completion highlights
-        for driver in self.robot_webdrivers:
-            if driver['current']:
-                driver = driver['instance']
-                clear_selector_highlights(driver)
-                break
-
         results = []
         if needle:
             query = lunr_query(needle)
