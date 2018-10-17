@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
 from robot.libdocpkg.model import KeywordDoc
+
+import re
+
 
 VARIABLE_REGEXP = re.compile(r'[$@&%]\{[\w\s]+\}')
 
@@ -48,7 +50,7 @@ table of the tasks file itself.
 
 `Robot Framework User Guide`__
 
-__http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#test-case-syntax
+__ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#test-case-syntax
 """,  # noqa: FE501
                 '*** Keywords ***': """\
 User keyword names are in the first column similarly as test cases names. Also
