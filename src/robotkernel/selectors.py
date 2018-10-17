@@ -5,9 +5,13 @@ import re
 
 try:
     from selenium.common.exceptions import WebDriverException
+    from selenium.common.exceptions import TimeoutException
 except ImportError:
 
     class WebDriverException(Exception):
+        pass
+
+    class TimeoutException(Exception):
         pass
 
 
@@ -46,10 +50,34 @@ SELECTOR_HIGHLIGHT_STYLE_SCRIPT = """
       'right: 0;' +
       'bottom: 0;' +
       'left: 0;' +
-      'z-index: 99999;' +
+      'z-index: 9999;' +
+      'cursor: crosshair;' +
+    '}' +
+    '#robotkernel-picker::before { ' +
+      'display: block;' +
+      'content: "";' +
+      'position: absolute;' +
+      'top: 0;' +
+      'right: 0;' +
+      'bottom: 0;' +
+      'left: 0;' +
       'background: black;' +
       'opacity: 0.25;' +
-      'cursor: crosshair;' +
+      'z-index: -1;' +
+    '}' +
+    '#robotkernel-picker::after { ' +
+      'display: block;' +
+      'content: "Click to select element (within Selenium timeout)...";' +
+      'font-size: 12px;' +
+      'text-align: center;' +
+      'top: 3px;' +
+      'margin-right: auto;' +
+      'width: 50%;' +
+      'margin-left: auto;' +
+      'padding: 3px;' +
+      'background: white;' +
+      'opacity: 1.0;' +
+      'border: 1px solid black;' +
     '}';
   document.head.appendChild(node);
 })();
@@ -191,31 +219,42 @@ def get_name_selector_completions(needle, driver):
     return matches
 
 
+def get_needle_from_user(driver):
+    try:
+        return driver.execute_async_script(
+            """\
+var node = document.getElementById('robotkernel-picker') ||
+       document.createElement('div');
+node.callback = arguments[arguments.length - 1];
+node.setAttribute('id', 'robotkernel-picker');
+node.setAttribute('onClick',
+'this.parentNode.removeChild(this);' +
+'this.callback(' +
+'Simmer(' +
+  'document.elementFromPoint(event.clientX, event.clientY)' +
+')' +
+');'
+);
+document.body.appendChild(node);
+    """,
+        ) or ''
+    except TimeoutException:
+        driver.execute_script(
+            """\
+var node = document.getElementById('robotkernel-picker');
+if (node) { node.parentNode.removeChild(node); }
+""",
+        )
+        return ''
+
+
 def get_css_selector_completions(needle, driver):
     needle = needle[4:]
     unresolved = []
     results = []
     matches = []
     if not needle:
-        result = driver.execute_async_script(
-            """\
-var node = document.getElementById('robotkernel-picker') ||
-           document.createElement('div');
-node.callback = arguments[arguments.length - 1];
-node.setAttribute('id', 'robotkernel-picker');
-node.setAttribute('onClick',
-  'this.parentNode.removeChild(this);' +
-  'this.callback(' +
-    'Simmer(' +
-      'document.elementFromPoint(event.clientX, event.clientY)' +
-    ')' +
-  ');'
-);
-document.body.appendChild(node);
-        """,
-        )
-        if result:
-            needle = result
+        needle = get_needle_from_user(driver)
     if needle:
         results = driver.find_elements_by_css_selector(needle)
     for result in visible_or_all(results):
