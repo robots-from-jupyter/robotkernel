@@ -67,7 +67,7 @@ SELECTOR_HIGHLIGHT_STYLE_SCRIPT = """
     '}' +
     '#robotkernel-picker::after { ' +
       'display: block;' +
-      'content: "Click to select element (within Selenium timeout)...";' +
+      'content: "Click element to select it... (before Selenium timeout).";' +
       'font-size: 12px;' +
       'text-align: center;' +
       'top: 3px;' +
