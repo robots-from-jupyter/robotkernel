@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5.5 (unreleased)
+0.6.0 (2018-10-18)
 ------------------
 
 - Revert data source path from temporary directory into current working
