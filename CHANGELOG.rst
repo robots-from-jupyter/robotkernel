@@ -4,8 +4,20 @@ Changelog
 0.5.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Revert data source path from temporary directory into current working
+  directory to allow local libraries and resources work in the usual use cases
+  [datakurre]
+- Add experimental Simmerjs based CSS-selector builder and element picker with
+  when auto-completion is called with empty "css:"-selector
+  [datakurre]
+- Add experimental Selenium selector auto-completion
+  [datakurre]
+- Add dummy variable completion with only variables from current suite without
+  context knowledge
+  [datakurre]
+- Add inline documentation links to Robot Framework User Guide for structural
+  keywords
+  [datakurre]
 
 0.5.4 (2018-10-09)
 ------------------
