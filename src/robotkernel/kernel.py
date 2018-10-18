@@ -237,9 +237,8 @@ class RobotKernel(Kernel):
 
         # Build
         builder = TestSuiteBuilder()
-        with TemporaryDirectory() as path:
-            data.source = path
-            suite = builder._build_suite(data)
+        data.source = os.getcwd()  # allow Library and Resource from CWD work
+        suite = builder._build_suite(data)
         suite._name = 'Jupyter'
 
         # Run
