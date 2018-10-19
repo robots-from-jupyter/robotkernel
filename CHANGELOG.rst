@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.2 (unreleased)
+0.6.2 (2018-10-19)
 ------------------
 
 - Fix compatibility issue with robotframework < 3.1
