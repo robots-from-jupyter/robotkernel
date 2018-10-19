@@ -12,6 +12,7 @@ import os
 import shutil
 import sys
 
+
 HERE = os.path.dirname(__file__)
 
 kernel_json = {
@@ -53,7 +54,6 @@ def install_my_kernel_spec(user=False, prefix=None):
             td,
             'robotkernel',
             user=user,
-            replace=True,
             prefix=prefix,
         )
 
