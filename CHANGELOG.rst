@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.1 (unreleased)
+0.6.1 (2018-10-19)
 ------------------
 
 - Fix issue where kernel installation produced broken kernel.json on Windows
