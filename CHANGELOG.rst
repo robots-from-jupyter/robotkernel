@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.6.3 (unreleased)
+0.6.3 (2018-10-19)
 ------------------
 
 - Remove deprecated replace-flag from kernel installer
