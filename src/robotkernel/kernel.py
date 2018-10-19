@@ -361,7 +361,7 @@ class RobotKernel(Kernel):
         writer.write_results(
             log=os.path.join(path, 'log.html'),
             report=os.path.join(path, 'report.html'),
-            rpa=suite.rpa,
+            rpa=getattr(suite, 'rpa', False),
         )
 
         with open(os.path.join(path, 'log.html'), 'rb') as fp:
