@@ -4,8 +4,8 @@ Changelog
 0.6.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix compatibility issue with robotframework < 3.1
+  [datakurre]
 
 0.6.1 (2018-10-19)
 ------------------
