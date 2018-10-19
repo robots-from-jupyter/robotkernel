@@ -20,13 +20,14 @@ kernel_json = {
         # this is that complex to support Nix Python environments better
         list(
             filter(
-                os.path.exists, [
+                os.path.exists,
+                [
                     os.path.
                     join(sys.prefix, 'bin', os.path.basename(sys.executable)),
                     os.path.join(sys.prefix, os.path.basename(sys.executable)),
                     os.path.join(sys.executable),
-                ]
-            )
+                ],
+            ),
         )[0],
         '-m',
         'robotkernel.kernel',
