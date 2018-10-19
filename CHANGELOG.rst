@@ -4,8 +4,8 @@ Changelog
 0.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix issue where kernel installation produced broken kernel.json on Windows
+  [datakurre]
 
 0.6.0 (2018-10-18)
 ------------------
