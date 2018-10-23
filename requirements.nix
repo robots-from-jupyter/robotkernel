@@ -4,6 +4,17 @@
 { pkgs, fetchurl, fetchgit, fetchhg }:
 
 self: super: {
+  "Appium-Python-Client" = super.buildPythonPackage {
+    name = "Appium-Python-Client-0.28";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."selenium"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/65/f4/b31229c97ecd03015f2e2abd79ee998f0b91977062d559270abda9f1f3fe/Appium-Python-Client-0.28.tar.gz";
+      sha256 = "1v7zyibj1nb92wj39gmyxqkgqsnxnxq0485s8rh3846v1id953qd";
+    };
+  };
   "GenSON" = super.buildPythonPackage {
     name = "GenSON-1.0.1";
     doCheck = false;
@@ -558,6 +569,14 @@ self: super: {
       sha256 = "1w65d7fylnzvfmyj92pwjyc1cfyiw356zp2ib56m47wb1gdfm07q";
     };
   };
+  "kitchen" = super.buildPythonPackage {
+    name = "kitchen-1.2.5";
+    doCheck = false;
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/14/3c/eb027400d34ed066d882d4cbbcb9b84eb7e91a7be770dd6fecebc37ba91f/kitchen-1.2.5.tar.gz";
+      sha256 = "1zakh6l0yjvwic9p0nkvmbidpnkygkxbigh2skmb5gccyrhbp7xg";
+    };
+  };
   "lunr" = super.buildPythonPackage {
     name = "lunr-0.5.3";
     doCheck = false;
@@ -983,6 +1002,22 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/9b/e9/abe4a90c9bdffef89dbf7e91616714b70608ca3a86a4e4114a6f8fb846d1/robotframework-3.1a2.zip";
       sha256 = "1pxixis4ari8l7vfynwndcpdcyr9vaqicsbfczm0cp8fb5k8qk15";
+    };
+  };
+  "robotframework-appiumlibrary" = super.buildPythonPackage {
+    name = "robotframework-appiumlibrary-1.4.6";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."Appium-Python-Client"
+      self."decorator"
+      self."docutils"
+      self."kitchen"
+      self."robotframework"
+      self."selenium"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/eb/5a/1e27a66fbc7e711c2720bb0b9a8c4fa5c4ca91171d3a245244e6efd01b3b/robotframework-appiumlibrary-1.4.6.tar.gz";
+      sha256 = "1w3ipqy1kg67h20ww0n8yb7zvbr5chcnvfsxn1006facrc92sqj0";
     };
   };
   "robotframework-debuglibrary" = super.buildPythonPackage {
