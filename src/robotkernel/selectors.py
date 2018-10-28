@@ -320,15 +320,18 @@ def get_selenium_css_selector_completions(needle, driver):
         id_ = result.get_attribute('id')
         if id_:
             matches.append((f'id:{id_}', result))
-            continue
-        if result.tag_name in FORM_TAG_NAMES:
+            if ' ' not in needle:
+                continue
+        elif result.tag_name in FORM_TAG_NAMES:
             name = result.get_attribute('name')
             if name:
                 matches.append((f'name:{name}', result))
-                continue
-        if result.tag_name == 'a' and result.text:
+                if ' ' not in needle:
+                    continue
+        elif result.tag_name == 'a' and result.text:
             matches.append((f'link:{result.text}', result))
-            continue
+            if ' ' not in needle:
+                continue
         unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
     return matches
