@@ -10,14 +10,15 @@ from robot.running import TestSuiteBuilder
 from robotkernel import __version__
 from robotkernel.constants import CONTEXT_LIBRARIES
 from robotkernel.constants import VARIABLE_REGEXP
+from robotkernel.listeners import AppiumConnectionsListener
 from robotkernel.listeners import ReturnValueListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
+from robotkernel.listeners import SeleniumConnectionsListener
 from robotkernel.listeners import StatusEventListener
-from robotkernel.listeners import WebdriverConnectionsListener
 from robotkernel.model import TestCaseString
 from robotkernel.selectors import clear_selector_highlights
 from robotkernel.selectors import get_selector_completions
-from robotkernel.selectors import is_webdriver_selector
+from robotkernel.selectors import is_selector
 from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
@@ -37,6 +38,15 @@ import robot
 import sys
 import types
 import uuid
+
+
+def yield_current_connection(connections, types_):
+    for instance in [connection['instance']
+                     for connection in connections
+                     if connection['type'] in types_ and connection['current']
+                     ]:
+        yield instance
+        break
 
 
 # noinspection PyAbstractClass
@@ -63,8 +73,8 @@ class RobotKernel(Kernel):
         self.robot_inspect_data = {}
         self.robot_variables = []
 
-        # Persistent storage for selenium library webdrivers
-        self.robot_webdrivers = []
+        # Sticky connection cache (e.g. for webdrivers)
+        self.robot_connections = []
 
         # Searchable index for keyword autocomplete documentation
         builder = lunr_builder('dottedname', ['dottedname', 'name'])
@@ -82,9 +92,9 @@ class RobotKernel(Kernel):
     def do_shutdown(self, restart):
         self.robot_history = OrderedDict()
         self.robot_variables = []
-        for driver in self.robot_webdrivers:
+        for driver in self.robot_connections:
             driver['instance'].quit()
-        self.robot_webdrivers = []
+        self.robot_connections = []
 
     def do_complete(self, code, cursor_pos):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
@@ -105,20 +115,16 @@ class RobotKernel(Kernel):
             if len(line) > line_cursor and line[line_cursor] == '}':
                 cursor_pos += 1
                 needle += '}'
-        elif is_webdriver_selector(needle):
+        elif is_selector(needle):
             matches = []
-            for driver in self.robot_webdrivers:
-                if driver['current']:
-                    driver = driver['instance']
-                    matches = get_selector_completions(needle.rstrip(), driver)
-                    break
+            for driver in yield_current_connection(self.robot_connections,
+                                                   ['selenium', 'appium']):
+                matches = get_selector_completions(needle.rstrip(), driver)
         else:
             # Clear selector completion highlights
-            for driver in self.robot_webdrivers:
-                if driver['current']:
-                    driver = driver['instance']
-                    clear_selector_highlights(driver)
-                    break
+            for driver in yield_current_connection(self.robot_connections,
+                                                   ['selenium']):
+                clear_selector_highlights(driver)
             context = detect_robot_context(code, cursor_pos)
             matches = get_lunr_completions(
                 needle,
@@ -186,11 +192,9 @@ class RobotKernel(Kernel):
             allow_stdin=False,
     ):
         # Clear selector completion highlights
-        for driver in self.robot_webdrivers:
-            if driver['current']:
-                driver = driver['instance']
-                clear_selector_highlights(driver)
-                break
+        for driver in yield_current_connection(self.robot_connections,
+                                               ['selenium']):
+            clear_selector_highlights(driver)
         # Support %%python module ModuleName cell magic
         match = re.match('^%%python module ([a-zA-Z_]+)', code)
         if match is not None:
@@ -319,7 +323,8 @@ class RobotKernel(Kernel):
             listener.append(
                 ReturnValueListener(lambda v: return_values.append(v)),
             )
-        listener.append(WebdriverConnectionsListener(self.robot_webdrivers))
+        listener.append(SeleniumConnectionsListener(self.robot_connections))
+        listener.append(AppiumConnectionsListener(self.robot_connections))
         listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
         # Run suite
@@ -401,13 +406,21 @@ class RobotKernel(Kernel):
             }
 
     def process_screenshots(self, path, silent):
+        cwd = os.getcwd()
         with open(os.path.join(path, 'output.xml')) as fp:
             xml = fp.read()
-        for src in [name for name in re.findall('img src="([^"]+)', xml)
-                    if os.path.exists(os.path.join(path, name))]:
-            im = Image.open(os.path.join(path, src))
+        for src in re.findall('img src="([^"]+)', xml):
+            if os.path.exists(src):
+                filename = src
+            elif os.path.exists(os.path.join(path, src)):
+                filename = os.path.join(path, src)
+            elif os.path.exists(os.path.join(cwd, src)):
+                filename = os.path.join(cwd, src)
+            else:
+                continue
+            im = Image.open(filename)
             mimetype = Image.MIME[im.format]
-            with open(os.path.join(path, src), 'rb') as fp:
+            with open(filename, 'rb') as fp:
                 data = fp.read()
             uri = data_uri(mimetype, data)
             xml = xml.replace('a href="{}"'.format(src), 'a')

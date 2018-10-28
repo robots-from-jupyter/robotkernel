@@ -114,39 +114,42 @@ class ReturnValueListener:
 
 
 # noinspection PyProtectedMember
-def get_webdrivers(selenium_library):
+def get_webdrivers(cache, type_):
     drivers = []
-    for idx in range(len(selenium_library._drivers._connections)):
-        conn = selenium_library._drivers._connections[idx]
-        if conn in selenium_library._drivers._closed:
+    for idx in range(len(cache._connections)):
+        conn = cache._connections[idx]
+        if conn in cache._closed:
             continue
         aliases = []
-        for alias, idx_ in selenium_library._drivers._aliases.items():
+        for alias, idx_ in cache._aliases.items():
             if (idx + 1) == idx_:
                 aliases.append(alias)
         drivers.append(
             dict(
                 instance=conn,
                 aliases=aliases,
-                current=conn == selenium_library._drivers.current,
+                current=conn == cache.current,
+                type=type_,
             ),
         )
     return drivers
 
 
 # noinspection PyProtectedMember
-def set_webdrivers(drivers, selenium_library):
+def set_webdrivers(drivers, cache, type_):
     idx = 1
     for driver in drivers:
-        selenium_library._drivers._connections.append(driver['instance'])
+        if driver['type'] != type_:
+            continue
+        cache._connections.append(driver['instance'])
         for alias in driver['aliases']:
-            selenium_library._drivers._aliases[alias] = idx
+            cache._aliases[alias] = idx
         if driver['current']:
-            selenium_library._drivers.current = driver['instance']
+            cache.current = driver['instance']
         idx += 1
 
 
-class WebdriverConnectionsListener:
+class SeleniumConnectionsListener:
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self, drivers: list):
@@ -161,12 +164,11 @@ class WebdriverConnectionsListener:
             except RuntimeError:
                 instance = builtin.get_library_instance('Selenium2Library')
             self.drivers.clear()
-            self.drivers.extend(get_webdrivers(instance))
-            builtin.log(str(self.drivers))
+            self.drivers.extend(get_webdrivers(instance._drivers, 'selenium'))
         except RuntimeError:
             pass
 
-    # noinspection PyUnusedLocal
+    # noinspection PyUnusedLocal,PyProtectedMember
     def start_suite(self, name, attributes):
         try:
             builtin = BuiltIn()
@@ -174,7 +176,32 @@ class WebdriverConnectionsListener:
                 instance = builtin.get_library_instance('SeleniumLibrary')
             except RuntimeError:
                 instance = builtin.get_library_instance('Selenium2Library')
-            set_webdrivers(self.drivers, instance)
-            builtin.log(str(self.drivers))
+            set_webdrivers(self.drivers, instance._drivers, 'selenium')
+        except RuntimeError:
+            pass
+
+
+class AppiumConnectionsListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, drivers: list):
+        self.drivers = drivers
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def end_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance('AppiumLibrary')
+            self.drivers.clear()
+            self.drivers.extend(get_webdrivers(instance._cache, 'appium'))
+        except RuntimeError:
+            pass
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def start_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance('AppiumLibrary')
+            set_webdrivers(self.drivers, instance._cache, 'appium')
         except RuntimeError:
             pass

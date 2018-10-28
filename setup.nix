@@ -1,16 +1,23 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/29660a208552a1e32f872333d6eb52e13226effa.tar.gz";
-    sha256 = "1rv87f7kqrnl16m64h4148c6nnnl3r3m860d0f08dwk1d5f6ffmd";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/09195057114a0a8d112c847a9a8f52957420857d.tar.gz";
+    sha256 = "0hszcsvgcphjny8j0p5inhl45ja61vjiz0csb0kx0b9lzmrafr7b";
   }) {}
 , setup ? import (fetchTarball {
-    url = "https://github.com/datakurre/setup.nix/archive/d991abe23efde4a0bc5de2a0b4672cca0126c151.tar.gz";
-    sha256 = "0zglrif1hncs84ia28m03ca324y8aqnjqygzsji7x0bnfn77hpqm";
+    url = "https://github.com/datakurre/setup.nix/archive/d3025ac35cc348d7bb233ee171629630bb4d6864.tar.gz";
+    sha256 = "09czivsv81y1qydl7jnqa634bili8z9zvzsj0h3snbr8pk5dzwkj";
  })
 , pythonPackages ? pkgs.python3Packages
 }:
 
+let overrides = self: super: {
+    "robotframework-appiumlibrary" =
+    super."robotframework-appiumlibrary".overridePythonAttrs(old: {
+      buildInputs = [ self."pytest-runner" ];
+    });
+}; in
+
 setup {
-  inherit pkgs pythonPackages;
+  inherit pkgs pythonPackages overrides;
   src = ./.;
   propagatedBuildInputs = with pkgs; [
     geckodriver

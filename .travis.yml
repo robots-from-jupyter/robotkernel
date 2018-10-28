@@ -4,7 +4,7 @@ before_install:
 - echo "substituters = https://cache.nixos.org/ https://datakurre.cachix.org/" | sudo tee -a /etc/nix/nix.conf
 - echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= datakurre.cachix.org-1:ayZJTy5BDd8K4PW9uc9LHV+WCsdi/fu1ETIYZMooK78=" | sudo tee -a /etc/nix/nix.conf
 script:
-- nix-shell setup.nix -A shell --run "flake8 src && python -m robotkernel.install && jupyter nbconvert --execute tests/smoketest.ipynb"
+- nix-shell setup.nix -A shell --run "flake8 src && pytest tests && python -m robotkernel.install && jupyter nbconvert --execute tests/smoketest.ipynb"
 after_success:
 - nix-shell setup.nix -A shell --run "LC_ALL=C sphinx-build docs build"
 - touch build/.nojekyll

@@ -1,6 +1,6 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/29660a208552a1e32f872333d6eb52e13226effa.tar.gz";
-    sha256 = "1rv87f7kqrnl16m64h4148c6nnnl3r3m860d0f08dwk1d5f6ffmd";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/09195057114a0a8d112c847a9a8f52957420857d.tar.gz";
+    sha256 = "0hszcsvgcphjny8j0p5inhl45ja61vjiz0csb0kx0b9lzmrafr7b";
   }) {}
 , vim ? false
 , sikuli ? false
@@ -45,6 +45,7 @@ let self = rec {
           ipywidgets
           robotkernel.build
           RESTinstance
+          robotframework-appiumlibrary
           robotframework-debuglibrary
           robotframework-faker
           robotframework-seleniumlibrary
