@@ -318,21 +318,21 @@ def get_selenium_css_selector_completions(needle, driver):
         results = driver.find_elements_by_css_selector(needle)
     for result in visible_or_all(results):
         id_ = result.get_attribute('id')
+        if ' ' in needle:  # always include simmer result for complex needles
+            unresolved.append(result)
         if id_:
             matches.append((f'id:{id_}', result))
-            if ' ' not in needle:
-                continue
-        elif result.tag_name in FORM_TAG_NAMES:
+            continue
+        elif (result.tag_name in FORM_TAG_NAMES
+              and result.get_attribute('name')):
             name = result.get_attribute('name')
-            if name:
-                matches.append((f'name:{name}', result))
-                if ' ' not in needle:
-                    continue
+            matches.append((f'name:{name}', result))
+            continue
         elif result.tag_name == 'a' and result.text:
             matches.append((f'link:{result.text}', result))
-            if ' ' not in needle:
-                continue
-        unresolved.append(result)
+            continue
+        elif ' ' not in needle:
+            unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
     return matches
 
