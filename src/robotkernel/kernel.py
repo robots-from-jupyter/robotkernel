@@ -406,13 +406,21 @@ class RobotKernel(Kernel):
             }
 
     def process_screenshots(self, path, silent):
+        cwd = os.getcwd()
         with open(os.path.join(path, 'output.xml')) as fp:
             xml = fp.read()
-        for src in [name for name in re.findall('img src="([^"]+)', xml)
-                    if os.path.exists(os.path.join(path, name))]:
-            im = Image.open(os.path.join(path, src))
+        for src in re.findall('img src="([^"]+)', xml):
+            if os.path.exists(src):
+                filename = src
+            elif os.path.exists(os.path.join(path, src)):
+                filename = os.path.join(path, src)
+            elif os.path.exists(os.path.join(cwd, src)):
+                filename = os.path.join(cwd, src)
+            else:
+                continue
+            im = Image.open(filename)
             mimetype = Image.MIME[im.format]
-            with open(os.path.join(path, src), 'rb') as fp:
+            with open(filename, 'rb') as fp:
                 data = fp.read()
             uri = data_uri(mimetype, data)
             xml = xml.replace('a href="{}"'.format(src), 'a')
