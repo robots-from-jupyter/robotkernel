@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
 import pkg_resources
 import re
+import time
 
+
+try:
+    import pywintypes
+    import win32com.client
+    try:
+        AutoIt = win32com.client.Dispatch('AutoItX3.Control')
+    except pywintypes.com_error:
+        AutoIt = None
+except ImportError:
+    AutoIt = None
 
 try:
     from selenium.common.exceptions import WebDriverException
@@ -25,6 +36,7 @@ IS_SELENIUM_SELECTOR_NEEDLE = re.compile(
     r'^xpath=|^xpath:',
 )
 IS_APPIUM_SELECTOR_NEEDLE = re.compile(r'^id=|^id:|^xpath=|^xpath:')
+IS_AUTOIT_SELECTOR_NEEDLE = re.compile(r'^strTitle=|^strControl=')
 IS_ID_SELECTOR_NEEDLE = re.compile(r'^id=|^id:')
 IS_NAME_SELECTOR_NEEDLE = re.compile(r'^name=|^name:')
 IS_CSS_SELECTOR_NEEDLE = re.compile(r'^css=|^css:')
@@ -92,6 +104,10 @@ def is_selenium_selector(needle):
 
 def is_appium_selector(needle):
     return bool(IS_APPIUM_SELECTOR_NEEDLE.match(needle))
+
+
+def is_autoit_selector(needle):
+    return bool(IS_AUTOIT_SELECTOR_NEEDLE.match(needle))
 
 
 def is_selector(needle):
@@ -183,6 +199,14 @@ def get_appium_selector_completions(needle, driver):
     return [r[0] for r in results]
 
 
+def get_autoit_selector_completions(needle, driver=AutoIt):
+    if driver:
+        results = _get_autoit_selector_completions(needle, driver)
+        return [r for r in results if r]
+    else:
+        return []
+
+
 def _get_selenium_selector_completions(needle, driver):
     if IS_ID_SELECTOR_NEEDLE.match(needle):
         return get_selenium_id_selector_completions(needle, driver)
@@ -205,6 +229,15 @@ def _get_appium_selector_completions(needle, driver):
         return get_appium_id_selector_completions(needle, driver)
     elif IS_XPATH_SELECTOR_NEEDLE.match(needle):
         return get_appium_xpath_selector_completions(needle, driver)
+    else:
+        return []
+
+
+def _get_autoit_selector_completions(needle, driver):
+    if needle.startswith('strTitle='):
+        return get_autoit_win_selector_completions(needle, driver)
+    elif needle.startswith('strControl='):
+        return get_autoit_control_selector_completions(needle, driver)
     else:
         return []
 
@@ -418,4 +451,82 @@ def get_appium_xpath_selector_completions(needle, driver):
             matches.append((f'xpath=//{class_}[@text="{text}"]', result))
             continue
 
+    return matches
+
+
+def get_autoit_win_selector_completions(needle, driver):
+    needle = needle[len('strTitle='):].strip()
+    matches = []
+    if needle:
+        results = driver.WinList(needle)[0][1:]
+        for result in results:
+            matches.append(f'strTitle={result}  strText=')
+    else:
+        title = driver.WinGetTitle('')
+        driver.ToolTip('Select window')
+        while True:
+            time.sleep(1)
+            title_ = driver.WinGetTitle('')
+            if title_ != title:
+                driver.ToolTip('')
+                matches.append(f'strTitle={title_}  strText=')
+                break
+    return matches
+
+
+def get_autoit_control_selector_completions(needle, driver):
+    needle = needle[len('strControl='):].strip()
+    if needle:
+        return []
+
+    matches = []
+    title = driver.WinGetTitle('')
+    driver.ToolTip('Select control')
+
+    while True:
+        time.sleep(1)
+        title_ = driver.WinGetTitle('')
+        if title_ != title:
+            driver.ToolTip('')
+
+            pointer_x = driver.MouseGetPosX()
+            pointer_y = driver.MouseGetPosY()
+            counter = {}
+            match = None
+
+            time.sleep(1)
+
+            for class_ in driver.WinGetClassList(title_).split():
+                counter.setdefault(class_, 0)
+                counter[class_] += 1
+                ref = f'{class_}{counter[class_]:d}'
+                handle = driver.ControlGetHandle(title_, '', ref)
+
+                x = driver.WinGetPosX(f'[HANDLE:{handle}]')
+                if x > pointer_x:  # control begins too late x
+                    continue
+
+                w = driver.ControlGetPosWidth(title_, '', ref)
+                if (x + w) < pointer_x:  # control ends too early x
+                    continue
+
+                y = driver.WinGetPosY(f'[HANDLE:{handle}]')
+                if y > pointer_y:  # control begins too late y
+                    continue
+
+                h = driver.ControlGetPosHeight(title_, '', ref)
+                if (y + h) < pointer_y:  # control ends too late y
+                    continue
+
+                if match and w * h > match[1]:
+                    continue
+
+                match = [ref, w * h]
+
+            driver.ToolTip('')
+
+            if match:
+                matches.append(f'strControl={match[0]}')
+
+            break
     return matches
