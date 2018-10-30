@@ -460,7 +460,7 @@ def get_autoit_win_selector_completions(needle, driver):
     if needle:
         results = driver.WinList(needle)[0][1:]
         for result in results:
-            matches.append(f'strTitle={result}')
+            matches.append(f'strTitle={result}  strText=')
     else:
         title = driver.WinGetTitle('')
         driver.ToolTip('Select window')
@@ -469,7 +469,7 @@ def get_autoit_win_selector_completions(needle, driver):
             title_ = driver.WinGetTitle('')
             if title_ != title:
                 driver.ToolTip('')
-                matches.append(f'strTitle={title_}')
+                matches.append(f'strTitle={title_}  strText=')
                 break
     return matches
 
