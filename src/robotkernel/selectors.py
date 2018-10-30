@@ -474,7 +474,7 @@ def get_autoit_win_selector_completions(needle, driver):
     return matches
 
 
-def get_autoit_control_selector_completions(needle, driver):
+def get_autoit_control_selector_completions(needle, driver):  # noqa: C901
     needle = needle[len('strControl='):].strip()
     if needle:
         return []
