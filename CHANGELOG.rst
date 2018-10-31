@@ -1,11 +1,20 @@
 Changelog
 =========
 
-0.6.4 (unreleased)
+0.7.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add to create nbreader and nblibdoc cli to run robot with notebook reader
+  support
+  [datakurre]
+- Add Selenium completions to sometimes include raw Simmer results with
+  simplfied id completion results
+  [datakurre]
+- Add proof-of-concept selector completion for Appium and AutoIT libraries
+  [datakurre]
+- Fix screenshot processor to also discover images with absolute path or within
+  the current working directory
+  [datakurre]
 
 0.6.3 (2018-10-19)
 ------------------
