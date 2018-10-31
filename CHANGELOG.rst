@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.0 (unreleased)
+0.7.0 (2018-10-31)
 ------------------
 
 - Add to create nbreader and nblibdoc cli to run robot with notebook reader
