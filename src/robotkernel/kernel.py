@@ -5,6 +5,9 @@ from ipykernel.kernelbase import Kernel
 from IPython.utils.tempdir import TemporaryDirectory
 from IPython.utils.tokenutil import line_at_cursor
 from PIL import Image
+from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
+from robot.parsing import populators
+from robot.parsing import TEST_EXTENSIONS
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robotkernel import __version__
@@ -16,6 +19,7 @@ from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import SeleniumConnectionsListener
 from robotkernel.listeners import StatusEventListener
 from robotkernel.model import TestCaseString
+from robotkernel.nbreader import NotebookReader
 from robotkernel.selectors import clear_selector_highlights
 from robotkernel.selectors import get_autoit_selector_completions
 from robotkernel.selectors import get_selector_completions
@@ -68,6 +72,11 @@ class RobotKernel(Kernel):
 
     def __init__(self, **kwargs):
         super(RobotKernel, self).__init__(**kwargs)
+        # Enable nbreader
+        if 'ipynb' not in populators.READERS:
+            populators.READERS['ipynb'] = NotebookReader
+            TEST_EXTENSIONS.add('ipynb')
+            RESOURCE_EXTENSIONS.add('ipynb')
 
         # History to repeat after kernel restart
         self.robot_history = OrderedDict()

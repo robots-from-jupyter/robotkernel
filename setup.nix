@@ -10,10 +10,15 @@
 }:
 
 let overrides = self: super: {
-    "robotframework-appiumlibrary" =
-    super."robotframework-appiumlibrary".overridePythonAttrs(old: {
-      buildInputs = [ self."pytest-runner" ];
-    });
+  "robotframework" = super."robotframework".overridePythonAttrs(old: {
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [
+      pythonPackages.tkinter
+    ];
+  });
+  "robotframework-appiumlibrary" =
+  super."robotframework-appiumlibrary".overridePythonAttrs(old: {
+    buildInputs = [ self."pytest-runner" ];
+  });
 }; in
 
 setup {
