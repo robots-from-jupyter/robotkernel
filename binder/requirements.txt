@@ -4,7 +4,7 @@ robotframework-faker==4.2.0
 robotframework-selenium2library==3.0.0
 robotframework-selenium2screenshots==0.8.1
 robotframework-seleniumlibrary==3.2.0
-robotframework==3.1a2
+robotframework==3.1b1
 selenium==3.14.1
 urllib3==1.22
 requests==2.18.4
