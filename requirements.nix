@@ -997,11 +997,11 @@ self: super: {
     };
   };
   "robotframework" = super.buildPythonPackage {
-    name = "robotframework-3.1a2";
+    name = "robotframework-3.1b1";
     doCheck = false;
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/9b/e9/abe4a90c9bdffef89dbf7e91616714b70608ca3a86a4e4114a6f8fb846d1/robotframework-3.1a2.zip";
-      sha256 = "1pxixis4ari8l7vfynwndcpdcyr9vaqicsbfczm0cp8fb5k8qk15";
+      url = "https://files.pythonhosted.org/packages/d3/86/aeb46ff80dad1558e0040a50cdfa4fdd7ed5e29e27f801f22657ef1f9a02/robotframework-3.1b1.zip";
+      sha256 = "1gf7p6dzla6fcagqhiqr7a1924rlfq5hljmfql8dgwax9y710kr9";
     };
   };
   "robotframework-appiumlibrary" = super.buildPythonPackage {
