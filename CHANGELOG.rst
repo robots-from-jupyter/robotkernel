@@ -4,11 +4,16 @@ Changelog
 0.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add to require robotframework >= 3.1b1 in requires
 
 0.7.0 (2018-10-31)
 ------------------
+
+Breaking:
+
+- Requires robotframework >= 3.1b1
+
+Other:
 
 - Add to create nbreader and nblibdoc cli to run robot with notebook reader
   support
@@ -24,6 +29,8 @@ Changelog
 
 0.6.3 (2018-10-19)
 ------------------
+
+This is the last release compatible with robotframework < 3.1
 
 - Remove deprecated replace-flag from kernel installer
   [datakurre]
