@@ -8,7 +8,15 @@ from robot.parsing import populators
 from robot.parsing import TEST_EXTENSIONS
 from robot.parsing.robotreader import RobotReader
 
+import re
 import sys
+import types
+
+
+def exec_code_into_module(code, module):
+    if module not in sys.modules:
+        sys.modules[module] = types.ModuleType(module)
+    exec(code, sys.modules[module].__dict__)
 
 
 def NotebookReader():  # noqa: N802
@@ -23,11 +31,25 @@ def NotebookReader():  # noqa: N802
     class NotebookReader(object):
         def read(self, ipynbfile, rawdata):
             notebook = nbformat.read(ipynbfile, 4)
-            data = '\n\n'.join([
-                cell.source
-                for cell in notebook.cells
-                if cell.cell_type == 'code'
-            ])
+            data = []
+
+            for cell in notebook.cells:
+                # Skip non-code cells
+                if not cell.cell_type == 'code':
+                    continue
+
+                # Execute %%python module magics
+                match = re.match('^%%python module ([a-zA-Z_]+)', cell.source)
+                if match is not None:
+                    module = match.groups()[0]
+                    cursor = len('%%python module {0:s}'.format(module))
+                    exec_code_into_module(cell.source[cursor:], module)
+                    continue
+
+                # Add the rest into robot test suite
+                data.append(cell.source)
+
+            data = '\n\n'.join(data)
             robotfile = BytesIO(data.encode('UTF-8'))
             return RobotReader().read(robotfile, rawdata, ipynbfile.name)
 
