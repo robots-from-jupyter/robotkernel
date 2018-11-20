@@ -42,7 +42,7 @@ def NotebookReader():  # noqa: N802
                 match = re.match('^%%python module ([a-zA-Z_]+)', cell.source)
                 if match is not None:
                     module = match.groups()[0]
-                    cursor =len('%%python module {0:s}'.format(module))
+                    cursor = len('%%python module {0:s}'.format(module))
                     exec_code_into_module(cell.source[cursor:], module)
                     continue
 
