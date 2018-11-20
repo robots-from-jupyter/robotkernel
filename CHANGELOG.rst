@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.1 (unreleased)
+0.7.1 (2018-11-20)
 ------------------
 
 - Add to require robotframework >= 3.1b1 in requires
