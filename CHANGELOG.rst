@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.7.2 (unreleased)
+0.8.0 (2018-12-14)
 ------------------
 
 - Add to auto-import nbimporter when available to make it possible to
