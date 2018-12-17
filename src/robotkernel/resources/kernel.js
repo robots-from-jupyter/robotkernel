@@ -98,6 +98,24 @@ CodeMirror.defineMode("robotframework", function() {
         return false;
     }
 
+    function isKeyword(stream, state) {
+        // Return true if this is the second column in a test case or keyword table
+        if (state.column === 1 && (state.isTestCasesTable() || state.isKeywordsTable())) {
+          state.tc_or_kw_name = stream.current();
+          return true;
+        }
+        return false;
+    }
+
+    function isVariable(stream, state) {
+        // Return true if trimmed value looks like a variable
+        var s = stream.current().trim().toLowerCase();
+        if (s.match("[$@&%]{")) {
+            return true;
+        }
+        return false;
+    }
+
     function isSubheading(stream, state) {
         // Return true if a cell begins with two or more colons
         // (eg: ":: Log in") Admittedly, this is a non-standard
@@ -214,6 +232,8 @@ CodeMirror.defineMode("robotframework", function() {
                 if (isLocalSetting(stream, state)) {return "builtin"; }
                 if (isSetting(stream, state))      {return "attribute"; }
                 if (isName(stream, state))         {return "keyword"; }
+                if (isKeyword(stream, state))      {return "tag"; }
+                if (isVariable(stream, state))     {return "string"; }
             }
 
             // special constructs, like :FOR
