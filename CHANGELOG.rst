@@ -1,11 +1,20 @@
 Changelog
 =========
 
-0.7.2 (unreleased)
+0.8.1 (unreleased)
 ------------------
 
 - Nothing changed yet.
 
+
+0.8.0 (2018-12-14)
+------------------
+
+- Add to auto-import nbimporter when available to make it possible to
+  import eg. keyword libraries from Python notebooks
+  [datakurre]
+- Fix issue where nbrobot did support %%python module magic
+  [datakurre]
 
 0.7.1 (2018-11-20)
 ------------------

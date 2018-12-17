@@ -45,6 +45,12 @@ import sys
 import types
 import uuid
 
+try:
+    import nbimporter
+    nbimporter
+except ImportError:
+    pass
+
 
 def yield_current_connection(connections, types_):
     for instance in [connection['instance']

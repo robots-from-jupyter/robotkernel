@@ -12,6 +12,12 @@ import re
 import sys
 import types
 
+try:
+    import nbimporter
+    nbimporter
+except ImportError:
+    pass
+
 
 def exec_code_into_module(code, module):
     if module not in sys.modules:
