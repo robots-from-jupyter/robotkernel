@@ -12,6 +12,7 @@ from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
 from robotkernel import __version__
 from robotkernel.constants import CONTEXT_LIBRARIES
+from robotkernel.constants import THROBBER
 from robotkernel.constants import VARIABLE_REGEXP
 from robotkernel.listeners import AppiumConnectionsListener
 from robotkernel.listeners import ReturnValueListener
@@ -62,28 +63,68 @@ def yield_current_connection(connections, types_):
         break
 
 
-class StdoutWrapper(StringIO):
+class ProgressUpdater(StringIO):
     """Wrapper designed to capture robot.api.logger.console and display it"""
 
-    def __init__(self, stdout, kernel, progress, display_id):
-        self.stdout = stdout
-        self.kernel = kernel
-        self.progress = progress
-        self.display_id = display_id
-        super(StdoutWrapper, self).__init__()
+    colors = re.compile(r'\[[0-?]+[^m]+m')
 
-    def write(self, s):
-        self.kernel.send_update_display_data(
+    def __init__(self, kernel, display_id, stdout):
+        self.kernel = kernel
+        self.display_id = display_id
+        self.stdout = stdout
+        self.progress = {
+            'dots': [],
+            'test': 'n/a',
+            'keyword': 'n/a',
+            'message': None,
+        }
+        self.kernel.send_display_data(
             {
                 'text/html': f''
-                f'<pre>'
-                f'{"".join(self.progress) or "."}\n'
-                f'{s}</pre>',
+                f'<img src="{THROBBER}" '
+                f'style="float:left; height:1em;margin-top:0.175em"/>'
+                f'<pre style="'
+                f'white-space:nowrap;overflow:hidden;padding-left:1ex;'
+                f'"></pre>',
             },
             display_id=self.display_id,
         )
+        super(ProgressUpdater, self).__init__()
+
+    def _update(self):
+        status_line = ' | '.join(
+            str(s) for s in [
+                self.progress['test'],
+                self.progress['keyword'],
+                self.progress['message'],
+            ] if s
+        )
+        self.kernel.send_update_display_data(
+            {
+                'text/html': f''
+                f'<img src="{THROBBER}" '
+                f'style="float:left;height:1em;margin-top:0.175em"/>'
+                f'<pre style="'
+                f'white-space:nowrap;overflow:hidden;padding-left:1ex;'
+                f'">{status_line}</pre>',
+            },
+            display_id=self.display_id,
+        )
+
+    def update(self, data):
+        if 'test' in data:
+            self.progress['test'] = data['test']
+            self.progress['message'] = None
+        elif 'keyword' in data:
+            self.progress['keyword'] = data['keyword']
+            self.progress['message'] = None
+        self._update()
+
+    def write(self, s):
+        self.progress['message'] = s.strip()
+        self._update()
         self.stdout.write(s)
-        return super(StdoutWrapper, self).write(s)
+        return super(ProgressUpdater, self).write(s)
 
 
 # noinspection PyAbstractClass
@@ -346,29 +387,15 @@ class RobotKernel(Kernel):
         listener = []
         display_id = str(uuid.uuid4())
         return_values = []
-
-        def update_progress(progress_, status):
-            progress_.append({'PASS': '.'}.get(status, 'F'))
-            return progress_
+        if not silent:
+            progress = ProgressUpdater(self, display_id, sys.__stdout__)
+        else:
+            progress = None
 
         # Init status
         if not silent:
-            self.send_display_data(
-                {
-                    'text/html': '<pre>.</pre>',
-                },
-                display_id=display_id,
-            )
             listener.append(
-                StatusEventListener(
-                    lambda s: self.send_update_display_data(
-                        {
-                            'text/html': '<pre>' +
-                            (''.join(update_progress(progress, s))) + '</pre>',
-                        },
-                        display_id=display_id,
-                    ),
-                ),
+                StatusEventListener(lambda data: progress.update(data)),
             )
             listener.append(
                 ReturnValueListener(lambda v: return_values.append(v)),
@@ -378,10 +405,8 @@ class RobotKernel(Kernel):
         listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
         stdout = StringIO()
-        progress = []
-        wrapper = StdoutWrapper(sys.__stdout__, self, progress, display_id)
         if not silent:
-            sys.__stdout__ = wrapper
+            sys.__stdout__ = progress
         try:
             results = suite.run(
                 outputdir=path,
@@ -389,7 +414,8 @@ class RobotKernel(Kernel):
                 listener=listener,
             )
         finally:
-            sys.__stdout__ = wrapper.stdout
+            if not silent:
+                sys.__stdout__ = progress.stdout
 
         stats = results.statistics
 

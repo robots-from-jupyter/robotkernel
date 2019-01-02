@@ -77,17 +77,21 @@ class RobotKeywordsIndexerListener:
             pass
 
 
+# noinspection PyUnusedLocal
 class StatusEventListener:
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self, callback):
         self.callback = callback
 
-    # noinspection PyUnusedLocal
-    def end_keyword(self, name, attributes):
-        self.callback(attributes['status'])
+    def start_test(self, name, attributes):
+        self.callback({'test': name})
+
+    def start_keyword(self, name, attributes):
+        self.callback({'keyword': name})
 
 
+# noinspection PyUnusedLocal
 class ReturnValueListener:
     ROBOT_LISTENER_API_VERSION = 2
 
@@ -95,7 +99,6 @@ class ReturnValueListener:
         self.callback = callback
         self.return_value = None
 
-    # noinspection PyUnusedLocal
     def end_keyword(self, name, attributes):
         frame = inspect.currentframe()
         while frame is not None:
@@ -104,11 +107,9 @@ class ReturnValueListener:
                 break
             frame = frame.f_back
 
-    # noinspection PyUnusedLocal
     def start_test(self, name, attributes):
         self.return_value = None
 
-    # noinspection PyUnusedLocal
     def end_test(self, name, attributes):
         self.callback(self.return_value)
 
