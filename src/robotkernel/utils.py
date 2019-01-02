@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 from difflib import SequenceMatcher
+from IPython.core.display import Image
+from IPython.core.display import JSON
+from json import JSONDecodeError
 from lunr.builder import Builder
 from lunr.stemmer import stemmer
 from lunr.stop_word_filter import stop_word_filter
@@ -159,3 +162,56 @@ def get_lunr_completions(needle, index, keywords, context):
         else:
             matches.append(readable_keyword(ref))
     return matches
+
+
+def to_html(obj):
+    """Return object as highlighted JSON"""
+    return highlight('json', json.dumps(
+        obj,
+        sort_keys=False,
+        indent=4,
+    ))
+
+
+# noinspection PyProtectedMember
+def to_mime_and_metadata(obj) -> (dict, dict):  # noqa: C901
+    if isinstance(obj, bytes):
+        obj = base64.b64encode(obj).decode('utf-8')
+        return {'text/html': to_html(obj)}, {}
+    elif isinstance(obj, str) and obj.startswith('http'):
+        if re.match(r'.*\.(gif|jpg|svg|jpeg||png)$', obj, re.I):
+            try:
+                return Image(obj, embed=True)._repr_mimebundle_()
+            except TypeError:
+                pass
+        return {'text/html': to_html(obj)}, {}
+    elif isinstance(obj, str) and os.path.exists(obj):
+        # Images are embedded from robot.log instead
+        return {}, {}
+    elif hasattr(obj, '_repr_mimebundle_'):
+        obj.embed = True
+        return obj._repr_mimebundle_()
+    elif hasattr(obj, '_repr_json_'):
+        obj.embed = True
+        return {'application/json': obj._repr_json_()}, {}
+    elif hasattr(obj, '_repr_html_'):
+        obj.embed = True
+        return {'text/html': obj._repr_html_()}, {}
+    elif hasattr(obj, '_repr_png_'):
+        return {'image/png': obj._repr_png_()}, {}
+    elif hasattr(obj, '_repr_jpeg_'):
+        return {'image/jpeg': obj._repr_jpeg_()}, {}
+    elif hasattr(obj, '_repr_svg_'):
+        return {'image/svg': obj._repr_svg_()}, {}
+    try:
+        data, metadata = JSON(data=obj, expanded=True)._repr_json_()
+        return {
+            'application/json': data,
+            'text/html': f'<pre>{to_html(obj)}</pre>',
+        }, metadata
+    except (TypeError, JSONDecodeError):
+        pass
+    try:
+        return {'text/html': to_html(obj)}, {}
+    except TypeError:
+        return {}, {}

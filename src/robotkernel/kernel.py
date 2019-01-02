@@ -29,15 +29,14 @@ from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
 from robotkernel.utils import get_lunr_completions
-from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
 from robotkernel.utils import lunr_query
 from robotkernel.utils import scored_results
+from robotkernel.utils import to_mime_and_metadata
 from traceback import format_exc
 
 import base64
-import json
 import os
 import re
 import robot
@@ -361,21 +360,12 @@ class RobotKernel(Kernel):
                     'traceback': stdout.getvalue().splitlines(),
                 })
 
-        # Display result of the last keyword, if it was JSON
-        elif return_values and return_values[-1] and not silent:
-            try:
-                result = json.dumps(
-                    json.loads(return_values[-1].strip()),
-                    sort_keys=False,
-                    indent=4,
-                )
-                self.send_execute_result({
-                    'text/html': '<pre>{}</pre>'.format(
-                        highlight('json', result),
-                    ),
-                })
-            except (AttributeError, ValueError):
-                pass
+        # Display result of the last keyword
+        elif (return_values and return_values[-1] not in [None, '', b'']
+              and not silent):
+            bundle, metadata = to_mime_and_metadata(return_values[-1])
+            if bundle:
+                self.send_execute_result(bundle, metadata)
 
         # Process screenshots
         self.process_screenshots(path, silent)
