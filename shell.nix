@@ -43,6 +43,7 @@ let self = rec {
   jupyter = pythonPackages.jupyter.overridePythonAttrs (old: {
     propagatedBuildInputs =
     with pythonPackages; old.propagatedBuildInputs ++ [
+      graphviz
       ipywidgets
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
