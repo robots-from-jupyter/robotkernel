@@ -1,4 +1,4 @@
-var CodeMirror = require('codemirror');
+var CodeMirror = require("codemirror");
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under a MIT license: http://codemirror.net/LICENSE
@@ -7,7 +7,6 @@ var CodeMirror = require('codemirror');
 // Distributed under a MIT license
 
 CodeMirror.defineMode("robotframework", function() {
-
   function canonicalTableName(name) {
     // This returns the canonical (internal) name for a table,
     // which will be one of "settings", "test_cases",
@@ -16,11 +15,21 @@ CodeMirror.defineMode("robotframework", function() {
     // This function will return null if name isn't one of the
     // strings supported by robot
     name = name.trim().toLowerCase();
-    if (name.match("settings?|metadata")) {return "settings"; }
-    if (name.match("test ?cases?"))       {return "test_cases"; }
-    if (name.match("tasks"))              {return "test_cases"; }
-    if (name.match("(user )?keywords?"))  {return "keywords"; }
-    if (name.match("variables?"))         {return "variables"; }
+    if (name.match("settings?|metadata")) {
+      return "settings";
+    }
+    if (name.match("test ?cases?")) {
+      return "test_cases";
+    }
+    if (name.match("tasks")) {
+      return "test_cases";
+    }
+    if (name.match("(user )?keywords?")) {
+      return "keywords";
+    }
+    if (name.match("variables?")) {
+      return "variables";
+    }
     return null;
   }
 
@@ -30,7 +39,9 @@ CodeMirror.defineMode("robotframework", function() {
     // can have more than one asterisk, and trailing asterisks are optional,
     // and the table names must be one of the recognized table names
     if (stream.sol()) {
-      var match = stream.match(/^\s*\*+\s*(settings?|metadata|variables?|test ?cases?|tasks|(user )?keywords?)[ *]*$/i);
+      var match = stream.match(
+        /^\s*\*+\s*(settings?|metadata|variables?|test ?cases?|tasks|(user )?keywords?)[ *]*$/i
+      );
       if (match !== null) {
         state.table_name = canonicalTableName(match[1]);
         state.tc_or_kw_name = null;
@@ -42,7 +53,7 @@ CodeMirror.defineMode("robotframework", function() {
   }
 
   function isSpecial(stream, state) {
-    var cell = stream.current().trim()
+    var cell = stream.current().trim();
     // this isn't 100% precise, but it's good enough for now.
     if ([":FOR", "IN", "IN RANGE", "WITH NAME", "AND"].indexOf(cell) >= 0) {
       return true;
@@ -55,22 +66,29 @@ CodeMirror.defineMode("robotframework", function() {
     // that is not the first non-empty cell on a line,
     // but that's such a rare thing that it's not a
     // big deal.
-    return (stream.current().trim() === "...");
+    return stream.current().trim() === "...";
   }
 
   function isSetting(stream, state) {
     // Return true if the stream is in a settings table and the
     // token is a valid setting
     if (state.isSettingsTable() && state.column === 0) {
-      var s = stream.current().trim().toLowerCase();
-      if (s.match("^(library|resource|variables|documentation|metadata|" +
-        "suite setup|suite teardown|suite precondition|" +
-        "suite postcondition|force tags|default tags|test setup|" +
-        "test teardown|test precondition|test postcondition|" +
-        "test template|test timeout|" +
-        "task setup|" +
-        "task teardown|task precondition|task postcondition|" +
-        "task template|task timeout)$")) {
+      var s = stream
+        .current()
+        .trim()
+        .toLowerCase();
+      if (
+        s.match(
+          "^(library|resource|variables|documentation|metadata|" +
+            "suite setup|suite teardown|suite precondition|" +
+            "suite postcondition|force tags|default tags|test setup|" +
+            "test teardown|test precondition|test postcondition|" +
+            "test template|test timeout|" +
+            "task setup|" +
+            "task teardown|task precondition|task postcondition|" +
+            "task template|task timeout)$"
+        )
+      ) {
         return true;
       }
     }
@@ -78,9 +96,16 @@ CodeMirror.defineMode("robotframework", function() {
   }
 
   function isLocalSetting(stream, state) {
-    var s = stream.current().trim().toLowerCase();
+    var s = stream
+      .current()
+      .trim()
+      .toLowerCase();
     if (state.isTestCasesTable()) {
-      if (s.match("\\[(documentation|tags|setup|teardown|precondition|postcondition|template|timeout)\\]")) {
+      if (
+        s.match(
+          "\\[(documentation|tags|setup|teardown|precondition|postcondition|template|timeout)\\]"
+        )
+      ) {
         return true;
       }
     } else if (state.isKeywordsTable()) {
@@ -93,7 +118,10 @@ CodeMirror.defineMode("robotframework", function() {
 
   function isName(stream, state) {
     // Return true if this is the first column in a test case or keyword table
-    if (state.column === 0 && (state.isTestCasesTable() || state.isKeywordsTable())) {
+    if (
+      state.column === 0 &&
+      (state.isTestCasesTable() || state.isKeywordsTable())
+    ) {
       state.tc_or_kw_name = stream.current();
       return true;
     }
@@ -102,7 +130,17 @@ CodeMirror.defineMode("robotframework", function() {
 
   function isKeyword(stream, state) {
     // Return true if this is the second column in a test case or keyword table
-    if (state.column === 1 && (state.isTestCasesTable() || state.isKeywordsTable())) {
+    if (
+      state.column === 1 &&
+      (state.isTestCasesTable() || state.isKeywordsTable())
+    ) {
+      state.tc_or_kw_name = stream.current();
+      return true;
+    } else if (
+      state.column === 2 &&
+      (state.isTestCasesTable() || state.isKeywordsTable()) &&
+      !state.tc_or_kw_name
+    ) {
       state.tc_or_kw_name = stream.current();
       return true;
     }
@@ -111,8 +149,26 @@ CodeMirror.defineMode("robotframework", function() {
 
   function isVariable(stream, state) {
     // Return true if trimmed value looks like a variable
-    var s = stream.current().trim().toLowerCase();
-    if (s.match("[$@&%]{")) {
+    var s = stream
+      .current()
+      .trim()
+      .toLowerCase();
+    if (s.match("^[$@&%]{")) {
+      if (state.column === 1) {
+        state.tc_or_kw_name = null;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function isOperator(stream, state) {
+    // Return true if trimmed value looks like a variable
+    var s = stream
+      .current()
+      .trim()
+      .toLowerCase();
+    if (s.match("^[=:]$")) {
       return true;
     }
     return false;
@@ -150,43 +206,70 @@ CodeMirror.defineMode("robotframework", function() {
     // gobble up characters until the end of the line or we find a separator
 
     var ch;
+    var first = true;
     while ((ch = stream.next()) != null) {
       if (ch === "\\") {
         // escaped character; gobble up the following character
         stream.next();
-
+      } else if (ch === "[" || ch === "]") {
+        if (!first) {
+          stream.backUp(1);
+        }
+        break;
+      } else if (
+        (ch === "=" || ch === ":") &&
+        !stream.current().match(/https?/)
+      ) {
+        if (!first) {
+          stream.backUp(1);
+        }
+        break;
       } else if (ch === "\t") {
         stream.backUp(1);
         break;
-
       } else if (ch === " ") {
         if (stream.match(/\s/, false)) {
           stream.backUp(1);
           break;
         }
       }
+      first = false;
     }
-    return (stream.current().length > 0);
+    return stream.current().length > 0;
   }
 
   return {
-    startState: function () {
+    startState: function() {
       return {
         table_name: null,
         tc_or_kw_name: null,
         column: -1,
         separator: "pipes", // maybe we should get this from preferences?
-        isSettingsTable: function () {return (this.table_name === "settings"); },
-        isVariablesTable: function () {return (this.table_name === "variables"); },
-        isTestCasesTable: function () {return (this.table_name === "test_cases"); },
-        isKeywordsTable: function () {return (this.table_name === "keywords"); },
-        pipeSeparated: function () {return (this.separator == "pipes"); },
-        spaceSeparated: function () {return (this.separator == "spaces"); },
-        tabSeparated: function () {return (this.separator == "tabs"); }
+        isSettingsTable: function() {
+          return this.table_name === "settings";
+        },
+        isVariablesTable: function() {
+          return this.table_name === "variables";
+        },
+        isTestCasesTable: function() {
+          return this.table_name === "test_cases";
+        },
+        isKeywordsTable: function() {
+          return this.table_name === "keywords";
+        },
+        pipeSeparated: function() {
+          return this.separator == "pipes";
+        },
+        spaceSeparated: function() {
+          return this.separator == "spaces";
+        },
+        tabSeparated: function() {
+          return this.separator == "tabs";
+        }
       };
     },
 
-    token: function (stream, state) {
+    token: function(stream, state) {
       // determine separator mode for this line -- pipes or spaces
       if (stream.sol()) {
         state.column = 0;
@@ -214,7 +297,7 @@ CodeMirror.defineMode("robotframework", function() {
         // "def" isn't pendantically correct, but this extension
         // doesn't use "def" for anything else, so we might as well
         // use it for this. Pretend "def" means "defines a section"
-        return "def"
+        return "def";
       }
 
       // N.B. Don't ever use "cell-separator" for anything
@@ -230,17 +313,32 @@ CodeMirror.defineMode("robotframework", function() {
       var c;
       if ((c = eatCellContents(stream, state))) {
         // a table cell; it may be one of several flavors
-        if (isContinuation(stream, state)) {return "meta"; }
-        if (isLocalSetting(stream, state)) {return "builtin"; }
-        if (isSetting(stream, state))      {return "attribute"; }
-        if (isName(stream, state))         {return "keyword"; }
-        if (isKeyword(stream, state))      {return "tag"; }
-        if (isVariable(stream, state))     {return "property"; }
+        if (isContinuation(stream, state)) {
+          return "meta";
+        }
+        if (isLocalSetting(stream, state)) {
+          return "builtin";
+        }
+        if (isSetting(stream, state)) {
+          return "attribute";
+        }
+        if (isName(stream, state)) {
+          return "keyword";
+        }
+        if (isOperator(stream, state)) {
+          return "operator";
+        }
+        if (isVariable(stream, state)) {
+          return "property";
+        }
+        if (isKeyword(stream, state)) {
+          return "tag";
+        }
       }
 
       // special constructs, like :FOR
       if (isSpecial(stream, state)) {
-        return "builtin"
+        return "builtin";
       }
 
       return null;
@@ -248,19 +346,21 @@ CodeMirror.defineMode("robotframework", function() {
   };
 });
 
-CodeMirror.defineMIME('text/x-robotframework', 'robotframework');
+CodeMirror.defineMIME("text/x-robotframework", "robotframework");
 
 CodeMirror.modeInfo.push({
-    ext: ['robot'],
-    mime: 'text/x-robotframework',
-    mode: 'robotframework',
-    name: 'robotframework'
+  ext: ["robot"],
+  mime: "text/x-robotframework",
+  mode: "robotframework",
+  name: "robotframework"
 });
 
-module.exports = [{
-    id: 'jupyterlab_robotmode',
+module.exports = [
+  {
+    id: "jupyterlab_robotmode",
     autoStart: true,
     activate: function(app) {
-       console.log('JupyterLab extension robotmode is activated!');
+      console.log("JupyterLab extension robotmode is activated!");
     }
-}];
+  }
+];
