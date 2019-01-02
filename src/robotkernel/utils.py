@@ -15,21 +15,31 @@ from robot.libdocpkg.htmlwriter import DocToHtml
 from robot.parsing.settings import Documentation
 
 import base64
+import json
+import os
 import pygments
 import re
 
 
-def javascript_uri(html):
+def javascript_uri(html, filename=''):
     """Because data-uri for text/html is not supported by IE"""
     if isinstance(html, str):
         html = html.encode('utf-8')
     return (
-        'javascript:(function(){{'
-        'var w=window.open();'
+        'javascript:(function(el){{'
+        'var w=window.open();var d=\'{}\';'
         'w.document.open();'
-        'w.document.write(window.atob(\'{}\'));'
+        'w.document.write(window.atob(d));'
         'w.document.close();'
-        '}})();'.format(base64.b64encode(html).decode('utf-8'))
+        'var a=w.document.createElement(\'a\');'
+        'a.appendChild(w.document.createTextNode(\'Download\'));'
+        'a.href=\'data:text/html;base64,\' + d;'
+        'a.download=\'{}\';'
+        'a.style=\'position:fixed;top:0;right:0;'
+        'color:white;background:black;text-decoration:none;'
+        'padding:5px;border-radius:0 0 0 5px\';'
+        'w.document.body.append(a);'
+        '}})(this);'.format(base64.b64encode(html).decode('utf-8'), filename)
     )
 
 

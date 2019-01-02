@@ -402,7 +402,10 @@ class RobotKernel(Kernel):
                 {
                     'text/html': ''
                     '<p><a href="{}">Log</a> | <a href="{}">Report</a></p>'.
-                    format(javascript_uri(log), javascript_uri(report)),
+                    format(
+                        javascript_uri(log, 'log.html'),
+                        javascript_uri(report, 'report.html'),
+                    ),
                 },
                 display_id=display_id,
             )
