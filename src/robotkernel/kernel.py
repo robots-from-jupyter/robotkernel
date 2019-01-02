@@ -47,8 +47,9 @@ import uuid
 try:
     import nbimporter
     nbimporter
+    HAS_NBIMPORTER = True
 except ImportError:
-    pass
+    HAS_NBIMPORTER = False
 
 
 def yield_current_connection(connections, types_):
@@ -209,6 +210,12 @@ class RobotKernel(Kernel):
             user_expressions=None,
             allow_stdin=False,
     ):
+        # Reload ipynb modules
+        if HAS_NBIMPORTER:
+            for name, module in tuple(sys.modules.items()):
+                if 'nbimporter.NotebookLoader' in repr(module):
+                    del sys.modules[name]
+
         # Clear selector completion highlights
         for driver in yield_current_connection(self.robot_connections,
                                                ['selenium']):
