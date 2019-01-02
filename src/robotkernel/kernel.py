@@ -61,6 +61,30 @@ def yield_current_connection(connections, types_):
         break
 
 
+class StdoutWrapper(StringIO):
+    """Wrapper designed to capture robot.api.logger.console and display it"""
+
+    def __init__(self, stdout, kernel, progress, display_id):
+        self.stdout = stdout
+        self.kernel = kernel
+        self.progress = progress
+        self.display_id = display_id
+        super(StdoutWrapper, self).__init__()
+
+    def write(self, s):
+        self.kernel.send_update_display_data(
+            {
+                'text/html': f''
+                f'<pre>'
+                f'{"".join(self.progress) or "."}\n'
+                f'{s}</pre>',
+            },
+            display_id=self.display_id,
+        )
+        self.stdout.write(s)
+        return super(StdoutWrapper, self).write(s)
+
+
 # noinspection PyAbstractClass
 class RobotKernel(Kernel):
     implementation = 'IRobot'
@@ -352,10 +376,20 @@ class RobotKernel(Kernel):
         listener.append(AppiumConnectionsListener(self.robot_connections))
         listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
-        # Run suite
         stdout = StringIO()
         progress = []
-        results = suite.run(outputdir=path, stdout=stdout, listener=listener)
+        wrapper = StdoutWrapper(sys.__stdout__, self, progress, display_id)
+        if not silent:
+            sys.__stdout__ = wrapper
+        try:
+            results = suite.run(
+                outputdir=path,
+                stdout=stdout,
+                listener=listener,
+            )
+        finally:
+            sys.__stdout__ = wrapper.stdout
+
         stats = results.statistics
 
         # Reply error on error
