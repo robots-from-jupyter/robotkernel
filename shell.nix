@@ -1,123 +1,69 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/09195057114a0a8d112c847a9a8f52957420857d.tar.gz";
-    sha256 = "0hszcsvgcphjny8j0p5inhl45ja61vjiz0csb0kx0b9lzmrafr7b";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/0396345b79436f54920f7eb651ab42acf2eb7973.tar.gz";
+    sha256 = "10wd0wsair6dlilgaviqw2p9spgcf8qg736bzs08jha0f4zfqjs4";
   }) {}
-, vim ? false
 , sikuli ? false
+, vim ? false
 }:
-
-with pkgs;
 
 let self = rec {
 
-  # kernels
+  # python packages
 
-  robotkernel =  import ./setup.nix {
+  pythonPackages = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  };
-
-  pythonPackages = robotkernel.pythonPackages;
+  }).pythonPackages;
 
   sikulilibrary = (import ./pkgs/sikulixlibrary {
-    inherit pkgs pythonPackages jdk;
-    sikulix = import ./pkgs/sikulix {
+    inherit pkgs pythonPackages;
+    jdk = pkgs.jdk;
+    sikulix = with pkgs; import ./pkgs/sikulix {
       inherit stdenv fetchurl makeWrapper utillinux jre jdk opencv;
       inherit tesseract xdotool wmctrl;
     };
   });
 
-  python_with_packages = pythonPackages.python.buildEnv.override {
-    extraLibs = with pythonPackages; [
-      ipykernel
-      ipywidgets
-    ];
-  };
+  "robotkernel" = (import ./setup.nix {
+    inherit pkgs;
+    pythonPackages = pkgs.python3Packages;
+  }).build;
 
-  robot_with_packages = buildEnv {
-    name = "robotkernel";
-    paths = [
-      pkgs.geckodriver
-      (pythonPackages.python.buildEnv.override {
-        extraLibs = with pythonPackages; [
-          tkinter
-          ipykernel
-          ipywidgets
-          robotkernel.build
-          RESTinstance
-          robotframework-appiumlibrary
-          robotframework-debuglibrary
-          robotframework-faker
-          robotframework-seleniumlibrary
-          robotframework-selenium2library
-          robotframework-selenium2screenshots
-          opencv3
-        ] ++ stdenv.lib.optionals sikuli [ sikulilibrary ];
-      })
-    ];
-  };
+  # other packages
 
-  # extensions
-
-  rise = pythonPackages.buildPythonPackage rec {
-    pname = "rise";
-    version = "5.1.0";
-    name = "${pname}-${version}";
-    src = pkgs.fetchurl {
-      url = "mirror://pypi/${builtins.substring 0 1 pname}/${pname}/${name}.tar.gz";
-      sha256 = "0b5rimnzd6zkgs7f286vr58a5rlzv275zd49xw48mn4dc06wfpz9";
-    };
-    buildInputs = [ pythonPackages.notebook ];
-    postPatch = ''
-      sed -i "s|README.md'|README.md', encoding='utf-8'|" setup.py
-    '';
-  };
-
-  jupyter_nbextensions_configurator = pythonPackages.buildPythonPackage rec {
-    pname = "jupyter_nbextensions_configurator";
-    version = "0.3.0";
-    name = "${pname}-${version}";
-    src = pkgs.fetchurl {
-      url = "mirror://pypi/${builtins.substring 0 1 pname}/${pname}/${name}.tar.gz";
-      sha256 = "11qq1di2gas8r302xpa0h2xndd5qgrz4a77myd2bd43c0grffa6b";
-    };
-    doCheck = false;
-    installFlags = [ "--no-dependencies" ];
-    propagatedBuildInputs = with pythonPackages; [ pyyaml ];
-  };
-
-  jupyter_contrib_nbextensions = pythonPackages.buildPythonPackage rec {
-    pname = "jupyter_contrib_nbextensions";
-    version = "0.3.3";
-    name = "${pname}-${version}";
-    src = pkgs.fetchurl {
-      url = "mirror://pypi/${builtins.substring 0 1 pname}/${pname}/${name}.tar.gz";
-      sha256 = "0v730d5sqx6g106ii5r08mghbmbqi12pm6mpvjc0vsx703syd83f";
-    };
-    doCheck = false;
-    installFlags = [ "--no-dependencies" ];
-    propagatedBuildInputs = with pythonPackages; [ lxml ];
-  };
-
-  vim_binding = fetchFromGitHub {
+  vim_binding = pkgs.fetchFromGitHub {
     owner = "lambdalisue";
     repo = "jupyter-vim-binding";
     rev = "c9822c753b6acad8b1084086d218eb4ce69950e9";
     sha256 = "1951wnf0k91h07nfsz8rr0c9nw68dbyflkjvw5pbx9dmmzsa065j";
   };
 
-  # notebook
+  # jupyter
 
   jupyter = pythonPackages.jupyter.overridePythonAttrs (old: {
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [
-      jupyter_contrib_nbextensions
-      jupyter_nbextensions_configurator
+    propagatedBuildInputs =
+    with pythonPackages; old.propagatedBuildInputs ++ [
+      ipywidgets
+      jupyter-contrib-nbextensions
+      jupyter-nbextensions-configurator
+      jupyterlab
+      lti
+      nbimporter
+      opencv3
+      RESTinstance
       rise
-      pythonPackages.jupyterlab
-    ];
+      robotframework
+      robotframework-appiumlibrary
+      robotframework-debuglibrary
+      robotframework-faker
+      robotframework-seleniumlibrary
+      robotframework-seleniumscreenshots
+      robotkernel
+      tkinter
+    ] ++ pkgs.stdenv.lib.optionals sikuli [ sikulilibrary ];
   });
 
-  jupyter_nbconfig = stdenv.mkDerivation rec {
+  jupyter_nbconfig = pkgs.stdenv.mkDerivation rec {
     name = "jupyter";
     json = builtins.toJSON {
       load_extensions = {
@@ -135,7 +81,7 @@ let self = rec {
         };
       };
     };
-    builder = builtins.toFile "builder.sh" ''
+    builder = with pkgs; builtins.toFile "builder.sh" ''
       source $stdenv/setup
       mkdir -p $out
       cat > $out/notebook.json << EOF
@@ -144,27 +90,22 @@ let self = rec {
     '';
   };
 
-  jupyter_config_dir = stdenv.mkDerivation {
+  jupyter_config_dir = pkgs.stdenv.mkDerivation {
     name = "jupyter";
-    buildInputs = [
-      python_with_packages
-      robot_with_packages
-      rise
-      vim_binding
-    ];
-    builder = writeText "builder.sh" ''
+    builder = with pythonPackages; with pkgs; writeText "builder.sh" ''
       source $stdenv/setup
       mkdir -p $out/share/jupyter/nbextensions
       mkdir -p $out/share/jupyter/migrated
-      ${robot_with_packages}/bin/python -m robotkernel.install --prefix=$out
+
       ln -s ${jupyter_nbconfig} $out/share/jupyter/nbconfig
-      ln -s ${jupyter_contrib_nbextensions}/${pythonPackages.python.sitePackages}/jupyter_contrib_nbextensions/nbextensions/* $out/share/jupyter/nbextensions
+      ln -s ${jupyter-contrib-nbextensions}/${pythonPackages.python.sitePackages}/jupyter-contrib-nbextensions/nbextensions/* $out/share/jupyter/nbextensions
       ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
       ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
+
+      ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+
       cat > $out/share/jupyter/jupyter_notebook_config.py << EOF
-      import os
       import rise
-      c.NotebookApp.ip = os.environ.get('JUPYTER_NOTEBOOK_IP', 'localhost')
       EOF
 
       cat > $out/share/jupyter/jupyter_nbconvert_config.py << EOF
@@ -177,24 +118,21 @@ let self = rec {
 
 in with self;
 
-stdenv.mkDerivation rec {
+pkgs.stdenv.mkDerivation rec {
   name = "jupyter";
-  env = buildEnv { name = name; paths = buildInputs; };
-  builder = builtins.toFile "builder.sh" ''
-    source $stdenv/setup; ln -s $env $out
-  '';
   buildInputs = [
+    pkgs.firefox
+    pkgs.geckodriver
     jupyter
     jupyter_config_dir
-    geckodriver
-  ] ++ stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ]
-    ++ stdenv.lib.optionals sikuli [ jre8 ];
+  ] ++ (with pkgs; stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ])
+    ++ (with pkgs; stdenv.lib.optionals sikuli [ jre8 ]);
   shellHook = ''
-    mkdir -p $PWD/.jupyter
+    mkdir -p $(pwd)/.jupyter
     export JUPYTER_CONFIG_DIR=${jupyter_config_dir}/share/jupyter
     export JUPYTER_PATH=${jupyter_config_dir}/share/jupyter
-    export JUPYTER_DATA_DIR=$PWD/.jupyter
-    export JUPYTER_RUNTIME_DIR=$PWD/.jupyter
-    export PATH=$PATH:${robot_with_packages}/bin
+    export JUPYTER_DATA_DIR=$(pwd)/.jupyter
+    export JUPYTER_RUNTIME_DIR=$(pwd)/.jupyter
+    export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
   '';
 }

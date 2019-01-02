@@ -1,9 +1,19 @@
-/.idea
-/.ipynb_checkpoints/
-/examples/.ipynb_checkpoints/
-/.jupyter
-/result
-__pycache__
-node_modules
+syntax: glob
+*.egg-info
 *.pyc
-*.egg-info/
+.DS_Store
+.idea
+.ipynb_checkpoints
+.jupyter
+.jupyterlab
+.pytest_cache
+/build/
+/geckodriver.log
+/html/
+/log.html
+/output.xml
+/report.html
+/result
+/selenium-screenshot-*.png
+/src/jupyterlab_robotmode/node_modules/
+/tmp/
