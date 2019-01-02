@@ -32,6 +32,14 @@ let overrides = self: super: {
   "testfixtures" = super."testfixtures".overrideDerivation(old: {
     patches = [];
   });
+  # Patches to tweak around bad archive at Cachix
+  "docutils" = super."docutils".overrideDerivation(old: {
+    name = "${old.name}-2019-01-01";
+  });
+  "selenium" = super."selenium".overrideDerivation(old: {
+    name = "${old.name}-2019-01-01";
+  });
+
 }; in
 
 setup {
