@@ -82,7 +82,7 @@ class ProgressUpdater(StringIO):
             {
                 'text/html': f''
                 f'<img src="{THROBBER}" '
-                f'style="float:left; height:1em;margin-top:0.175em"/>'
+                f'style="float:left; height:1em;margin-top:0.15em"/>'
                 f'<pre style="'
                 f'white-space:nowrap;overflow:hidden;padding-left:1ex;'
                 f'"></pre>',
@@ -103,7 +103,7 @@ class ProgressUpdater(StringIO):
             {
                 'text/html': f''
                 f'<img src="{THROBBER}" '
-                f'style="float:left;height:1em;margin-top:0.175em"/>'
+                f'style="float:left;height:1em;margin-top:0.15em"/>'
                 f'<pre style="'
                 f'white-space:nowrap;overflow:hidden;padding-left:1ex;'
                 f'">{status_line}</pre>',
