@@ -29,15 +29,14 @@ from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
 from robotkernel.utils import get_lunr_completions
-from robotkernel.utils import highlight
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import lunr_builder
 from robotkernel.utils import lunr_query
 from robotkernel.utils import scored_results
+from robotkernel.utils import to_mime_and_metadata
 from traceback import format_exc
 
 import base64
-import json
 import os
 import re
 import robot
@@ -45,11 +44,13 @@ import sys
 import types
 import uuid
 
+
 try:
     import nbimporter
     nbimporter
+    HAS_NBIMPORTER = True
 except ImportError:
-    pass
+    HAS_NBIMPORTER = False
 
 
 def yield_current_connection(connections, types_):
@@ -59,6 +60,30 @@ def yield_current_connection(connections, types_):
                      ]:
         yield instance
         break
+
+
+class StdoutWrapper(StringIO):
+    """Wrapper designed to capture robot.api.logger.console and display it"""
+
+    def __init__(self, stdout, kernel, progress, display_id):
+        self.stdout = stdout
+        self.kernel = kernel
+        self.progress = progress
+        self.display_id = display_id
+        super(StdoutWrapper, self).__init__()
+
+    def write(self, s):
+        self.kernel.send_update_display_data(
+            {
+                'text/html': f''
+                f'<pre>'
+                f'{"".join(self.progress) or "."}\n'
+                f'{s}</pre>',
+            },
+            display_id=self.display_id,
+        )
+        self.stdout.write(s)
+        return super(StdoutWrapper, self).write(s)
 
 
 # noinspection PyAbstractClass
@@ -210,6 +235,12 @@ class RobotKernel(Kernel):
             user_expressions=None,
             allow_stdin=False,
     ):
+        # Reload ipynb modules
+        if HAS_NBIMPORTER:
+            for name, module in tuple(sys.modules.items()):
+                if 'nbimporter.NotebookLoader' in repr(module):
+                    del sys.modules[name]
+
         # Clear selector completion highlights
         for driver in yield_current_connection(self.robot_connections,
                                                ['selenium']):
@@ -346,10 +377,20 @@ class RobotKernel(Kernel):
         listener.append(AppiumConnectionsListener(self.robot_connections))
         listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
-        # Run suite
         stdout = StringIO()
         progress = []
-        results = suite.run(outputdir=path, stdout=stdout, listener=listener)
+        wrapper = StdoutWrapper(sys.__stdout__, self, progress, display_id)
+        if not silent:
+            sys.__stdout__ = wrapper
+        try:
+            results = suite.run(
+                outputdir=path,
+                stdout=stdout,
+                listener=listener,
+            )
+        finally:
+            sys.__stdout__ = wrapper.stdout
+
         stats = results.statistics
 
         # Reply error on error
@@ -361,21 +402,12 @@ class RobotKernel(Kernel):
                     'traceback': stdout.getvalue().splitlines(),
                 })
 
-        # Display result of the last keyword, if it was JSON
-        elif return_values and return_values[-1] and not silent:
-            try:
-                result = json.dumps(
-                    json.loads(return_values[-1].strip()),
-                    sort_keys=False,
-                    indent=4,
-                )
-                self.send_execute_result({
-                    'text/html': '<pre>{}</pre>'.format(
-                        highlight('json', result),
-                    ),
-                })
-            except (AttributeError, ValueError):
-                pass
+        # Display result of the last keyword
+        elif (return_values and return_values[-1] not in [None, '', b'']
+              and not silent):
+            bundle, metadata = to_mime_and_metadata(return_values[-1])
+            if bundle:
+                self.send_execute_result(bundle, metadata)
 
         # Process screenshots
         self.process_screenshots(path, silent)
@@ -405,7 +437,10 @@ class RobotKernel(Kernel):
                 {
                     'text/html': ''
                     '<p><a href="{}">Log</a> | <a href="{}">Report</a></p>'.
-                    format(javascript_uri(log), javascript_uri(report)),
+                    format(
+                        javascript_uri(log, 'log.html'),
+                        javascript_uri(report, 'report.html'),
+                    ),
                 },
                 display_id=display_id,
             )
