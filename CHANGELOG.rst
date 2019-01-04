@@ -1,11 +1,41 @@
 Changelog
 =========
 
-0.8.1 (unreleased)
+0.9.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New featurs:
 
+- Rewrite status updater to the status of currently run test as
+  ``trobber | test name | keyword name | robot.api.logger.console message``
+  [datakurre]
+
+- Add embedded log and report to include Download-links at top right corner
+  [datakurre]
+
+- Add to display the results of the last executed keyword as the notebook
+  result for the executed code cell
+  [datakurre]
+
+- Add syntax highlighting for variables and assignment operators
+  [datakurre]
+
+Bug fixes:
+
+- Fix issue where setup.cfg contained OS specific path separators preventing
+  build on Windows
+  [datakurre]
+
+- Fix issue where PNGs were interpreted as APNG on Windows preventing
+  them from being rendered on Windows
+  [datakurre]
+
+- Update example notebook to use SeleniumLibrary and SeleniumScreenshots
+  instead of SeleniumLibrary and Selenium2Screenshots
+  [datakurre]
+
+- Add to always reload libraries imported from other notebooks
+  [datakurre]
 
 0.8.0 (2018-12-14)
 ------------------
