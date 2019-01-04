@@ -500,6 +500,9 @@ class RobotKernel(Kernel):
                 continue
             im = Image.open(filename)
             mimetype = Image.MIME[im.format]
+            # Fix issue where Pillow on Windows returns APNG for PNG
+            if mimetype == 'image/apng':
+                mimetype = 'image/png'
             with open(filename, 'rb') as fp:
                 data = fp.read()
             uri = data_uri(mimetype, data)
