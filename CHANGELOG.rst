@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.9.0 (unreleased)
+0.9.0 (2019-01-04)
 ------------------
 
 New featurs:
