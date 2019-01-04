@@ -37,7 +37,7 @@ def javascript_uri(html, filename=''):
         'a.download=\'{}\';'
         'a.style=\'position:fixed;top:0;right:0;'
         'color:white;background:black;text-decoration:none;'
-        'padding:5px;border-radius:0 0 0 5px\';'
+        'font-weight:bold;padding:7px 14px;border-radius:0 0 0 5px;\';'
         'w.document.body.append(a);'
         '}})(this);'.format(base64.b64encode(html).decode('utf-8'), filename)
     )
