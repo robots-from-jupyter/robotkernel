@@ -1,5 +1,5 @@
 RESTinstance==1.0.0rc4
-pillow=5.3.0
+pillow==5.3.0
 robotframework==3.1
 robotframework-appiumlibrary==1.5.0.1
 robotframework-debuglibrary==1.1.4
