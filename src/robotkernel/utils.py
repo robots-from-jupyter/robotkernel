@@ -195,9 +195,13 @@ def to_mime_and_metadata(obj) -> (dict, dict):  # noqa: C901
             except TypeError:
                 pass
         return {'text/html': to_html(obj)}, {}
-    elif isinstance(obj, str) and os.path.exists(obj):
-        # Images are embedded from robot.log instead
-        return {}, {}
+    elif isinstance(obj, str) and len(obj) < 1024 and os.path.exists(obj):
+        if re.match(r'.*\.(gif|jpg|svg|jpeg||png)$', obj, re.I):
+            try:
+                return Image(obj, embed=True)._repr_mimebundle_()
+            except TypeError:
+                pass
+        return {'text/html': to_html(obj)}, {}
     elif hasattr(obj, '_repr_mimebundle_'):
         obj.embed = True
         return obj._repr_mimebundle_()

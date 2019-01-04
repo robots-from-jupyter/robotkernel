@@ -100,6 +100,11 @@ class ReturnValueListener:
         self.return_value = None
 
     def end_keyword(self, name, attributes):
+        if 'capture' in name.lower() and 'screenshot' in name.lower():
+            # Intentional hack to not include screenshot keywords, because we
+            # can assume their screenshots be embedded into log file and
+            # displayed from that.
+            return
         frame = inspect.currentframe()
         while frame is not None:
             if 'return_value' in frame.f_locals:
