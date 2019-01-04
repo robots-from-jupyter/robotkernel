@@ -55,7 +55,8 @@ CodeMirror.defineMode("robotframework", function() {
   function isSpecial(stream, state) {
     var cell = stream.current().trim();
     // this isn't 100% precise, but it's good enough for now.
-    if ([":FOR", "IN", "IN RANGE", "WITH NAME", "AND"].indexOf(cell) >= 0) {
+    if ([":FOR", "IN", "IN RANGE",
+         "WITH NAME", "AND", "ELSE"].indexOf(cell) >= 0) {
       return true;
     }
   }
