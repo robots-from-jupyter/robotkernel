@@ -212,7 +212,11 @@ CodeMirror.defineMode("robotframework", function() {
       if (ch === "\\") {
         // escaped character; gobble up the following character
         stream.next();
-      } else if (ch === "[" || ch === "]") {
+      } else if (ch === "'" || ch === "\"") {
+        break;
+      } else if (ch === "}" || ch === "]") {
+        break;
+      } else if (ch === "[") {
         if (!first) {
           stream.backUp(1);
         }
