@@ -1231,7 +1231,7 @@ self: super: {
     };
   };
   "robotframework-seleniumscreenshots" = super.buildPythonPackage {
-    name = "robotframework-seleniumscreenshots-0.9.2";
+    name = "robotframework-seleniumscreenshots-0.9.3";
     doCheck = false;
     propagatedBuildInputs = [
       self."robotframework"
@@ -1239,8 +1239,8 @@ self: super: {
       self."setuptools"
     ];
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/f4/78/3d2f34acfd4a7a63b4eaf81be671d399390c286f9126ae74845eaee075ab/robotframework-seleniumscreenshots-0.9.2.tar.gz";
-      sha256 = "0950jnbi9x5c3hhf5wq8n9gpjx5jz0wvz6isfk6igac9kwanhhxs";
+      url = "https://files.pythonhosted.org/packages/57/26/52dc70f4c38ba038182477705d5eddb0ac5073fcb45d6493bc92e0db8591/robotframework-seleniumscreenshots-0.9.3.tar.gz";
+      sha256 = "1lj82i3hd06lxc5zdy7bnwhxv3rxb22wf88dr7qga8ihi3xd24i3";
     };
   };
   "selenium" = super.buildPythonPackage {

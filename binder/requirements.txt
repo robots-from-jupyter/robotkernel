@@ -5,7 +5,7 @@ robotframework-appiumlibrary==1.5.0.1
 robotframework-debuglibrary==1.1.4
 robotframework-faker==4.2.0
 robotframework-seleniumlibrary==3.3.0
-robotframework-seleniumscreenshots==0.9.2
+robotframework-seleniumscreenshots==0.9.3
 selenium==3.141.0
 urllib3==1.24.1
 requests==2.20.0
