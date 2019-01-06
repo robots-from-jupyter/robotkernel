@@ -160,3 +160,8 @@ Development environment with Nix:
    :maxdepth: 2
 
    smoketest.ipynb
+   tutorial/00 JupyterLab User Interface.ipynb
+   tutorial/01 Running Code.ipynb
+   tutorial/02 Python XKCD.ipynb
+   tutorial/03 Running Robot.ipynb
+   tutorial/04 Robot XKCD.ipynb
