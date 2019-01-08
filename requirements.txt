@@ -36,6 +36,7 @@ graphviz==0.10.1
 html5lib==1.0.1
 idna==2.7
 imagesize==1.1.0
+iplantuml==0.1.1
 ipykernel==5.1.0
 ipython==6.5.0
 ipython-genutils==0.2.0
@@ -79,6 +80,7 @@ pexpect==4.6.0
 pickleshare==0.7.5
 pillow==5.3.0
 pkginfo==1.4.2
+plantweb==1.1.0
 pluggy==0.8.0
 ply==3.11
 prometheus-client==0.5.0

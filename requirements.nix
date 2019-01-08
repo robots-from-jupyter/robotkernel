@@ -381,6 +381,17 @@ self: super: {
       sha256 = "1dg3wn7qpwmhgqc0r9na2ding1wif9q5spz3j9zn2riwphc2k0zk";
     };
   };
+  "iplantuml" = super.buildPythonPackage {
+    name = "iplantuml-0.1.1";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."plantweb"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/10/b9/4db9b9ce81184d1d67f82284ca6131258b32f3f69376ee88aab5f7ff60a4/IPlantUML-0.1.1.tar.gz";
+      sha256 = "0p1w48iik5cl137b4xy3g5x52wl5b9fayxlr97bzd5v65dqxz1hg";
+    };
+  };
   "ipykernel" = super.buildPythonPackage {
     name = "ipykernel-5.1.0";
     doCheck = false;
@@ -900,6 +911,19 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/39/c9/111ececbeed8e69cd1b6bec79a32a0b0f6074038a4244e58e285ad278248/pkginfo-1.4.2.tar.gz";
       sha256 = "0x6lm17p1ks031mj6pajyp4rkq74vpqq8qwjb7ikgwmkli1day2q";
+    };
+  };
+  "plantweb" = super.buildPythonPackage {
+    name = "plantweb-1.1.0";
+    doCheck = false;
+    propagatedBuildInputs = [
+      self."docutils"
+      self."requests"
+      self."six"
+    ];
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/b9/ba/042877bae231c08aea328ac0aaf5c3f80538752a5a25c3da8d441902456b/plantweb-1.1.0.tar.gz";
+      sha256 = "1974022rpmwjg1amc7k8n3274bfj0vychd5c81r6q4mm02kysksz";
     };
   };
   "pluggy" = super.buildPythonPackage {

@@ -16,6 +16,12 @@ let overrides = self: super: {
   "graphviz" = super."graphviz".overridePythonAttrs(old: {
     buildInputs = [ pkgs.unzip ];
   });
+  "iplantuml" = super."iplantuml".overridePythonAttrs(old: {
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.plantuml ];
+    postPatch = ''
+      sed -i "s|/usr/local/bin/plantuml.jar|${pkgs.plantuml}/lib/plantuml.jar|" iplantuml/__init__.py
+    '';
+  });
   "robotframework" = super."robotframework".overridePythonAttrs(old: {
     buildInputs = [ pkgs.unzip ];
     propagatedBuildInputs = old.propagatedBuildInputs ++ [

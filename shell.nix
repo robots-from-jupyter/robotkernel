@@ -44,6 +44,7 @@ let self = rec {
     propagatedBuildInputs =
     with pythonPackages; old.propagatedBuildInputs ++ [
       graphviz
+      iplantuml
       ipywidgets
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
