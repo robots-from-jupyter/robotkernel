@@ -27,13 +27,19 @@ Install Robotkernel
 .. code:: bash
 
    $ pip install robotkernel
-   $ python -m robotkernel.install
 
 For JupyterLab you should also install the companion syntax highlighting:
 
 .. code:: bash
 
    $ jupyter labextension install jupyterlab_robotmode
+
+For some environments it might be required to run the following command to
+manually register robotkernel as Jupyter kernel:
+
+.. code:: bash
+
+   $ python -m robotkernel.install
 
 
 Install Robotkernel from Python 3 notebook
@@ -42,7 +48,6 @@ Install Robotkernel from Python 3 notebook
 .. code:: bash
 
    !pip install robotkernel
-   !python -m robotkernel.install
 
 After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
 
@@ -65,6 +70,12 @@ It is possible to export test suites direclty from Jupyter Notebook or JupyterLa
 
 Execute notebooks
 -----------------
+
+Robotkernel installs script named ``nbrobot``, which the Robot Frameworks test runner ``robot`` with support for executing Jupyter notebooks created with Robotkernel:
+
+.. code:: bash
+
+   $ nbrobot example.ipynb
 
 In addition, it is also possible to execute notebooks as such, resulting into a new notebook with embedded execution logs and reports:
 
@@ -110,10 +121,6 @@ Clone this kernel::
 Install the kernel into virtualenv in develop mode::
 
     $ python setup.py develop
-
-Install the kernel into jupyter::
-
-    $ python -m robotkernel.install
 
 Launch the jupyter::
 
