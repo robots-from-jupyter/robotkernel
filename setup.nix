@@ -1,6 +1,6 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/0396345b79436f54920f7eb651ab42acf2eb7973.tar.gz";
-    sha256 = "10wd0wsair6dlilgaviqw2p9spgcf8qg736bzs08jha0f4zfqjs4";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/eebd1a9263716a04689a37b6537e50801d376b5e.tar.gz";
+    sha256 = "0s1fylhjqp2h4j044iwbwndgnips3nrynh2ip5ijh96kavizf2gb";
   }) {}
 , setup ? import (fetchTarball {
     url = "https://github.com/datakurre/setup.nix/archive/9f8529e003ea4d2f433d2999dc50b8938548e7d0.tar.gz";
@@ -10,6 +10,9 @@
 }:
 
 let overrides = self: super: {
+  "click" = super."click".overrideDerivation(old: {
+    patches = [];
+  });
   "flake8" = super."flake8".overrideDerivation(old: {
     patches = [];
   });

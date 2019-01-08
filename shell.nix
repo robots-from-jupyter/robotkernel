@@ -1,6 +1,6 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/0396345b79436f54920f7eb651ab42acf2eb7973.tar.gz";
-    sha256 = "10wd0wsair6dlilgaviqw2p9spgcf8qg736bzs08jha0f4zfqjs4";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/eebd1a9263716a04689a37b6537e50801d376b5e.tar.gz";
+    sha256 = "0s1fylhjqp2h4j044iwbwndgnips3nrynh2ip5ijh96kavizf2gb";
   }) {}
 , sikuli ? false
 , vim ? false
@@ -104,11 +104,9 @@ let self = rec {
       ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
       ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
 
-      ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+#     ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
 
-      cat > $out/share/jupyter/jupyter_notebook_config.py << EOF
-      import rise
-      EOF
+      echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
       cat > $out/share/jupyter/jupyter_nbconvert_config.py << EOF
       c = get_config()
