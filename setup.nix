@@ -48,6 +48,16 @@ let overrides = self: super: {
   "selenium" = super."selenium".overrideDerivation(old: {
     name = "${old.name}-2019-01-01";
   });
+  # building wheels require SOURCE_DATE_EPOCH
+  "zest.releaser" = super."zest.releaser".overridePythonAttrs(old: {
+    postInstall = ''
+      for prog in $out/bin/*; do
+        mv $prog $prog-python${pythonPackages.python.majorVersion}
+        wrapProgram $prog-python${pythonPackages.python.majorVersion} \
+          --set SOURCE_DATE_EPOCH 315532800
+      done
+    '';
+  });
 
 }; in
 
