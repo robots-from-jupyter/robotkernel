@@ -9,7 +9,7 @@ Breaking:
 - Setuptools 40.5.0 later and Robot Framework 3.1 or later.
   [datakurre]
 
-New featurs:
+New features:
 
 - Add pregenerated kernel.json in data_files to auto-install robotkernel,
   but requiring
