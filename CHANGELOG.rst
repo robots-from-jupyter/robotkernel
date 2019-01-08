@@ -4,8 +4,15 @@ Changelog
 0.9.1 (unreleased)
 ------------------
 
-- Add pregenerated kernel.json et.al. as data_files
-  to auto-install robotkernel on package install
+Breaking:
+
+- Setuptools 40.5.0 later and Robot Framework 3.1 or later.
+  [datakurre]
+
+New featurs:
+
+- Add pregenerated kernel.json in data_files to auto-install robotkernel,
+  but requiring
   [datakurre]
 
 0.9.0 (2019-01-04)
