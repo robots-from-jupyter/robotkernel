@@ -4,8 +4,9 @@ Changelog
 0.9.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add pregenerated kernel.json et.al. as data_files
+  to auto-install robotkernel on package install
+  [datakurre]
 
 0.9.0 (2019-01-04)
 ------------------

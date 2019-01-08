@@ -3,7 +3,8 @@ Robotkernel
 
 `Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_.
 
-Requires Python 3.6 or later and Robot Framework 3.1b1 or later.
+Requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework
+3.1 or later.
 
 Log | Report -links on existing notebooks are only active on trusted notebooks.
 
@@ -27,7 +28,6 @@ Install Robotkernel
 .. code:: bash
 
    $ pip install robotkernel
-   $ python -m robotkernel.install
 
 For JupyterLab you should also install the companion syntax highlighting:
 
@@ -42,7 +42,6 @@ Install Robotkernel from Python 3 notebook
 .. code:: bash
 
    !pip install robotkernel
-   !python -m robotkernel.install
 
 After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
 
@@ -111,9 +110,9 @@ Install the kernel into virtualenv in develop mode::
 
     $ python setup.py develop
 
-Install the kernel into jupyter::
+.. Install the kernel into jupyter::
 
-    $ python -m robotkernel.install
+..     $ python -m robotkernel.install
 
 Launch the jupyter::
 

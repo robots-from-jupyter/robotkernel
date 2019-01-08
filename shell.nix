@@ -104,7 +104,7 @@ let self = rec {
       ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
       ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
 
-#     ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+      ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
 
       echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
