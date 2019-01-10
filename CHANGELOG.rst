@@ -4,8 +4,8 @@ Changelog
 0.10.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Update package trove classifiers
+  [datakurre]
 
 0.10.0 (2019-01-08)
 -------------------
