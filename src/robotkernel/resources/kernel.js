@@ -210,6 +210,9 @@ CodeMirror.defineMode("robotframework", function() {
       if (ch === "\\") {
         // escaped character; gobble up the following character
         stream.next();
+      } else if (stream.current().length > 1 && ch.match("[$@&%]")) {
+        stream.backUp(1);
+        break;
       } else if (ch === "'" || ch === "\"") {
         break;
       } else if (ch === "}" || ch === "]") {
