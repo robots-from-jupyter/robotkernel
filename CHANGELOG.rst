@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.10.2 (unreleased)
+0.10.2 (2019-01-11)
 -------------------
 
 - Fix syntax highlighting issue where only the first variable of many was
