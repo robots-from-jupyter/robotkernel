@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 1.1.1 (2018-01-11)
+
+- Fix ssue where only the first variable in cell was highlighted
+
 ### 1.1.0 (2018-01-04)
 
 - Add to highlight variables
