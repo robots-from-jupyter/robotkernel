@@ -4,8 +4,9 @@ Changelog
 0.10.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix syntax highlighting issue where only the first variable of many was
+  highlighted
+  [datakurre]
 
 0.10.1 (2019-01-10)
 -------------------
