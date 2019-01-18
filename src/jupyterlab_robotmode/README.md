@@ -28,7 +28,7 @@ jupyter labextension link .
 
 ### 2.0.0 (xxxx-xx-xx)
 
-- Replaced with compatible implementation from
+- Rebase the implementation on top of jupyterlab-robotframework from
   https://github.com/gtri/irobotframework
 
 ### 1.1.1 (2018-01-11)
