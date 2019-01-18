@@ -16,9 +16,9 @@ Log | Report -links on existing notebooks are only active on trusted notebooks.
 Try Robotkernel at Binder
 -------------------------
 
-Jupyter Notebook: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=tree/example.ipynb
+Jupyter Notebook: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
 
-JupyterLab: https://mybinder.org/v2/gh/datakurre/robotkernel/master?urlpath=lab/tree/example.ipynb
+JupyterLab: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
 
 
 Install Robotkernel
@@ -115,7 +115,7 @@ Install Jupyter::
 
 Clone this kernel::
 
-    $ git clone https://github.com/datakurre/robotkernel.git
+    $ git clone https://github.com/robots-from-jupyter/robotkernel.git
     $ cd robotkernel
 
 Install the kernel into virtualenv in develop mode::
@@ -136,13 +136,13 @@ This repository includes opinionated instructions for running and developing Rob
 
 .. code:: bash
 
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
+   $ nix-shell -E 'import (fetchTarball https://github.com/robots-from-jupyter/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
 
 And for Jupyter Lab:
 
 .. code:: bash
 
-   $ nix-shell -E 'import (fetchTarball https://github.com/datakurre/robotkernel/archive/master.tar.gz + "/shell.nix")'
+   $ nix-shell -E 'import (fetchTarball https://github.com/robots-from-jupyter/robotkernel/archive/master.tar.gz + "/shell.nix")'
    $ jupyter labextension install jupyterlab_robotmode --app-dir=.jupyterlab
    $ jupyter lab --app-dir=.jupyterlab
    $ exit
@@ -158,7 +158,7 @@ Development environment with Nix:
 
 .. code:: bash
 
-    $ git clone https://github.com/datakurre/robotkernel.git
+    $ git clone https://github.com/robots-from-jupyter/robotkernel.git
     $ cd robotkernel
     $ nix-build setup.nix -A env  # to generate ./result/bin/python for IDE
     $ nix-shell setup.nix -A develop
