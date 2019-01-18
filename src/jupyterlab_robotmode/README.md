@@ -26,6 +26,11 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.0.0 (xxxx-xx-xx)
+
+- Replaced with compatible implementation from
+  https://github.com/gtri/irobotframework
+
 ### 1.1.1 (2018-01-11)
 
 - Fix ssue where only the first variable in cell was highlighted
