@@ -16,4 +16,5 @@ syntax: glob
 /result
 /selenium-screenshot-*.png
 /src/jupyterlab_robotmode/node_modules/
+/src/jupyterlab_robotmode/lib/
 /tmp/

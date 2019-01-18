@@ -1,5 +1,6 @@
 /*
   Copyright (c) 2018 Georgia Tech Research Corporation
+  Copyright (c) 2019 Asko Soukka <asko.soukka@iki.fi>
   Distributed under the terms of the BSD-3-Clause License
 */
 
@@ -80,7 +81,7 @@ const RULES_TABLE: ISimpleState[] = Object.keys(TABLE_NAMES).map(
   (next: string) => {
     return r(
       TABLE_NAMES[next],
-      ['bracket', 'header.link', 'header.link', 'header.link'],
+      ['bracket', 'header', 'header', 'header'],
       {
         next,
         sol: true
