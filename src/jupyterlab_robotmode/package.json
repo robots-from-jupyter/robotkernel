@@ -7,7 +7,7 @@
     "url": "https://github.com/robots-from-jupyter/robotkernel/issues"
   },
   "dependencies": {
-    "@jupyterlab/application": "^0.19.1"
+    "@jupyterlab/application": "^0.18.4"
   },
   "peerDependencies": {
     "codemirror": "~5.39.0"
