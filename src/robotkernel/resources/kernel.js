@@ -15,7 +15,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 /*
   An implementation of syntax highlighting for robot framework 3.1.
 
@@ -252,31 +251,24 @@ states.variable_index = [
     r(/\]/, 'bracket', { pop: true }),
     r(/[^\]]/, 'string')
 ];
-/** well-known mime type for robot framework (pygments, etc.) */
-exports.MIME_TYPE = 'text/x-robotframework';
-/** the canonical CodeMirror mode name */
-exports.MODE_NAME = 'robotframework';
-/** the human-readable name of the CodeMirror mode */
-exports.MODE_LABEL = 'robotframework';
-/** primary file extension */
-exports.DEFAULT_EXTENSION = 'robot';
-/** all recognized file extensions */
-exports.EXTENSIONS = [exports.DEFAULT_EXTENSION, 'resource'];
+
 /** the actual exported function that will install the mode in CodeMirror */
 function defineRobotMode() {
     var _CodeMirror = CodeMirror;
-    _CodeMirror.defineSimpleMode(exports.MODE_NAME, __assign({ meta: {
+    _CodeMirror.defineSimpleMode('robotframework', __assign({ meta: {
             dontIndentStates: ['comment'],
             lineComment: '#'
         } }, states));
-    CodeMirror.defineMIME(exports.MIME_TYPE, exports.MODE_NAME);
+    CodeMirror.defineMIME(
+        'text/x-robotframework',
+        'robotframework'
+    );
     CodeMirror.modeInfo.push({
-        ext: exports.EXTENSIONS,
-        mime: exports.MIME_TYPE,
-        mode: exports.MODE_NAME,
-        name: exports.MODE_LABEL
+        ext: ['robot', 'resource'],
+        mime: 'text/x-robotframework',
+        mode: 'robotframework',
+        name: 'robotframework'
     });
 }
-exports.defineRobotMode = defineRobotMode;
 /** install the mode */
 defineRobotMode();
