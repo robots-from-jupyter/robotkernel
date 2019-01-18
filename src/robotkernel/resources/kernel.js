@@ -4,7 +4,6 @@
   Copyright (c) 2019 Asko Soukka <asko.soukka@iki.fi>
   Distributed under the terms of the BSD-3-Clause License
 */
-var exports = {};
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
