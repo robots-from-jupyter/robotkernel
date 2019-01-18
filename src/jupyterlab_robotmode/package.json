@@ -37,7 +37,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "prepare": "cross-env NODE_ENV=production npm run build"
   },
   "types": "lib/index.d.ts"
 }

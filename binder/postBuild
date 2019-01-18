@@ -3,5 +3,5 @@ curl -L https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodr
 tar -xzf geckodriver.tar.gz -C /srv/conda/bin/
 pip install -e .
 python -m robotkernel.install --sys-prefix
-cd src/jupyterlab_robotmode && npm install && npm build && cd ../..
+cd src/jupyterlab_robotmode && npm install && npm run build && cd ../..
 jupyter labextension install src/jupyterlab_robotmode
