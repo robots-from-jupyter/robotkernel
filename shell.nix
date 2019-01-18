@@ -70,7 +70,6 @@ let self = rec {
     json = builtins.toJSON {
       load_extensions = {
         "rise/main" = true;
-        "python-markdown/main" = true;
         "vim_binding/vim_binding" = if vim then true else false;
       };
       keys = {
