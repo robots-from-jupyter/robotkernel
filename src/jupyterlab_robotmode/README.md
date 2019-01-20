@@ -26,7 +26,7 @@ jupyter labextension link .
 
 ## Changelog
 
-### 2.0.2 (2019-01-20)
+### 2.0.3 (2019-01-20)
 
 - Loosen jupyterlab version requirements
 
