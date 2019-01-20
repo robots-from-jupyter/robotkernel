@@ -1,13 +1,13 @@
 {
   "name": "jupyterlab_robotmode",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A JupyterLab extensions, which adds CodeMirror mode for Robot Framework syntax",
   "author": "Asko Soukka",
   "bugs": {
     "url": "https://github.com/robots-from-jupyter/robotkernel/issues"
   },
   "dependencies": {
-    "@jupyterlab/application": "~0.18.4"
+    "@jupyterlab/application": "^0.18.4 || ^0.19.1"
   },
   "peerDependencies": {
     "codemirror": "~5.39.0"
