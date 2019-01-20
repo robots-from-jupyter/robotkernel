@@ -19,13 +19,16 @@ from robotkernel.listeners import ReturnValueListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import SeleniumConnectionsListener
 from robotkernel.listeners import StatusEventListener
+from robotkernel.listeners import WhiteLibraryListener
 from robotkernel.model import TestCaseString
 from robotkernel.nbreader import NotebookReader
 from robotkernel.selectors import clear_selector_highlights
 from robotkernel.selectors import get_autoit_selector_completions
 from robotkernel.selectors import get_selector_completions
+from robotkernel.selectors import get_white_selector_completions
 from robotkernel.selectors import is_autoit_selector
 from robotkernel.selectors import is_selector
+from robotkernel.selectors import is_white_selector
 from robotkernel.utils import data_uri
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
@@ -176,7 +179,8 @@ class RobotKernel(Kernel):
         self.robot_history = OrderedDict()
         self.robot_variables = []
         for driver in self.robot_connections:
-            driver['instance'].quit()
+            if hasattr(driver['instance'], 'quit'):
+                driver['instance'].quit()
         self.robot_connections = []
 
     def do_complete(self, code, cursor_pos):
@@ -205,6 +209,8 @@ class RobotKernel(Kernel):
                 matches = get_selector_completions(needle.rstrip(), driver)
         elif is_autoit_selector(needle):
             matches = get_autoit_selector_completions(needle)
+        elif is_white_selector(needle):
+            matches = get_white_selector_completions(needle)
         else:
             # Clear selector completion highlights
             for driver in yield_current_connection(self.robot_connections,
@@ -241,7 +247,7 @@ class RobotKernel(Kernel):
         }
 
         results = []
-        if needle:
+        if needle and lunr_query(needle):
             query = lunr_query(needle)
             results = self.robot_catalog['index'].search(query)
             results += self.robot_catalog['index'].search(query.strip('*'))
@@ -402,6 +408,7 @@ class RobotKernel(Kernel):
             )
         listener.append(SeleniumConnectionsListener(self.robot_connections))
         listener.append(AppiumConnectionsListener(self.robot_connections))
+        listener.append(WhiteLibraryListener(self.robot_connections))
         listener.append(RobotKeywordsIndexerListener(self.robot_catalog))
 
         stdout = StringIO()

@@ -119,6 +119,15 @@ class ReturnValueListener:
         self.callback(self.return_value)
 
 
+def clear_drivers(drivers, type_):
+    remained = []
+    for driver in drivers:
+        if driver.get('type') != type_:
+            remained.append(driver)
+    drivers.clear()
+    drivers.extend(remained)
+
+
 # noinspection PyProtectedMember
 def get_webdrivers(cache, type_):
     drivers = []
@@ -169,7 +178,7 @@ class SeleniumConnectionsListener:
                 instance = builtin.get_library_instance('SeleniumLibrary')
             except RuntimeError:
                 instance = builtin.get_library_instance('Selenium2Library')
-            self.drivers.clear()
+            clear_drivers(self.drivers, 'selenium')
             self.drivers.extend(get_webdrivers(instance._drivers, 'selenium'))
         except RuntimeError:
             pass
@@ -198,7 +207,7 @@ class AppiumConnectionsListener:
         try:
             builtin = BuiltIn()
             instance = builtin.get_library_instance('AppiumLibrary')
-            self.drivers.clear()
+            clear_drivers(self.drivers, 'appium')
             self.drivers.extend(get_webdrivers(instance._cache, 'appium'))
         except RuntimeError:
             pass
@@ -209,5 +218,46 @@ class AppiumConnectionsListener:
             builtin = BuiltIn()
             instance = builtin.get_library_instance('AppiumLibrary')
             set_webdrivers(self.drivers, instance._cache, 'appium')
+        except RuntimeError:
+            pass
+
+
+class WhiteLibraryListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, drivers: list):
+        self.drivers = drivers
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def end_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance('WhiteLibrary')
+            clear_drivers(self.drivers, 'white')
+            self.drivers.append(
+                dict(
+                    instance=(
+                        getattr(instance, 'app', None),
+                        getattr(instance, 'window', None),
+                        getattr(instance, 'screenshotter', None),
+                    ),
+                    aliases=[],
+                    current=True,
+                    type='white',
+                ),
+            )
+        except RuntimeError:
+            pass
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def start_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance('WhiteLibrary')
+            for driver in self.drivers:
+                if driver.get('type') == 'white' and driver.get('current'):
+                    setattr(instance, 'app', driver['instance'][0])
+                    setattr(instance, 'window', driver['instance'][1])
+                    setattr(instance, 'screenshotter', driver['instance'][2])
         except RuntimeError:
             pass

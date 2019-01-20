@@ -5,6 +5,13 @@ import time
 
 
 try:
+    import WhiteLibrary
+    from robotkernel.selectors_white import PickSnipTool
+except ImportError:
+    WhiteLibrary = None
+    PickSnipTool = None
+
+try:
     import pywintypes
     import win32com.client
     try:
@@ -37,6 +44,7 @@ IS_SELENIUM_SELECTOR_NEEDLE = re.compile(
 )
 IS_APPIUM_SELECTOR_NEEDLE = re.compile(r'^id=|^id:|^xpath=|^xpath:')
 IS_AUTOIT_SELECTOR_NEEDLE = re.compile(r'^strTitle=|^strControl=')
+IS_WHITE_SELECTOR_NEEDLE = re.compile(r'^ae=|^ae:')
 IS_ID_SELECTOR_NEEDLE = re.compile(r'^id=|^id:')
 IS_NAME_SELECTOR_NEEDLE = re.compile(r'^name=|^name:')
 IS_CSS_SELECTOR_NEEDLE = re.compile(r'^css=|^css:')
@@ -108,6 +116,13 @@ def is_appium_selector(needle):
 
 def is_autoit_selector(needle):
     return bool(IS_AUTOIT_SELECTOR_NEEDLE.match(needle))
+
+
+def is_white_selector(needle):
+    if PickSnipTool is None:
+        return False
+    else:
+        return bool(IS_WHITE_SELECTOR_NEEDLE.match(needle))
 
 
 def is_selector(needle):
@@ -202,6 +217,31 @@ def get_appium_selector_completions(needle, driver):
 def get_autoit_selector_completions(needle, driver=AutoIt):
     if driver:
         results = _get_autoit_selector_completions(needle, driver)
+        return [r for r in results if r]
+    else:
+        return []
+
+
+def _get_white_selector_completions(needle, driver):
+    result = driver().pick()
+    if result:
+        return [
+            completion for completion in [
+                f'id={result["AutomationIdProperty"]}',
+                f'text={result["NameProperty"]}',
+                f'help_text={result["HelpTextProperty"]}',
+                f'class_name={result["ClassNameProperty"]}',
+                f'control_type={result["ControlTypeProperty"]}',
+            ] if completion.split('=', 1)[-1]
+        ]
+    else:
+        return []
+
+
+def get_white_selector_completions(needle, driver=PickSnipTool):
+    # while only picker is implemented, we don't really use the needle
+    if driver:
+        results = _get_white_selector_completions(needle, driver)
         return [r for r in results if r]
     else:
         return []
