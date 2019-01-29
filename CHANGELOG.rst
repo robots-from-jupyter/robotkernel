@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.11.0 (unreleased)
+0.11.0 (2019-01-29)
 -------------------
 
 - Add WhiteLibrary state support and interactive element picker
