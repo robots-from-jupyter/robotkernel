@@ -38,7 +38,7 @@
     "build": "tsc",
     "clean": "rimraf lib",
     "watch": "tsc -w",
-    "prepare": "NODE_ENV=production npm run build"
+    "prepare": "npm run build"
   },
   "types": "lib/index.d.ts"
 }
