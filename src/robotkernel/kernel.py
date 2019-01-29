@@ -436,8 +436,9 @@ class RobotKernel(Kernel):
                 })
 
         # Display result of the last keyword
-        elif (return_values and return_values[-1] not in [None, '', b'']
-              and not silent):
+        elif (len(return_values) and return_values[-1] is not None
+              and return_values[-1] is not '' and return_values[-1] is not b''
+              and not silent):  # this comparison is "numpy compatible"
             bundle, metadata = to_mime_and_metadata(return_values[-1])
             if bundle:
                 self.send_execute_result(bundle, metadata)

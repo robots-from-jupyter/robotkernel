@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 import pkg_resources
 import re
 import time
-
 
 try:
     import WhiteLibrary
@@ -44,7 +44,7 @@ IS_SELENIUM_SELECTOR_NEEDLE = re.compile(
 )
 IS_APPIUM_SELECTOR_NEEDLE = re.compile(r'^id=|^id:|^xpath=|^xpath:')
 IS_AUTOIT_SELECTOR_NEEDLE = re.compile(r'^strTitle=|^strControl=')
-IS_WHITE_SELECTOR_NEEDLE = re.compile(r'^ae=|^ae:')
+IS_WHITE_SELECTOR_NEEDLE = re.compile(r'^ae=|^ae:|^template=|^template:')
 IS_ID_SELECTOR_NEEDLE = re.compile(r'^id=|^id:')
 IS_NAME_SELECTOR_NEEDLE = re.compile(r'^name=|^name:')
 IS_CSS_SELECTOR_NEEDLE = re.compile(r'^css=|^css:')
@@ -223,17 +223,32 @@ def get_autoit_selector_completions(needle, driver=AutoIt):
 
 
 def _get_white_selector_completions(needle, driver):
-    result = driver().pick()
-    if result:
-        return [
-            completion for completion in [
-                f'id={result["AutomationIdProperty"]}',
-                f'text={result["NameProperty"]}',
-                f'help_text={result["HelpTextProperty"]}',
-                f'class_name={result["ClassNameProperty"]}',
-                f'control_type={result["ControlTypeProperty"]}',
-            ] if completion.split('=', 1)[-1]
-        ]
+    if needle in ['ae=', 'ae:']:
+        result = driver().pick()
+        if result:
+            return [
+                completion for completion in [
+                    f'id={result["AutomationIdProperty"]}',
+                    f'text={result["NameProperty"]}',
+                    f'help_text={result["HelpTextProperty"]}',
+                    f'class_name={result["ClassNameProperty"]}',
+                    f'control_type={result["ControlTypeProperty"]}',
+                ] if completion.split('=', 1)[-1]
+            ]
+        else:
+            return []
+    elif needle in ['template=', 'template:']:
+        result = driver().pick(snip=True)
+        if result and 'bytes' in result:
+            filename = f'{int(time.time())}.png'
+            with open(os.path.join(os.getcwd(), filename), 'bw') as fp:
+                fp.write(result['bytes'])
+            return [
+                f'template=${{EXECDIR}}{os.path.sep * 2}{filename}',
+            ]
+        else:
+            return []
+
     else:
         return []
 
