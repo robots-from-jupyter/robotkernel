@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.1.1 (2019-01-29)
+
+- Fix packaging issue in 2.1.0
+
 ### 2.1.0 (2019-01-29)
 
 - Add to highlight : as operator in keyword arguments to better
