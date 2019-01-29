@@ -26,6 +26,14 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.1.0 (2019-01-29)
+
+- Add to highlight : as operator in keyword arguments to better
+  highligh SeleniumLibrary locators
+
+- Add support for highlighting loops and other fixes from
+  https://github.com/gtri/irobotframework/pull/1
+
 ### 2.0.3 (2019-01-20)
 
 - Loosen jupyterlab version requirements
