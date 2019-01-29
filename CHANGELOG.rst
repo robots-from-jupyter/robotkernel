@@ -1,11 +1,15 @@
 Changelog
 =========
 
-0.10.3 (unreleased)
+0.11.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add WhiteLibrary state support and interactive element picker
+  [datakurre]
 
+- Add WhiteLibraryCompanion keyword library to interactively
+  select elements and click elements with OpenCV templates
+  [datakurre]
 
 0.10.2 (2019-01-11)
 -------------------
