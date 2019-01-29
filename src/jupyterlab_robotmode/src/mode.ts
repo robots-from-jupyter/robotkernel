@@ -70,10 +70,10 @@ function r(
 
 /** Possible Robot Framework table names. Group count is important.  */
 const TABLE_NAMES: { [key: string]: RegExp } = {
-  keywords: /(\|\s)?(\*+\s*)(user keywords?|keywords?)(\s*\**)/i,
-  settings: /(\|\s)?(\*+\s*)(settings?)(\s*\**)/i,
-  test_cases: /(\|\s)?(\*+\s*)(tasks?|test cases?)(\s*\**)/i,
-  variables: /(\|\s)?(\*+\s*)(variables?)(\s*\**)/i
+  keywords: /(\|\s)?(\*+ *)(user keywords?|keywords?)( *\**)/i,
+  settings: /(\|\s)?(\*+ *)(settings?)( *\**)/i,
+  test_cases: /(\|\s)?(\*+ *)(tasks?|test cases?)( *\**)/i,
+  variables: /(\|\s)?(\*+ *)(variables?)( *\**)/i
 };
 
 /** Enumerate the possible rules  */
@@ -106,9 +106,9 @@ const VAR_NUM = /0(b[01]+|o[0-7]+|x[0-9a-f]+)|(\d+)(\.\d+)?(e-?(\d+)(\.\d+)?)?/i
 const VAR_BUILTIN = /(none|(cur|temp|exec)dir|\/|:|\\n|true|empty|false|null|space|test (name|documentation|status|message|tags)|prev test (name|status|message)|suite (name|source|documentation|status|message|metadata)|keyword (status|message)|(report|debug) file|log (file|level)|output (dir|file))(?=[.}]|\s+[*\-+\\%&|=><!])/i;
 
 /** a rule for the beginning of the variable state */
-const RULE_VAR_START = r(VAR_START, 'variable', { push: 'variable' });
+const RULE_VAR_START = r(VAR_START, 'variable-2', { push: 'variable' });
 /** a rule for the end of the variable state */
-const RULE_VAR_END = r(VAR_END, 'variable');
+const RULE_VAR_END = r(VAR_END, 'variable-2');
 
 /** a rule for a number */
 const RULE_NUM = r(VAR_NUM, 'number');
@@ -120,43 +120,57 @@ const RULE_DOUBLE_STRING_START = r(/"/, 'string', { push: 'double_string' });
 
 /** a rule for capturing tags (and friends) in keyword/test/task definitions */
 const RULE_TAGS = r(
-  /([| ]* *)(\[\s*)(tags)(\s*\])( *\|?)/i,
-  ['bracket', 'atom', 'atom', 'atom', 'bracket'],
+  /([|\s]*\s*)(\[\s*)(tags)(\s*\])(\s*\|?)/i,
+  ['bracket', 'meta', 'meta', 'meta', 'bracket'],
   { sol: true, push: 'tags' }
 );
 
 /** rule for special case of applying tags at the suite level */
-const RULE_SUITE_TAGS = r(/(force tags|default tags)(  +)/i, ['atom', null], {
+const RULE_SUITE_TAGS = r(/(force tags|default tags)(  +)/i, ['meta', null], {
   push: 'tags',
   sol: true
 });
 /** rule for special case of applying tags at the suite level (with pipes) */
 const RULE_SUITE_TAGS_PIPE = r(
   /(\| +)(force tags|default tags)( *\|?)/i,
-  ['bracket', 'atom', 'bracket'],
+  ['bracket', 'meta', 'bracket'],
   { sol: true, push: 'tags' }
 );
 
 /** rule for bracketed settings of keyword/test/task */
 const RULE_SETTING_KEYWORD = r(
-  /([| ]* *)(\[\s*)(setup|teardown|template)(\s*\])( *\|?)/i,
-  ['bracket', 'atom', 'atom', 'atom', 'bracket'],
+  /([|\s]*)(\[\s*)(setup|teardown|template)(\s*\])(\s*\|?)/i,
+  ['bracket', 'meta', 'meta', 'meta', 'bracket'],
   { push: 'keyword_invocation', sol: true }
 );
 
 /** rule for bracketed settings of keyword/test/task that include a keyword */
 const RULE_SUITE_SETTING_KEYWORD = r(
-  /(suite setup|suite teardown|test setup|test teardown|test template|task setup|task teardown|task template)(  +)/i,
-  ['atom', null],
+  /(suite setup|suite teardown|test setup|test teardown|test template|task setup|task teardown|task template)(\t|  +)/i,
+  ['meta', null],
   { push: 'keyword_invocation', sol: true }
 );
 
 /** rule for bracketed settings of keyword/test/task that include a keyword (with pipes) */
 const RULE_SUITE_SETTING_KEYWORD_PIPE = r(
   /(\| +)(suite setup|suite teardown|test setup|test teardown|test template|task setup|task teardown|task template)( +\|)/i,
-  ['bracket', 'atom', 'bracket'],
+  ['bracket', 'meta', 'bracket'],
   { push: 'keyword_invocation', sol: true }
 );
+
+const RULE_SETTING_LIBRARY = r(/(library)(\t|  +)/i, ['meta', null], {
+  push: 'library',
+  sol: true
+});
+
+const RULE_SETTING_LIBRARY_PIPE = r(
+  /(\| +)(library)( +\|)/i,
+  ['bracket', 'meta', 'bracket'],
+  { push: 'library', sol: true }
+);
+
+/** rule to escape the final closing bracket of a var at the end of a line */
+const RULE_LINE_ENDS_WITH_VAR = r(/\}(?=$)/, 'variable-2', { pop: true });
 
 /** collects the states that we build */
 const states: IStates = {};
@@ -167,16 +181,15 @@ const base = [
   RULE_VAR_START,
   RULE_VAR_END,
   r(/\|/, 'bracket'),
-  r(/[\.]{3}/, 'bracket'),
   r(/#.*$/, 'comment'),
   r(/\\ +/, 'bracket'),
   r(/\\(?=$)/, 'bracket'),
-  r(/([^ =]*)(=)/, ['attribute', 'operator']),
+  r(/([^\s=]*)(=)/, ['attribute', 'operator']),
   r(/_\*.*?\*_/, 'string.strong.em'),
   r(/\*.*?\*/, 'string.strong'),
   r(/\_.*?\_/, 'string.em'),
   // this is pretty extreme, but seems to work
-  r(/[^ \$]+/, 'string')
+  r(/[^\s\$]+/, 'string')
 ];
 
 /** the starting state (begining of a file) */
@@ -185,7 +198,7 @@ states.start = [
     mode: { spec: 'ipython' },
     sol: true
   }),
-  r(/(%%[^ ]*).*$/, 'meta', { sol: true }),
+  r(/(%%[^\s]*).*$/, 'meta', { sol: true }),
   ...base
 ];
 
@@ -195,83 +208,187 @@ states.settings = [
   RULE_SUITE_TAGS,
   RULE_SUITE_SETTING_KEYWORD_PIPE,
   RULE_SUITE_SETTING_KEYWORD,
+  RULE_SETTING_LIBRARY,
+  RULE_SETTING_LIBRARY_PIPE,
   r(
-    /(\|* *)(library|resource|variables|documentation|metadata|test timeout|task timeout)( *)/i,
-    ['bracket', 'atom', null],
+    /(\|*\s*)(resource|variables|documentation|metadata|test timeout|task timeout)(\s*)/i,
+    ['bracket', 'meta', null],
     { sol: true }
   ),
   ...base
 ];
 
-/** pattern for starting keywords */
-const KEY_START = /(  +)/;
-/** pattern for starting keywords (with pipes) */
-const KEY_START_PIPE = /(\| *\|)( +)/;
-/** pattern for starting behavior-driven-development keywords */
-const KEY_BDD_START = /(\| *\| *|  +)?(given|when|then|and|but)/i;
+states.library = [
+  RULE_LINE_ENDS_WITH_VAR,
+  r(/WITH NAME$/, 'atom', { pop: true }),
+  r(/WITH NAME/, 'atom'),
+  r(/[^\}\|\s]*$/, 'string', { pop: true }),
+  ...base
+];
+
+const RULE_ELLIPSIS = r(/(\s*)(\.\.\.)/, [null, 'bracket']);
 
 /** rule for behavior-driven-development keywords */
-const RULE_START_BDD = r(KEY_BDD_START, ['bracket', 'builtin.em'], {
-  push: 'keyword_invocation',
-  sol: true
-});
+const RULE_START_BDD = r(
+  /(\|\s*\|\s*|\s\s+)?(given|when|then|and|but)/i,
+  ['bracket', 'builtin.em'],
+  {
+    push: 'keyword_invocation',
+    sol: true
+  }
+);
 /** rule for whitespace keywords */
-const RULE_KEY_START = r(KEY_START, null, {
+const RULE_KEY_START = r(/(\t+|  +)(?!\.\.\.)/, null, {
   push: 'keyword_invocation',
   sol: true
 });
 /** rule for pipe keywords */
-const RULE_KEY_START_PIPE = r(KEY_START_PIPE, ['bracket', null], {
+const RULE_KEY_START_PIPE = r(/(\|\s*\|)(\s+)/, ['bracket', null], {
   push: 'keyword_invocation',
   sol: true
 });
+/** rule for for old-style loops (slashes) */
+const RULE_START_LOOP_OLD = r(
+  /(\s\|*\s*)(:FOR)(\s\|*\s*)/,
+  [null, 'atom', null],
+  {
+    push: 'loop_start_old',
+    sol: true
+  }
+);
+/** rule for for new-style loops (slashes) */
+const RULE_START_LOOP_NEW = r(
+  /(\s\|*\s*)(FOR)(\s\|*\s*)/,
+  [null, 'atom', null],
+  {
+    push: 'loop_start_new',
+    sol: true
+  }
+);
 
 /** rules for capturing individual tags */
 states.tags = [
-  r(/ \| */, 'bracket'),
+  r(/\s\|\s*/, 'bracket'),
   r(/^($|\n)/, null, { pop: true }),
   RULE_VAR_START,
-  r(/\}(?=$)/, 'variable', { pop: true }),
+  RULE_LINE_ENDS_WITH_VAR,
   RULE_VAR_END,
-  r(/^ *(?=$)/, null, { pop: true }),
+  r(/^\s*(?=$)/, null, { pop: true }),
   r(/ +/, null),
   r(/[^\$&%@]*?(?=(  +| \|))/, 'tag'),
-  r(/[^\$&%@]*?(?= *\|?$)/, 'tag', { pop: true }),
+  r(/[^\$&%@]*?(?=\s*\|?$)/, 'tag', { pop: true }),
   // fall back to single char
   r(/[^\$&%@|]/, 'tag')
 ];
 
-/** rules for data rows inside a keyword definition */
-states.keywords = [
-  RULE_TAGS,
-  RULE_SETTING_KEYWORD,
-  r(
-    /([\| ]* *)(\[\s*)(arguments|documentation|return|timeout)(\s*\])( *\|?)/i,
-    ['bracket', 'atom', 'atom', 'atom', 'bracket'],
-    { sol: true }
-  ),
+/** need to catch empty white lines pretty explicitly */
+const RULE_WS_LINE = r(/\s*(?=$)/, null, { sol: true });
+
+/** not a state. rules for starting keyword invocation */
+const RULES_KEYWORD_INVOKING = [
   RULE_START_BDD,
   RULE_KEY_START_PIPE,
   RULE_KEY_START,
-  r(/\| (?=[^ ]*\|)/, null, { sol: true, push: 'keyword_invocation' }),
-  r(/(?=[^ ])/, null, { sol: true, push: 'keyword_invocation' }),
+  r(/\|\s(?=[^\s]*\|)/, null, { sol: true, push: 'keyword_invocation' }),
+  r(/(?=[^\s])/, null, { sol: true, push: 'keyword_invocation' })
+];
+
+/** rules for data rows inside a keyword table */
+states.keywords = [
+  RULE_ELLIPSIS,
+  RULE_TAGS,
+  RULE_SETTING_KEYWORD,
+  r(
+    /([\|\s]*\s*)(\[\s*)(arguments|documentation|return|timeout)(\s*\])(\s*\|?)/i,
+    ['bracket', 'meta', 'meta', 'meta', 'bracket'],
+    { sol: true }
+  ),
+  r(/(?=[^\s$&%@*|]+)/, null, { sol: true, push: 'keyword_def' }),
+  RULE_START_LOOP_OLD,
+  RULE_START_LOOP_NEW,
+  RULE_WS_LINE,
+  ...RULES_KEYWORD_INVOKING,
+  ...base
+];
+
+/** a keyword name fragment before an inline variable */
+const KEYWORD_WORD_BEFORE_VAR = /([^\s]*?(?=[\$&%@]\{))/i;
+/** a keyword name fragment before a separator */
+const KEYWORD_WORD_BEFORE_SEP = /[^\s\|]+(?=$|[|]|\t)/;
+/** a keyword name fragment before a non-separator whitespace character */
+const KEYWORD_WORD_BEFORE_WS = /([^\n\$\s*=\|]+?(?= ))/i;
+
+states.keyword_def = [
+  RULE_VAR_START,
+  r(/\}(?=$)/, 'variable-2'),
+  RULE_VAR_END,
+  r(/ /, null),
+  r(KEYWORD_WORD_BEFORE_VAR, 'def'),
+  r(KEYWORD_WORD_BEFORE_SEP, 'def', { pop: true }),
+  r(KEYWORD_WORD_BEFORE_WS, 'def'),
+  r(/(?=$)/, null, { sol: true, pop: true })
+];
+
+/** A range as used in for loops */
+const RULE_RANGE = r(/([\|\s]*\s*)(IN)( RANGE| ENUMERATE| ZIP)?/, [
+  null,
+  'atom',
+  'atom'
+]);
+
+states.loop_start_new = [
+  RULE_RANGE,
+  r(/[.]{3}/, 'bracket'),
+  RULE_VAR_START,
+  r(/\}(?=$)/, 'variable-2'),
+  RULE_VAR_END,
+  r(/([\|\s]*\s*)(END)/, [null, 'atom'], { sol: true, pop: true }),
+  RULE_WS_LINE,
+  ...RULES_KEYWORD_INVOKING,
+  ...base
+];
+
+states.loop_start_old = [
+  r(/(?=.*)/, null, { sol: true, next: 'loop_body_old' }),
+  RULE_RANGE,
+  RULE_VAR_START,
+  r(/\}(?=$)/, 'variable-2'),
+  RULE_VAR_END,
+  ...base
+];
+
+states.loop_body_old = [
+  ...RULES_KEYWORD_INVOKING.map(rule => {
+    return {
+      ...rule,
+      regex: new RegExp(
+        /([\|\s]*\s*)(\\)/.source +
+          (rule.regex instanceof RegExp ? rule.regex.source : rule.regex)
+      ),
+      token:
+        rule.token instanceof Array
+          ? [null, 'bracket', ...rule.token]
+          : [null, 'bracket', rule.token]
+    };
+  }),
+  r(/(?=\s+[^\\])/, null, { pop: true, sol: true }),
   ...base
 ];
 
 /** rules for data rows inside test/task definition */
 states.test_cases = [
+  RULE_ELLIPSIS,
   RULE_TAGS,
   RULE_SETTING_KEYWORD,
   r(
-    /([\| ]* *)(\[\s*)(documentation|timeout)(\s*\])/i,
-    ['bracket', 'atom', 'atom', 'atom'],
+    /([\|\s]*\s*)(\[\s*)(documentation|timeout)(\s*\])/i,
+    ['bracket', 'meta', 'meta', 'meta'],
     { sol: true }
   ),
-  RULE_START_BDD,
-  RULE_KEY_START_PIPE,
-  RULE_KEY_START,
+  RULE_START_LOOP_OLD,
+  RULE_START_LOOP_NEW,
   r(
-    /(\| +)([^ *\|\.][^\|]*?)( *)(\|?$)/,
+    /(\|\s+)([^\s*\|\.][^\|]*?)(\s*)(\|?$)/,
     ['bracket', 'string.header', 'bracket'],
     {
       sol: true
@@ -280,24 +397,26 @@ states.test_cases = [
   r(/(\| +)(.+?)( \| )/, ['bracket', 'string.header', 'bracket'], {
     sol: true
   }),
-  r(/([^| *].+$)/, 'string.header', { sol: true }),
+  r(/([^|\s*].+$)/, 'string.header', { sol: true }),
+  RULE_WS_LINE,
+  ...RULES_KEYWORD_INVOKING,
   ...base
 ];
 
 /** rules for inside of an invoked keyword instance */
 states.keyword_invocation = [
-  r(/^(?= *$)/, null, { pop: true }),
+  r(/(?=\s*$)/, null, { pop: true }),
+  r(/(\\|\.\.\.) +/, 'bracket', { pop: true }),
   RULE_VAR_START,
-  r(/\}(?=$)/, 'variable', { pop: true }),
+  RULE_LINE_ENDS_WITH_VAR,
   RULE_VAR_END,
   r(/#.*$/, 'comment', { pop: true }),
   r(/( \| |  +)/, 'bracket', { pop: true }),
   r(/ ?=(  +)/, 'operator'),
-  r(/(\\|[\.]{3}) +/, 'bracket', { pop: true }),
   r(/ /, null),
-  r(/([^ ]*?(?=[\$&%@]\{))/i, 'keyword'),
-  r(/[^ \|]+(?=$|[|])/, 'keyword', { pop: true }),
-  r(/([^\n\$ *=\|]+?(?= ))/i, 'keyword'),
+  r(KEYWORD_WORD_BEFORE_VAR, 'keyword'),
+  r(KEYWORD_WORD_BEFORE_SEP, 'keyword', { pop: true }),
+  r(KEYWORD_WORD_BEFORE_WS, 'keyword'),
   ...base
 ];
 
@@ -312,9 +431,9 @@ states.variable = [
   r(VAR_OP, 'operator'),
   r(/\./, 'operator', { push: 'variable_property' }),
   r(/\[/, 'bracket', { next: 'variable_index' }),
-  r(/\}(?=\[)/, 'variable'),
-  r(/[^}\n$]/, 'variable'),
-  r(/^(?=\})/, 'variable', { pop: true })
+  r(/\}(?=\[)/, 'variable-2'),
+  r(/[^}\n$]/, 'variable-2'),
+  r(/^(?=\})/, 'variable-2', { pop: true })
 ];
 
 /** rules for extended syntax in a variable reference */
@@ -327,11 +446,11 @@ states.variable_property = [
   r(VAR_OP, 'operator'),
   r(/\(/, 'bracket'),
   r(/\)/, 'bracket', { pop: true }),
-  r(/([a-z_][a-z_\d]*)(=)/i, ['variable', 'operator']),
+  r(/([a-z_][a-z_\d]*)(=)/i, ['variable-2', 'operator']),
   r(/,/, 'punctuation'),
   r(/[^}](?=\})/, 'property', { pop: true }),
-  r(/(^\})( *(?=$|\n))/, ['bracket', null], { pop: true }),
-  r(/^ *(?=$|\n)/, null, { pop: true }),
+  r(/(^\})(\s*(?=$|\n))/, ['bracket', null], { pop: true }),
+  r(/^\t*(?=$|\n)/, null, { pop: true }),
   r(/[^}]/, 'property')
 ];
 
@@ -355,7 +474,7 @@ states.variable_index = [
   RULE_NUM,
   r(/\[/, 'bracket'),
   r(/\](?=\])/, 'bracket'),
-  r(/(\])(\})( ?=?)/, ['bracket', 'variable', 'operator'], { pop: true }),
+  r(/(\])(\})( ?=?)/, ['bracket', 'variable-2', 'operator'], { pop: true }),
   r(/(\])(\[)/, 'bracket'),
   r(/\]/, 'bracket', { pop: true }),
   r(/[^\]]/, 'string')
