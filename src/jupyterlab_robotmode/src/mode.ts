@@ -447,6 +447,7 @@ states.variable_property = [
   r(/\(/, 'bracket'),
   r(/\)/, 'bracket', { pop: true }),
   r(/([a-z_][a-z_\d]*)(=)/i, ['variable-2', 'operator']),
+  r(/([a-z_][a-z_\d]*)(:)/i, ['variable-2', 'operator']),
   r(/,/, 'punctuation'),
   r(/[^}](?=\})/, 'property', { pop: true }),
   r(/(^\})(\s*(?=$|\n))/, ['bracket', null], { pop: true }),
