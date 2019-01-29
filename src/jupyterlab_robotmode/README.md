@@ -26,14 +26,16 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.2.0 (2019-01-29)
+
+- Add to highlight : as operator in keyword arguments to better
+  highligh SeleniumLibrary locators
+
 ### 2.1.1 (2019-01-29)
 
 - Fix packaging issue in 2.1.0
 
 ### 2.1.0 (2019-01-29)
-
-- Add to highlight : as operator in keyword arguments to better
-  highligh SeleniumLibrary locators
 
 - Add support for highlighting loops and other fixes from
   https://github.com/gtri/irobotframework/pull/1
