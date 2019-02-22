@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
+from functools import partial
 from io import StringIO
 from IPython.core.display import clear_output
 from IPython.core.display import display
@@ -18,6 +19,8 @@ from robotkernel.utils import to_mime_and_metadata
 from tempfile import TemporaryDirectory
 from traceback import format_exc
 from typing import Dict
+from typing import List
+from typing import Tuple
 
 import base64
 import ipywidgets
@@ -110,6 +113,58 @@ def execute_ipywidget(
         )
 
 
+def inject_ipywidget(
+    kernel: DisplayKernel,
+    data: TestCaseString,
+    listeners: list,
+    silent: bool,
+    display_id: str,
+    name: str,
+    arguments: List[Tuple[str, str, str]],
+):
+    def execute(**values):
+        execute_ipywidget(
+            kernel,
+            data,
+            listeners,
+            silent,
+            display_id,
+            name,
+            arguments,
+            values,
+        )
+
+    widgets = []
+    controls = OrderedDict()
+    out = ipywidgets.widgets.Output()
+
+    def update( *args):
+        values = {key: control.value for key, control in controls.items()}
+        with out:
+            clear_output(wait=True)
+            execute(**values)
+
+    for arg in arguments:
+        widgets.append(ipywidgets.widgets.Label(value=arg[1]))
+        widgets.append(ipywidgets.widgets.Text(value=arg[2]))
+        controls[arg[1]] = widgets[-1]
+
+    button = ipywidgets.widgets.Button(description=name)
+    button.on_click(partial(update, name, arguments))
+    widgets.append(button)
+
+    # noinspection PyTypeChecker
+    layout = ipywidgets.widgets.Layout(
+        display='flex',
+        flex_flow='row',
+        flex_wrap='wrap',
+        justify_content='flex-end',
+    )
+    ui = ipywidgets.widgets.Box(widgets, layout=layout)
+    # noinspection PyTypeChecker
+    display(ui, out, display_id=display_id)
+
+
 def inject_ipywidgets(
         kernel: DisplayKernel,
         code: str,
@@ -119,24 +174,20 @@ def inject_ipywidgets(
         display_id: str,
 ):
     code_data = parse_robot(code, {})
-    if len(code_data.keywords) != 1:
-        return
-
-    name = code_data.keywords[0].name
-    arguments = []
-    for arg in code_data.keywords[0].args:
-        if '=' in arg:
-            arg, default = arg.split('=', 1)
-        else:
-            arg, default = arg, None
-        arguments.append((
-            arg,
-            normalize_argument(arg),
-            default,
-        ))
-
-    def execute(**kwargs):
-        execute_ipywidget(
+    for keyword in code_data.keywords:
+        name = keyword.name
+        arguments = []
+        for arg in keyword.args:
+            if '=' in arg:
+                arg, default = arg.split('=', 1)
+            else:
+                arg, default = arg, None
+            arguments.append((
+                arg,
+                normalize_argument(arg),
+                default,
+            ))
+        inject_ipywidget(
             kernel,
             data,
             listeners,
@@ -144,31 +195,7 @@ def inject_ipywidgets(
             display_id,
             name,
             arguments,
-            kwargs,
         )
-
-    widgets = []
-    controls = OrderedDict()
-    out = ipywidgets.widgets.Output()
-
-    def update(*args):
-        kwargs = {key: control.value for key, control in controls.items()}
-        with out:
-            clear_output(wait=True)
-            execute(**kwargs)
-
-    for arg in arguments:
-        widgets.append(ipywidgets.widgets.Label(value=arg[1]))
-        widgets.append(ipywidgets.widgets.Text(value=arg[2]))
-        controls[arg[1]] = widgets[-1]
-
-    button = ipywidgets.widgets.Button(description=name)
-    button.on_click(update)
-    widgets.append(button)
-
-    # noinspection PyTypeChecker
-    ui = ipywidgets.widgets.HBox(widgets)
-    display(ui, out, display_id=display_id)
 
 
 def execute_robot(
