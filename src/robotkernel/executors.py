@@ -138,7 +138,7 @@ def inject_ipywidget(
     controls = OrderedDict()
     out = ipywidgets.widgets.Output()
 
-    def update( *args):
+    def update(*args):
         values = {key: control.value for key, control in controls.items()}
         with out:
             clear_output(wait=True)
@@ -151,14 +151,14 @@ def inject_ipywidget(
 
     button = ipywidgets.widgets.Button(description=name)
     button.on_click(partial(update, name, arguments))
-    widgets.append(button)
+    widgets.insert(0, button)
 
     # noinspection PyTypeChecker
     layout = ipywidgets.widgets.Layout(
         display='flex',
         flex_flow='row',
         flex_wrap='wrap',
-        justify_content='flex-end',
+        justify_content='flex-start',
     )
     ui = ipywidgets.widgets.Box(widgets, layout=layout)
     # noinspection PyTypeChecker
