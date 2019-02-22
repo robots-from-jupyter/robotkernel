@@ -229,3 +229,12 @@ def to_mime_and_metadata(obj) -> (dict, dict):  # noqa: C901
         return {'text/html': to_html(obj)}, {}
     except TypeError:
         return {}, {}
+
+
+def yield_current_connection(connections, types_):
+    for instance in [connection['instance']
+                     for connection in connections
+                     if connection['type'] in types_ and connection['current']
+                     ]:
+        yield instance
+        break
