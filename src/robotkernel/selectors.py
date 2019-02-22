@@ -4,6 +4,7 @@ import pkg_resources
 import re
 import time
 
+
 try:
     import WhiteLibrary
     from robotkernel.selectors_white import PickSnipTool

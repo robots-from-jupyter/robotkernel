@@ -263,7 +263,8 @@ class RobotKernel(DisplayKernel):
             # Execute test case
             result = execute_robot(
                 self,
-                data,
+                code,
+                data,  # passing history would be proper, but waste parsing
                 listeners,
                 silent,
             )

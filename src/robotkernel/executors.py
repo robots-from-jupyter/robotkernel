@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 from io import StringIO
+from IPython.core.display import clear_output
+from IPython.core.display import display
 from PIL import Image
 from robot.model import TestSuite
 from robot.reporting import ResultWriter
@@ -17,6 +20,7 @@ from traceback import format_exc
 from typing import Dict
 
 import base64
+import ipywidgets
 import os
 import re
 import sys
@@ -65,8 +69,111 @@ def parse_robot(
     return data
 
 
+def normalize_argument(name):
+    return re.sub(r'\W', '_', re.sub(r'^[^\w]*|[^\w]*$', '', name, re.U), re.U)
+
+
+def execute_ipywidget(
+        kernel: DisplayKernel,
+        data: TestCaseString,
+        listeners: list,
+        silent: bool,
+        display_id: str,
+        name,
+        arguments,
+        values,
+):
+    tasks_table = f"""\
+*** Tasks ***
+
+{name}
+    {name}  {'  '.join([values[a[1]] for a in arguments])}
+"""
+    data.testcase_table.tests.clear()
+    data.populate(tasks_table)
+
+    # Build
+    builder = TestSuiteBuilder()
+    data.source = os.getcwd()  # allow Library and Resource from CWD work
+    suite = builder._build_suite(data)
+    suite._name = 'Jupyter'
+
+    with TemporaryDirectory() as path:
+        run_robot_suite(
+            kernel,
+            suite,
+            listeners,
+            silent,
+            display_id,
+            path,
+            widget=True,
+        )
+
+
+def inject_ipywidgets(
+        kernel: DisplayKernel,
+        code: str,
+        data: TestCaseString,
+        listeners: list,
+        silent: bool,
+        display_id: str,
+):
+    code_data = parse_robot(code, {})
+    if len(code_data.keywords) != 1:
+        return
+
+    name = code_data.keywords[0].name
+    arguments = []
+    for arg in code_data.keywords[0].args:
+        if '=' in arg:
+            arg, default = arg.split('=', 1)
+        else:
+            arg, default = arg, None
+        arguments.append((
+            arg,
+            normalize_argument(arg),
+            default,
+        ))
+
+    def execute(**kwargs):
+        execute_ipywidget(
+            kernel,
+            data,
+            listeners,
+            silent,
+            display_id,
+            name,
+            arguments,
+            kwargs,
+        )
+
+    widgets = []
+    controls = OrderedDict()
+    out = ipywidgets.widgets.Output()
+
+    def update(*args):
+        kwargs = {key: control.value for key, control in controls.items()}
+        with out:
+            clear_output(wait=True)
+            execute(**kwargs)
+
+    for arg in arguments:
+        widgets.append(ipywidgets.widgets.Label(value=arg[1]))
+        widgets.append(ipywidgets.widgets.Text(value=arg[2]))
+        controls[arg[1]] = widgets[-1]
+
+    button = ipywidgets.widgets.Button(description=name)
+    button.on_click(update)
+    widgets.append(button)
+
+    # noinspection PyTypeChecker
+    ui = ipywidgets.widgets.HBox(widgets)
+    display(ui, out, display_id=display_id)
+
+
 def execute_robot(
         kernel: DisplayKernel,
+        code: str,
         data: TestCaseString,
         listeners: list,
         silent: bool,
@@ -78,19 +185,23 @@ def execute_robot(
     suite._name = 'Jupyter'
 
     # Run
+    display_id = str(uuid.uuid4())
     if suite.tests:
-        reply = run_robot_suite(kernel, suite, listeners, silent)
+        with TemporaryDirectory() as path:
+            reply = run_robot_suite(
+                kernel,
+                suite,
+                listeners,
+                silent,
+                display_id,
+                path,
+            )
     else:
+        inject_ipywidgets(kernel, code, data, listeners, silent, display_id)
         reply = {
             'status': 'ok',
             'execution_count': kernel.execution_count,
         }
-
-    # widget = widgets.Text()
-    #   interact.options(
-    #       manual=True,
-    #       manual_name="Execute task",
-    #   )(execute, variable=widget)
 
     return reply
 
@@ -100,36 +211,29 @@ def run_robot_suite(
         suite: TestSuite,
         listeners: list,
         silent: bool,
-):
-    with TemporaryDirectory() as path:
-        return _run_robot_suite(kernel, suite, listeners, silent, path)
-
-
-def _run_robot_suite(
-        kernel: DisplayKernel,
-        suite: TestSuite,
-        listeners: list,
-        silent: bool,
+        display_id: str,
         path: str,
+        widget: bool = False,
 ):
-    display_id = str(uuid.uuid4())
     return_values = []
-    if not silent:
+    if not (silent or widget):
         progress = ProgressUpdater(kernel, display_id, sys.__stdout__)
     else:
         progress = None
 
     # Init status
-    if not silent:
+    listeners = listeners[:]
+    if not (silent or widget):
         listeners.append(
             StatusEventListener(lambda data: progress.update(data)),
         )
+    if not silent:
         listeners.append(
             ReturnValueListener(lambda v: return_values.append(v)),
         )
 
     stdout = StringIO()
-    if not silent:
+    if progress is not None:
         sys.__stdout__ = progress
     try:
         results = suite.run(
@@ -138,7 +242,7 @@ def _run_robot_suite(
             listener=listeners,
         )
     finally:
-        if not silent:
+        if progress is not None:
             sys.__stdout__ = progress.stdout
 
     stats = results.statistics
@@ -184,7 +288,10 @@ def _run_robot_suite(
 
     # Clear status and display results
     if not silent:
-        kernel.send_update_display_data(
+        (
+            widget and kernel.send_display_data
+            or kernel.send_update_display_data
+        )(
             {
                 'text/html': ''
                 '<p><a href="{}">Log</a> | <a href="{}">Report</a></p>'.format(
