@@ -86,10 +86,7 @@ def execute_ipywidget(
         arguments,
         values,
 ):
-    if len(data.testcase_table):
-        header = getattr(data.testcase_table, 'name', 'Tasks') or 'Tasks'
-    else:
-        header = 'Tasks'
+    header = getattr(data.testcase_table, 'name', 'Tasks') or 'Tasks'
     table = f"""\
 *** {header} ***
 
