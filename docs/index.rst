@@ -28,11 +28,12 @@ Install Robotkernel
 
    $ pip install robotkernel
 
-For JupyterLab you should also install the companion syntax highlighting:
+For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
 
 .. code:: bash
 
    $ jupyter labextension install jupyterlab_robotmode
+   $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 For some environments it might be required to run the following command to
 manually register robotkernel as Jupyter kernel:
@@ -51,11 +52,12 @@ Install Robotkernel from Python 3 notebook
 
 After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
 
-For JupyterLab you should also install the companion syntax highlighting:
+For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
 
 .. code:: bash
 
    !jupyter labextension install jupyterlab_robotmode
+   !jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
 
 Export robot files

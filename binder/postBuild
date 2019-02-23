@@ -5,3 +5,4 @@ pip install -e .
 python -m robotkernel.install --sys-prefix
 cd src/jupyterlab_robotmode && npm install && npm run build && cd ../..
 jupyter labextension install src/jupyterlab_robotmode
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
