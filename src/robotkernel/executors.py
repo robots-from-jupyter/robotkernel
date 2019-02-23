@@ -154,7 +154,7 @@ def inject_ipywidget(
                     widget.disabled = False
 
     for arg in arguments:
-        widgets.append(ipywidgets.widgets.Label(value=arg[1]))
+        widgets.append(ipywidgets.widgets.Label(value=arg[1]) + '=')
         widgets.append(ipywidgets.widgets.Text(value=arg[2]))
         controls[arg[1]] = widgets[-1]
 
