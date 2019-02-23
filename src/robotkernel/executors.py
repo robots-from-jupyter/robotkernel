@@ -141,8 +141,17 @@ def inject_ipywidget(
     def update(*args):
         values = {key: control.value for key, control in controls.items()}
         with out:
+            description = widgets[0].description
+            widgets[0].description = 'Executing...'
+            for widget in widgets:
+                widget.disabled = True
             clear_output(wait=True)
-            execute(**values)
+            try:
+                execute(**values)
+            finally:
+                widgets[0].description = description
+                for widget in widgets:
+                    widget.disabled = False
 
     for arg in arguments:
         widgets.append(ipywidgets.widgets.Label(value=arg[1]))
