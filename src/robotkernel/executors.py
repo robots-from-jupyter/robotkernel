@@ -86,14 +86,18 @@ def execute_ipywidget(
         arguments,
         values,
 ):
-    tasks_table = f"""\
-*** Tasks ***
+    if len(data.testcase_table):
+        header = getattr(data.testcase_table, 'name', 'Tasks') or 'Tasks'
+    else:
+        header = 'Tasks'
+    table = f"""\
+*** {header} ***
 
 {name}
     {name}  {'  '.join([values[a[1]] for a in arguments])}
 """
     data.testcase_table.tests.clear()
-    data.populate(tasks_table)
+    data.populate(table)
 
     # Build
     builder = TestSuiteBuilder()
