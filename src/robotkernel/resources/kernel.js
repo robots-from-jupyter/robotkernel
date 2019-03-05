@@ -236,7 +236,7 @@ var __assign = (this && this.__assign) || function () {
 // tslint:disable-next-line
 /// <reference path="../typings/codemirror/codemirror.d.ts"/>
 /** the tokens we use */
-var TT;
+var TT = {};
 (function (TT) {
     TT["AM"] = "atom";
     TT["AT"] = "attribute";
@@ -260,11 +260,10 @@ var TT;
     TT["ST"] = "string";
     TT["TG"] = "tag";
     TT["V2"] = "variable-2";
-})(TT = exports.TT || (exports.TT = {}));
+})(TT);
 function LINK(token) {
     return (token + '.link');
 }
-exports.LINK = LINK;
 /** helper function for compactly representing a rule */
 function r(regex, token, opt) {
     return __assign({ regex: regex, token: token }, opt);
