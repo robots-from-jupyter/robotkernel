@@ -26,6 +26,11 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.3.0 (2019-03-05)
+
+- Update fixes from
+  https://github.com/gtri/irobotframework/pull/1
+
 ### 2.2.0 (2019-01-29)
 
 - Add to highlight : as operator in keyword arguments to better
