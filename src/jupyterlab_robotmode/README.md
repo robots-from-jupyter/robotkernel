@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.3.1 (2019-03-06)
+
+- Fix highlighting mode label to match robotkernel's
+
 ### 2.3.0 (2019-03-05)
 
 - Update fixes from
