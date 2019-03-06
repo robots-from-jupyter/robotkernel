@@ -245,7 +245,7 @@ var TT = {};
     TT["BK"] = "bracket";
     TT["CM"] = "comment";
     TT["DF"] = "def";
-    TT["HL"] = "header.link";
+    TT["HL"] = "header";
     TT["KW"] = "keyword";
     TT["MT"] = "meta";
     TT["NB"] = "number";
@@ -351,8 +351,7 @@ var base = RULES_TABLE.concat([
     r(
     // a non-variable argument fragment before an equal
     /([^\s\$@&%=]((?!\t+|\s+\|\s+|  +)([^=]|\\=))*?)(?==($|  |[^=]|\s+\||\t))/, TT.AT),
-    r(/^(?!http|https)([^\s:]*)(:)/, TT.OP),
-    r(/(=!<>+\-*\/%)*==?/, TT.OP),
+    r(/[^\s]+:(?!\/)/, TT.OP),
     r(/_\*.*?\*_/, TT.SSE),
     r(/\*.*?\*/, TT.SS),
     r(/\_.*?\_/, TT.SE),
