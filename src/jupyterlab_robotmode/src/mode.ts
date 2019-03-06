@@ -51,7 +51,7 @@ export enum TT {
   BK = 'bracket',
   CM = 'comment',
   DF = 'def',
-  HL = 'header.link',
+  HL = 'header',
   KW = 'keyword',
   MT = 'meta',
   NB = 'number',
@@ -250,7 +250,7 @@ const base = [
     /([^\s\$@&%=]((?!\t+|\s+\|\s+|  +)([^=]|\\=))*?)(?==($|  |[^=]|\s+\||\t))/,
     TT.AT
   ),
-  r(/^(?!http|https)([^\s:]*)(:)/, TT.OP),
+  r(/[^\s]+:(?!\/)/, TT.OP),
   r(/(=!<>+\-*\/%)*==?/, TT.OP),
   r(/_\*.*?\*_/, TT.SSE),
   r(/\*.*?\*/, TT.SS),
@@ -599,7 +599,7 @@ export const MIME_TYPE = 'text/x-robotframework';
 /** the canonical CodeMirror mode name */
 export const MODE_NAME = 'robotframework';
 /** the human-readable name of the CodeMirror mode */
-export const MODE_LABEL = 'Robot Framework';
+export const MODE_LABEL = 'robotframework';
 /** primary file extension */
 export const DEFAULT_EXTENSION = 'robot';
 /** all recognized file extensions */
