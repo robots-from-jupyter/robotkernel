@@ -6,6 +6,30 @@ from robot.libraries.BuiltIn import BuiltIn
 import inspect
 
 
+class RobotVariablesListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, variables: dict):
+        self.variables = variables
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def end_suite(self, name, attributes):
+        builtin = BuiltIn()
+        self.variables.update(
+            builtin.get_variables(no_decoration=False),
+        )
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def start_suite(self, name, attributes):
+        builtin = BuiltIn()
+        for name, value in self.variables.items():
+            try:
+                builtin.set_suite_variable(name, value)
+            except AttributeError:
+                # AttributeError: 'slice' object has no attribute 'split'
+                pass
+
+
 class RobotKeywordsIndexerListener:
     ROBOT_LISTENER_API_VERSION = 2
 

@@ -13,6 +13,7 @@ from robotkernel.executors import execute_robot
 from robotkernel.executors import parse_robot
 from robotkernel.listeners import AppiumConnectionsListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
+from robotkernel.listeners import RobotVariablesListener
 from robotkernel.listeners import SeleniumConnectionsListener
 from robotkernel.listeners import WhiteLibraryListener
 from robotkernel.nbreader import NotebookReader
@@ -73,6 +74,7 @@ class RobotKernel(DisplayKernel):
         self.robot_cell_id = None  # current cell id from init_metadata
         self.robot_inspect_data = {}
         self.robot_variables = []
+        self.robot_suite_variables = {}
 
         # Sticky connection cache (e.g. for webdrivers)
         self.robot_connections = []
@@ -95,6 +97,7 @@ class RobotKernel(DisplayKernel):
         super(RobotKernel, self).do_shutdown(restart)
         self.robot_history = OrderedDict()
         self.robot_variables = []
+        self.robot_suite_variables = {}
         for driver in self.robot_connections:
             if hasattr(driver['instance'], 'quit'):
                 driver['instance'].quit()
@@ -258,6 +261,7 @@ class RobotKernel(DisplayKernel):
                 AppiumConnectionsListener(self.robot_connections),
                 WhiteLibraryListener(self.robot_connections),
                 RobotKeywordsIndexerListener(self.robot_catalog),
+                RobotVariablesListener(self.robot_suite_variables),
             ]
 
             # Execute test case
