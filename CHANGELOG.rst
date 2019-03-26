@@ -1,11 +1,25 @@
 Changelog
 =========
 
-0.11.1 (unreleased)
+0.12.0 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New features:
 
+- Add keyword execution widgets below executed keyword cells; Add to toggle
+  widgets on consecutive executions without code changes
+  [datakurre]
+
+- Add listener to keep state of suite level variables between robot executions
+  [datakurre]
+
+- Add IPython display hooks
+  [datakurre]
+
+New features:
+
+- Add updates to highlighting from ipythonrobotframework
+  [datakurre]
 
 0.11.0 (2019-01-29)
 -------------------
@@ -38,7 +52,7 @@ Breaking:
 - Setuptools 40.5.0 later and Robot Framework 3.1 or later.
   [datakurre]
 
-New features:
+new features:
 
 - Add pregenerated kernel.json in data_files to auto-install robotkernel,
   but requiring
@@ -47,7 +61,7 @@ New features:
 0.9.0 (2019-01-04)
 ------------------
 
-New featurs:
+New features:
 
 - Rewrite status updater to the status of currently run test as
   ``trobber | test name | keyword name | robot.api.logger.console message``
