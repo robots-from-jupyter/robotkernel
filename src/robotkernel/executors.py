@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
-from functools import partial
 from io import StringIO
 from IPython.core.display import clear_output
 from IPython.core.display import display
@@ -160,7 +159,7 @@ def inject_ipywidget(
         controls[arg[1]] = widgets[-1]
 
     button = ipywidgets.widgets.Button(description=name)
-    button.on_click(partial(update, name, arguments))
+    button.on_click(update)
     widgets.insert(0, button)
 
     # noinspection PyTypeChecker
@@ -234,7 +233,12 @@ def execute_robot(
                 path,
             )
     else:
-        inject_ipywidgets(kernel, code, data, listeners, silent, display_id)
+        last_code = getattr(kernel, '_last_code', '')
+        if code == last_code:
+            setattr(kernel, '_last_code', '')
+        else:
+            inject_ipywidgets(kernel, code, data, listeners, silent, display_id)
+            setattr(kernel, '_last_code', code)
         reply = {
             'status': 'ok',
             'execution_count': kernel.execution_count,
