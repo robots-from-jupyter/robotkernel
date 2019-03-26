@@ -169,6 +169,7 @@ def inject_ipywidget(
         flex_wrap='wrap',
         justify_content='flex-start',
     )
+
     ui = ipywidgets.widgets.Box(widgets, layout=layout)
     # noinspection PyTypeChecker
     display(ui, out, display_id=display_id)
@@ -237,7 +238,8 @@ def execute_robot(
         if code == last_code:
             setattr(kernel, '_last_code', '')
         else:
-            inject_ipywidgets(kernel, code, data, listeners, silent, display_id)
+            inject_ipywidgets(
+                kernel, code, data, listeners, silent, display_id)
             setattr(kernel, '_last_code', code)
         reply = {
             'status': 'ok',
