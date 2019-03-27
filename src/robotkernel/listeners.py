@@ -22,7 +22,12 @@ class RobotVariablesListener:
     # noinspection PyUnusedLocal,PyProtectedMember
     def start_suite(self, name, attributes):
         builtin = BuiltIn()
+        output_dir = self.variables.get('${OUTPUT_DIR}') or ''
         for name, value in self.variables.items():
+            if (output_dir and
+                    isinstance(value, str) and
+                    value.startswith(output_dir)):
+                continue
             try:
                 builtin.set_suite_variable(name, value)
             except AttributeError:
