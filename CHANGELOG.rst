@@ -4,8 +4,10 @@ Changelog
 0.12.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix issue where keeping state of suite level variables between cell
+  executions resulted in errors caused by outdated output directory
+  from the old variables
+  [datakurre]
 
 0.12.0 (2019-03-26)
 -------------------
