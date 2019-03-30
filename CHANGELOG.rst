@@ -4,8 +4,10 @@ Changelog
 0.12.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix remaining where keeping state of suite level variables between cell
+  executions since 0.12.0 caused regression by fixing the listener to ignore
+  all known built-in variables
+  [datakurre]
 
 0.12.1 (2019-03-27)
 -------------------
