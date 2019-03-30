@@ -1,7 +1,13 @@
 Changelog
 =========
 
-0.12.1 (unreleased)
+0.12.2 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+0.12.1 (2019-03-27)
 -------------------
 
 - Fix issue where keeping state of suite level variables between cell
