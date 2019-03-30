@@ -6,6 +6,29 @@ from robot.libraries.BuiltIn import BuiltIn
 import inspect
 
 
+BUILTIN_VARIABLES = (
+    '${TEMPDIR}',
+    '${EXECDIR}',
+    '${/}',
+    '${:}',
+    '${\\n}',
+    '${SPACE}',
+    '${True}',
+    '${False}',
+    '${None}',
+    '${null}',
+    '${OUTPUT_DIR}',
+    '${OUTPUT_FILE}',
+    '${REPORT_FILE}',
+    '${LOG_FILE}',
+    '${DEBUG_FILE}',
+    '${LOG_LEVEL}',
+    '${PREV_TEST_NAME}',
+    '${PREV_TEST_STATUS}',
+    '${PREV_TEST_MESSAGE}',
+)
+
+
 class RobotVariablesListener:
     ROBOT_LISTENER_API_VERSION = 2
 
@@ -24,7 +47,9 @@ class RobotVariablesListener:
         builtin = BuiltIn()
         output_dir = self.variables.get('${OUTPUT_DIR}') or ''
         for name, value in self.variables.items():
-            if (output_dir and
+            if name in BUILTIN_VARIABLES:
+                continue
+            elif (output_dir and
                     isinstance(value, str) and
                     value.startswith(output_dir)):
                 continue
