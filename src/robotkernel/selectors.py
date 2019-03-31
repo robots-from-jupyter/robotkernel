@@ -229,12 +229,12 @@ def _get_white_selector_completions(needle, driver):
         if result:
             return [
                 completion for completion in [
-                    f'id={result["AutomationIdProperty"]}',
-                    f'text={result["NameProperty"]}',
-                    f'help_text={result["HelpTextProperty"]}',
-                    f'class_name={result["ClassNameProperty"]}',
-                    f'control_type={result["ControlTypeProperty"]}',
-                ] if completion.split('=', 1)[-1]
+                    f'id:{result["AutomationIdProperty"]}',
+                    f'text:{result["NameProperty"]}',
+                    f'help_text:{result["HelpTextProperty"]}',
+                    f'class_name:{result["ClassNameProperty"]}',
+                    f'control_type:{result["ControlTypeProperty"]}',
+                ] if completion.split(':', 1)[-1]
             ]
         else:
             return []

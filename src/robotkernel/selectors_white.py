@@ -22,6 +22,7 @@ from System.Windows.Forms import Screen
 from System.Windows.Forms import Timer
 from TestStack.White.InputDevices import Mouse
 
+import os
 import time
 
 
@@ -194,6 +195,10 @@ class PickSnipTool(Form):
 
 
 class WhiteLibraryCompanion:
+    """Complementary keyword library to use OpenCV based image recognition
+    with RobotKernel and WhiteLibrary.
+    """
+
     def match_template(self, template: str, similarity: float = 0.8):
         import numpy as np
         import cv2 as cv
@@ -216,11 +221,20 @@ class WhiteLibraryCompanion:
             int(max_loc[1] + template.shape[0] / 2),
         )
 
-    def click_template(self, template, similarity=0.8):
-        x, y = self.match_template(template, similarity)
-        Mouse.Instance.Click(Point(int(x), int(y)))
+    def click_template(self, template, similarity=0.95):
+        """Click center of the location best matching the given ``template``
+        if match with at least the given ``similarity`` threshold is
+        found.
 
-    def click_text(self, template, similarity=0.8):
+        Arguments:
+
+        ``template``
+            path to a image file used as the match template
+
+        ``similarity``
+            minimum accepted match similarity (default: 0.95).
+        """
+        assert os.path.isfile(template), f'File not found: {template}'
         x, y = self.match_template(template, similarity)
         Mouse.Instance.Click(Point(int(x), int(y)))
 
