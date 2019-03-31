@@ -9,8 +9,8 @@ freeze:
 
 .PHONY: upgrade
 upgrade:
-	@echo "Updating nixpkgs unstable revision"; \
-	rev=$$(curl https://api.github.com/repos/NixOS/nixpkgs-channels/branches/nixos-unstable|jq -r .commit.sha); \
+	@echo "Updating nixpkgs 19.03 revision"; \
+	rev=$$(curl https://api.github.com/repos/NixOS/nixpkgs-channels/branches/nixos-19.03|jq -r .commit.sha); \
 	echo "Updating nixpkgs $$rev hash"; \
 	sha=$$(nix-prefetch-url --unpack https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz); \
 	sed -i "2s|.*|    url = \"https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz\";|" setup.nix; \
