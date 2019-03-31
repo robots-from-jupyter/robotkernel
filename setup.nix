@@ -1,10 +1,10 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/eebd1a9263716a04689a37b6537e50801d376b5e.tar.gz";
-    sha256 = "0s1fylhjqp2h4j044iwbwndgnips3nrynh2ip5ijh96kavizf2gb";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/07b42ccf2de451342982b550657636d891c4ba35.tar.gz";
+    sha256 = "1a7ga18pwq0y4p9r787622ry8gssw1p6wsr5l7dl8pqnj1hbbzwh";
   }) {}
 , setup ? import (fetchTarball {
-    url = "https://github.com/datakurre/setup.nix/archive/9f8529e003ea4d2f433d2999dc50b8938548e7d0.tar.gz";
-    sha256 = "15qzhz28jvgkna5zv7pj0gfnd0vcvafpckxcp850j64z7761apnm";
+    url = "https://github.com/datakurre/setup.nix/archive/a05ef605ae476a07ba1f8b0c2e1ce95d0eca8355.tar.gz";
+    sha256 = "0ih9ccy54hcij7z49mfxpyvl1wdsh00kr9714scza9b101s4gpap";
  })
 , pythonPackages ? pkgs.python3Packages
 }:
@@ -14,11 +14,13 @@ let overrides = self: super: {
     patches = [];
   });
   "flake8" = super."flake8".overrideDerivation(old: {
+    buildInputs = old.buildInputs ++ [ self."pytest-runner" ];
     patches = [];
   });
-  "graphviz" = super."graphviz".overridePythonAttrs(old: {
-    buildInputs = [ pkgs.unzip ];
-  });
+# "graphviz" = super."graphviz".overrideDerivation(old: {
+#   nativeBuildInputs = [ pkgs.unzip ];
+# });
+  "graphviz" = pythonPackages.graphviz;
   "iplantuml" = super."iplantuml".overridePythonAttrs(old: {
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.plantuml ];
     postPatch = ''
@@ -26,7 +28,7 @@ let overrides = self: super: {
     '';
   });
   "robotframework" = super."robotframework".overridePythonAttrs(old: {
-    buildInputs = [ pkgs.unzip ];
+    nativeBuildInputs = [ pkgs.unzip ];
     propagatedBuildInputs = old.propagatedBuildInputs ++ [
       pythonPackages.tkinter
     ];
@@ -36,7 +38,7 @@ let overrides = self: super: {
     buildInputs = [ self."pytest-runner" ];
   });
   "simplegeneric" = super."simplegeneric".overridePythonAttrs(old: {
-    buildInputs = [ pkgs.unzip ];
+    nativeBuildInputs = [ pkgs.unzip ];
   });
   "testfixtures" = super."testfixtures".overrideDerivation(old: {
     patches = [];
@@ -52,8 +54,8 @@ let overrides = self: super: {
   "zest.releaser" = super."zest.releaser".overridePythonAttrs(old: {
     postInstall = ''
       for prog in $out/bin/*; do
-        mv $prog $prog-python${pythonPackages.python.majorVersion}
-        wrapProgram $prog-python${pythonPackages.python.majorVersion} \
+        mv $prog $prog-python${pythonPackages.python.pythonVersion}
+        wrapProgram $prog-python${pythonPackages.python.pythonVersion} \
           --set SOURCE_DATE_EPOCH 315532800
       done
     '';

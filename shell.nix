@@ -1,6 +1,6 @@
 { pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/eebd1a9263716a04689a37b6537e50801d376b5e.tar.gz";
-    sha256 = "0s1fylhjqp2h4j044iwbwndgnips3nrynh2ip5ijh96kavizf2gb";
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/07b42ccf2de451342982b550657636d891c4ba35.tar.gz";
+    sha256 = "1a7ga18pwq0y4p9r787622ry8gssw1p6wsr5l7dl8pqnj1hbbzwh";
   }) {}
 , sikuli ? false
 , vim ? false
@@ -62,6 +62,7 @@ let self = rec {
       robotframework-seleniumscreenshots
       robotkernel
       tkinter
+      widgetsnbextension
     ] ++ pkgs.stdenv.lib.optionals sikuli [ sikulilibrary ];
   });
 
@@ -69,6 +70,7 @@ let self = rec {
     name = "jupyter";
     json = builtins.toJSON {
       load_extensions = {
+        "jupyter-js-widgets/extension" = true;
         "rise/main" = true;
         "vim_binding/vim_binding" = if vim then true else false;
       };
@@ -102,6 +104,7 @@ let self = rec {
       ln -s ${jupyter-contrib-nbextensions}/${pythonPackages.python.sitePackages}/jupyter-contrib-nbextensions/nbextensions/* $out/share/jupyter/nbextensions
       ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
       ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
+      ln -s ${widgetsnbextension}/share/jupyter/nbextensions/* $out/share/jupyter/nbextensions
 
       ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
 
