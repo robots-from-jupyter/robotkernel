@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.12.3 (unreleased)
+1.0rc1 (2019-04-01)
 -------------------
 
 - Move tutorials notebooks into notebooks folder
