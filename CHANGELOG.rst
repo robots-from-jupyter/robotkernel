@@ -4,8 +4,11 @@ Changelog
 0.12.3 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Move tutorials notebooks into notebooks folder
+  [datakurre]
+- Fix WhiteLibrary autocompletion to suggest selectors with :-separator
+  instead of =-separator
+  [datakurre]
 
 0.12.2 (2019-03-30)
 -------------------
