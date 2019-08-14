@@ -7,7 +7,7 @@ before_install:
   datakurre.cachix.org-1:ayZJTy5BDd8K4PW9uc9LHV+WCsdi/fu1ETIYZMooK78=" | sudo tee
   -a /etc/nix/nix.conf
 script:
-- nix-shell setup.nix -A shell --run "flake8 src && pytest tests && python -m robotkernel.install
+- nix-shell setup.nix -A shell --run "make test && python -m robotkernel.install
   && jupyter nbconvert --execute tests/Smoketest.ipynb && nbrobot -F ipynb tests"
 after_success:
 - nix-shell setup.nix -A shell --run "LC_ALL=C sphinx-build docs build"
