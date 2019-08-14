@@ -19,7 +19,8 @@ env: requirements-$(PYTHON).nix
 
 .PHONY: test
 test: check
-	pytest --cov={{ cookiecutter.project_slug }} tests
+	pytest tests
+	# pytest --cov=robotkernel tests
 
 .PHONY: check
 check:
@@ -42,19 +43,6 @@ coverage: htmlcov
 format:
 	black -t py37 src tests
 	isort -rc -y src tests
-
-.PHONY: watch
-watch:
-	find src | entr -r $(CMD)
-
-.PHONY: serve
-serve:
-	$(CMD) \
-		--username=$(CMD) \
-		--call-exchange=$(CMD) \
-		--service-queue=$(CMD) \
-		--prefetch-count=2 \
-		--on-error=reject
 
 ###
 

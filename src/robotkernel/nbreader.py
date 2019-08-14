@@ -15,6 +15,7 @@ import types
 
 try:
     import nbimporter
+
     nbimporter
 except ImportError:
     pass
@@ -31,8 +32,8 @@ def NotebookReader():  # noqa: N802
         import nbformat
     except ImportError:
         raise DataError(
-            'Using Notebook test data requires having '
-            '"nbformat" module version 4.4.0 or newer installed.',
+            "Using Notebook test data requires having "
+            '"nbformat" module version 4.4.0 or newer installed.'
         )
 
     class NotebookReader(object):
@@ -42,22 +43,22 @@ def NotebookReader():  # noqa: N802
 
             for cell in notebook.cells:
                 # Skip non-code cells
-                if not cell.cell_type == 'code':
+                if not cell.cell_type == "code":
                     continue
 
                 # Execute %%python module magics
-                match = re.match('^%%python module ([a-zA-Z_]+)', cell.source)
+                match = re.match("^%%python module ([a-zA-Z_]+)", cell.source)
                 if match is not None:
                     module = match.groups()[0]
-                    cursor = len('%%python module {0:s}'.format(module))
+                    cursor = len("%%python module {0:s}".format(module))
                     exec_code_into_module(cell.source[cursor:], module)
                     continue
 
                 # Add the rest into robot test suite
                 data.append(cell.source)
 
-            data = '\n\n'.join(data)
-            robotfile = BytesIO(data.encode('UTF-8'))
+            data = "\n\n".join(data)
+            robotfile = BytesIO(data.encode("UTF-8"))
             return RobotReader().read(robotfile, rawdata, ipynbfile.name)
 
     return NotebookReader()
@@ -65,17 +66,17 @@ def NotebookReader():  # noqa: N802
 
 def robot():
     # Enable nbreader
-    if 'ipynb' not in populators.READERS:
-        populators.READERS['ipynb'] = NotebookReader
-        TEST_EXTENSIONS.add('ipynb')
-        RESOURCE_EXTENSIONS.add('ipynb')
+    if "ipynb" not in populators.READERS:
+        populators.READERS["ipynb"] = NotebookReader
+        TEST_EXTENSIONS.add("ipynb")
+        RESOURCE_EXTENSIONS.add("ipynb")
     return run_cli(sys.argv[1:])
 
 
 def libdoc():
     # Enable nbreader
-    if 'ipynb' not in populators.READERS:
-        populators.READERS['ipynb'] = NotebookReader
-        TEST_EXTENSIONS.add('ipynb')
-        RESOURCE_EXTENSIONS.add('ipynb')
+    if "ipynb" not in populators.READERS:
+        populators.READERS["ipynb"] = NotebookReader
+        TEST_EXTENSIONS.add("ipynb")
+        RESOURCE_EXTENSIONS.add("ipynb")
     return libdoc_cli(sys.argv[1:])

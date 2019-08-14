@@ -14,17 +14,13 @@
 }:
 
 let overrides = self: super: {
-  "click" = super."click".overrideDerivation(old: {
-    patches = [];
+  "faker" = super."faker".overrideDerivation(old: {
+    postPatch = "";
   });
-  "flake8" = super."flake8".overrideDerivation(old: {
-    buildInputs = old.buildInputs ++ [ self."pytest-runner" ];
-    patches = [];
-  });
-# "graphviz" = super."graphviz".overrideDerivation(old: {
-#   nativeBuildInputs = [ pkgs.unzip ];
-# });
   "graphviz" = pythonPackages.graphviz;
+  "importlib-metadata" = super."importlib-metadata".overridePythonAttrs(old: {
+    buildInputs = [ self."setuptools-scm" ];
+  });
   "iplantuml" = super."iplantuml".overridePythonAttrs(old: {
     propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.plantuml ];
     postPatch = ''
@@ -37,6 +33,9 @@ let overrides = self: super: {
       pythonPackages.tkinter
     ];
   });
+  "pylama" = super."pylama".overrideDerivation(old: {
+    postPatch = "rm -rf tests";  # conflicts with json5
+  });
   "robotframework-appiumlibrary" =
   super."robotframework-appiumlibrary".overridePythonAttrs(old: {
     buildInputs = [ self."pytest-runner" ];
@@ -47,22 +46,8 @@ let overrides = self: super: {
   "testfixtures" = super."testfixtures".overrideDerivation(old: {
     patches = [];
   });
-  # Patches to tweak around bad archive at Cachix
-  "docutils" = super."docutils".overrideDerivation(old: {
-    name = "${old.name}-2019-01-01";
-  });
-  "selenium" = super."selenium".overrideDerivation(old: {
-    name = "${old.name}-2019-01-01";
-  });
-  # building wheels require SOURCE_DATE_EPOCH
-  "zest.releaser" = super."zest.releaser".overridePythonAttrs(old: {
-    postInstall = ''
-      for prog in $out/bin/*; do
-        mv $prog $prog-python${pythonPackages.python.pythonVersion}
-        wrapProgram $prog-python${pythonPackages.python.pythonVersion} \
-          --set SOURCE_DATE_EPOCH 315532800
-      done
-    '';
+  "zipp" = super."zipp".overridePythonAttrs(old: {
+    buildInputs = [ self."setuptools-scm" ];
   });
 
 }; in
@@ -70,6 +55,7 @@ let overrides = self: super: {
 setup {
   inherit pkgs pythonPackages overrides;
   src = ./.;
+  requirements = requirements;
   propagatedBuildInputs = with pkgs; [
     geckodriver
     firefox

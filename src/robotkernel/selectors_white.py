@@ -42,11 +42,7 @@ class PickSnipTool(Form):
     @staticmethod
     def take_screenshot(as_bytes=False):
         bounds = Screen.PrimaryScreen.Bounds
-        screenshot = Bitmap(
-            bounds.Width,
-            bounds.Height,
-            PixelFormat.Format32bppPArgb,
-        )
+        screenshot = Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppPArgb)
         graphics = Graphics.FromImage(screenshot)
         graphics.CopyFromScreen(0, 0, 0, 0, screenshot.Size)
         if as_bytes:
@@ -72,8 +68,7 @@ class PickSnipTool(Form):
         if result == DialogResult.OK and snip:
             if snipper.snip_rectangle.Width and snipper.snip_rectangle.Height:
                 img = Bitmap(
-                    snipper.snip_rectangle.Width,
-                    snipper.snip_rectangle.Height,
+                    snipper.snip_rectangle.Width, snipper.snip_rectangle.Height
                 )
                 gr = Graphics.FromImage(img)
                 gr.DrawImage(
@@ -84,31 +79,34 @@ class PickSnipTool(Form):
                 )
                 fp = MemoryStream()
                 img.Save(fp, ImageFormat.Png)
-                return {
-                    'bytes': bytes(bytearray(fp.ToArray())),
-                }
+                return {"bytes": bytes(bytearray(fp.ToArray()))}
             return {}
 
         elif result == DialogResult.OK:
-            if (snipper.mouse_down_seconds
-                    and snipper.mouse_down_seconds <= snipper.click_timeout):
+            if (
+                snipper.mouse_down_seconds
+                and snipper.mouse_down_seconds <= snipper.click_timeout
+            ):
                 Mouse.Instance.Click(snipper.mouse_down)
                 time.sleep(0.5)
             el = AutomationElement.FromPoint(snipper.mouse_up)
             result = {
-                prop.ProgrammaticName.split('.', 1)[-1]:
-                el.GetCurrentPropertyValue(prop)
+                prop.ProgrammaticName.split(".", 1)[-1]: el.GetCurrentPropertyValue(
+                    prop
+                )
                 for prop in el.GetSupportedProperties()
             }
-            result.update({
-                'NameProperty': el.GetCurrentPropertyValue(el.NameProperty),
-                'ControlTypeProperty': el.GetCurrentPropertyValue(
-                    el.ControlTypeProperty,
-                ).ProgrammaticName.split('.', 1)[-1],
-                'AutomationIdProperty': el.GetCurrentPropertyValue(
-                    el.AutomationIdProperty,
-                ),
-            })
+            result.update(
+                {
+                    "NameProperty": el.GetCurrentPropertyValue(el.NameProperty),
+                    "ControlTypeProperty": el.GetCurrentPropertyValue(
+                        el.ControlTypeProperty
+                    ).ProgrammaticName.split(".", 1)[-1],
+                    "AutomationIdProperty": el.GetCurrentPropertyValue(
+                        el.AutomationIdProperty
+                    ),
+                }
+            )
             return result
         else:
             return {}
@@ -120,7 +118,7 @@ class PickSnipTool(Form):
         self.Cursor = Cursors.Cross
         self.BackgroundImage = screenshot
         self.ShowInTaskbar = False
-        self.FormBorderStyle = getattr(FormBorderStyle, 'None')
+        self.FormBorderStyle = getattr(FormBorderStyle, "None")
         self.WindowState = FormWindowState.Maximized
         self.DoubleBuffered = True
         self.TopMost = True
@@ -178,15 +176,9 @@ class PickSnipTool(Form):
             y2 = rc.Y + rc.Height
 
             e.Graphics.FillRectangle(br, Rectangle(0, 0, x1, self.Height))
-            e.Graphics.FillRectangle(
-                br,
-                Rectangle(x2, 0, self.Width - x2, self.Height),
-            )
+            e.Graphics.FillRectangle(br, Rectangle(x2, 0, self.Width - x2, self.Height))
             e.Graphics.FillRectangle(br, Rectangle(x1, 0, x2 - x1, y1))
-            e.Graphics.FillRectangle(
-                br,
-                Rectangle(x1, y2, x2 - x1, self.Height - y2),
-            )
+            e.Graphics.FillRectangle(br, Rectangle(x1, y2, x2 - x1, self.Height - y2))
             e.Graphics.DrawRectangle(pen, rc)
 
     def on_key_up(self, sender, e):
@@ -204,17 +196,13 @@ class WhiteLibraryCompanion:
         import cv2 as cv
 
         screenshot = PickSnipTool.take_screenshot(as_bytes=True)
-        image = cv.imdecode(
-            np.frombuffer(screenshot, np.uint8),
-            cv.IMREAD_COLOR,
-        )
+        image = cv.imdecode(np.frombuffer(screenshot, np.uint8), cv.IMREAD_COLOR)
         template = cv.imread(template)
         result = cv.matchTemplate(image, template, cv.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         similarity = float(similarity)
-        assert max_val >= similarity, \
-            f'Template not found ({max_val} < {similarity})'
+        assert max_val >= similarity, f"Template not found ({max_val} < {similarity})"
 
         return (
             int(max_loc[0] + template.shape[1] / 2),
@@ -234,11 +222,12 @@ class WhiteLibraryCompanion:
         ``similarity``
             minimum accepted match similarity (default: 0.95).
         """
-        assert os.path.isfile(template), f'File not found: {template}'
+        assert os.path.isfile(template), f"File not found: {template}"
         x, y = self.match_template(template, similarity)
         Mouse.Instance.Click(Point(int(x), int(y)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pprint import pprint
+
     pprint.pprint(PickSnipTool.pick())

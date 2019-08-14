@@ -7,25 +7,25 @@ import inspect
 
 
 BUILTIN_VARIABLES = (
-    '${TEMPDIR}',
-    '${EXECDIR}',
-    '${/}',
-    '${:}',
-    '${\\n}',
-    '${SPACE}',
-    '${True}',
-    '${False}',
-    '${None}',
-    '${null}',
-    '${OUTPUT_DIR}',
-    '${OUTPUT_FILE}',
-    '${REPORT_FILE}',
-    '${LOG_FILE}',
-    '${DEBUG_FILE}',
-    '${LOG_LEVEL}',
-    '${PREV_TEST_NAME}',
-    '${PREV_TEST_STATUS}',
-    '${PREV_TEST_MESSAGE}',
+    "${TEMPDIR}",
+    "${EXECDIR}",
+    "${/}",
+    "${:}",
+    "${\\n}",
+    "${SPACE}",
+    "${True}",
+    "${False}",
+    "${None}",
+    "${null}",
+    "${OUTPUT_DIR}",
+    "${OUTPUT_FILE}",
+    "${REPORT_FILE}",
+    "${LOG_FILE}",
+    "${DEBUG_FILE}",
+    "${LOG_LEVEL}",
+    "${PREV_TEST_NAME}",
+    "${PREV_TEST_STATUS}",
+    "${PREV_TEST_MESSAGE}",
 )
 
 
@@ -38,20 +38,16 @@ class RobotVariablesListener:
     # noinspection PyUnusedLocal,PyProtectedMember
     def end_suite(self, name, attributes):
         builtin = BuiltIn()
-        self.variables.update(
-            builtin.get_variables(no_decoration=False),
-        )
+        self.variables.update(builtin.get_variables(no_decoration=False))
 
     # noinspection PyUnusedLocal,PyProtectedMember
     def start_suite(self, name, attributes):
         builtin = BuiltIn()
-        output_dir = self.variables.get('${OUTPUT_DIR}') or ''
+        output_dir = self.variables.get("${OUTPUT_DIR}") or ""
         for name, value in self.variables.items():
             if name in BUILTIN_VARIABLES:
                 continue
-            elif (output_dir and
-                    isinstance(value, str) and
-                    value.startswith(output_dir)):
+            elif output_dir and isinstance(value, str) and value.startswith(output_dir):
                 continue
             try:
                 builtin.set_suite_variable(name, value)
@@ -68,9 +64,9 @@ class RobotKeywordsIndexerListener:
 
     # noinspection PyUnusedLocal
     def library_import(self, alias, attributes):
-        name = attributes.get('originalName') or alias
-        if alias not in self.catalog['libraries']:
-            self.catalog['libraries'].append(alias)
+        name = attributes.get("originalName") or alias
+        if alias not in self.catalog["libraries"]:
+            self.catalog["libraries"].append(alias)
             try:
                 lib_doc = LibraryDocumentation(name)
                 self._library_import(lib_doc, alias)
@@ -80,24 +76,23 @@ class RobotKeywordsIndexerListener:
     def _library_import(self, lib_doc, alias):
         if isinstance(lib_doc, list):
             keywords = lib_doc
-            doc_format = 'REST'
+            doc_format = "REST"
         else:
             keywords = lib_doc.keywords
             doc_format = lib_doc.doc_format
         for keyword in keywords:
             keyword.doc_format = doc_format
-            self.catalog['builder'].add({
-                'name': keyword.name,
-                'dottedname': f'{alias}.{keyword.name}',
-            })
-            self.catalog['keywords'][f'{alias}.{keyword.name}'] = keyword
-        if len(self.catalog['keywords']):
-            self.catalog['index'] = self.catalog['builder'].build()
+            self.catalog["builder"].add(
+                {"name": keyword.name, "dottedname": f"{alias}.{keyword.name}"}
+            )
+            self.catalog["keywords"][f"{alias}.{keyword.name}"] = keyword
+        if len(self.catalog["keywords"]):
+            self.catalog["index"] = self.catalog["builder"].build()
 
     # noinspection PyUnusedLocal
     def resource_import(self, name, attributes):
-        if name not in self.catalog['libraries']:
-            self.catalog['libraries'].append(name)
+        if name not in self.catalog["libraries"]:
+            self.catalog["libraries"].append(name)
             try:
                 resource_doc = LibraryDocumentation(name)
                 self._resource_import(resource_doc.keywords)
@@ -106,23 +101,22 @@ class RobotKeywordsIndexerListener:
 
     def _resource_import(self, keywords):
         for keyword in keywords:
-            keyword.doc_format = 'REST'
-            self.catalog['builder'].add({
-                'name': keyword.name,
-                'dottedname': keyword.name,
-            })
-            self.catalog['keywords'][keyword.name] = keyword
-        if len(self.catalog['keywords']):
-            self.catalog['index'] = self.catalog['builder'].build()
+            keyword.doc_format = "REST"
+            self.catalog["builder"].add(
+                {"name": keyword.name, "dottedname": keyword.name}
+            )
+            self.catalog["keywords"][keyword.name] = keyword
+        if len(self.catalog["keywords"]):
+            self.catalog["index"] = self.catalog["builder"].build()
 
     def _import_from_suite_data(self, data):
         self._resource_import(data.keywords)
         try:
             for import_data in data.setting_table.imports.data:
                 attributes = {}
-                if import_data.type == 'Library':
+                if import_data.type == "Library":
                     alias = import_data.alias or import_data.name
-                    attributes['originalName'] = import_data.name
+                    attributes["originalName"] = import_data.name
                     self.library_import(alias, attributes)
                 else:
                     name = import_data.name
@@ -139,10 +133,10 @@ class StatusEventListener:
         self.callback = callback
 
     def start_test(self, name, attributes):
-        self.callback({'test': name})
+        self.callback({"test": name})
 
     def start_keyword(self, name, attributes):
-        self.callback({'keyword': name})
+        self.callback({"keyword": name})
 
 
 # noinspection PyUnusedLocal
@@ -154,15 +148,15 @@ class ReturnValueListener:
         self.return_value = None
 
     def end_keyword(self, name, attributes):
-        if 'capture' in name.lower() and 'screenshot' in name.lower():
+        if "capture" in name.lower() and "screenshot" in name.lower():
             # Intentional hack to not include screenshot keywords, because we
             # can assume their screenshots be embedded into log file and
             # displayed from that.
             return
         frame = inspect.currentframe()
         while frame is not None:
-            if 'return_value' in frame.f_locals:
-                self.return_value = frame.f_locals.get('return_value')
+            if "return_value" in frame.f_locals:
+                self.return_value = frame.f_locals.get("return_value")
                 break
             frame = frame.f_back
 
@@ -176,7 +170,7 @@ class ReturnValueListener:
 def clear_drivers(drivers, type_):
     remained = []
     for driver in drivers:
-        if driver.get('type') != type_:
+        if driver.get("type") != type_:
             remained.append(driver)
     drivers.clear()
     drivers.extend(remained)
@@ -199,7 +193,7 @@ def get_webdrivers(cache, type_):
                 aliases=aliases,
                 current=conn == cache.current,
                 type=type_,
-            ),
+            )
         )
     return drivers
 
@@ -208,13 +202,13 @@ def get_webdrivers(cache, type_):
 def set_webdrivers(drivers, cache, type_):
     idx = 1
     for driver in drivers:
-        if driver['type'] != type_:
+        if driver["type"] != type_:
             continue
-        cache._connections.append(driver['instance'])
-        for alias in driver['aliases']:
+        cache._connections.append(driver["instance"])
+        for alias in driver["aliases"]:
             cache._aliases[alias] = idx
-        if driver['current']:
-            cache.current = driver['instance']
+        if driver["current"]:
+            cache.current = driver["instance"]
         idx += 1
 
 
@@ -229,11 +223,11 @@ class SeleniumConnectionsListener:
         try:
             builtin = BuiltIn()
             try:
-                instance = builtin.get_library_instance('SeleniumLibrary')
+                instance = builtin.get_library_instance("SeleniumLibrary")
             except RuntimeError:
-                instance = builtin.get_library_instance('Selenium2Library')
-            clear_drivers(self.drivers, 'selenium')
-            self.drivers.extend(get_webdrivers(instance._drivers, 'selenium'))
+                instance = builtin.get_library_instance("Selenium2Library")
+            clear_drivers(self.drivers, "selenium")
+            self.drivers.extend(get_webdrivers(instance._drivers, "selenium"))
         except RuntimeError:
             pass
 
@@ -242,10 +236,10 @@ class SeleniumConnectionsListener:
         try:
             builtin = BuiltIn()
             try:
-                instance = builtin.get_library_instance('SeleniumLibrary')
+                instance = builtin.get_library_instance("SeleniumLibrary")
             except RuntimeError:
-                instance = builtin.get_library_instance('Selenium2Library')
-            set_webdrivers(self.drivers, instance._drivers, 'selenium')
+                instance = builtin.get_library_instance("Selenium2Library")
+            set_webdrivers(self.drivers, instance._drivers, "selenium")
         except RuntimeError:
             pass
 
@@ -260,9 +254,9 @@ class AppiumConnectionsListener:
     def end_suite(self, name, attributes):
         try:
             builtin = BuiltIn()
-            instance = builtin.get_library_instance('AppiumLibrary')
-            clear_drivers(self.drivers, 'appium')
-            self.drivers.extend(get_webdrivers(instance._cache, 'appium'))
+            instance = builtin.get_library_instance("AppiumLibrary")
+            clear_drivers(self.drivers, "appium")
+            self.drivers.extend(get_webdrivers(instance._cache, "appium"))
         except RuntimeError:
             pass
 
@@ -270,8 +264,8 @@ class AppiumConnectionsListener:
     def start_suite(self, name, attributes):
         try:
             builtin = BuiltIn()
-            instance = builtin.get_library_instance('AppiumLibrary')
-            set_webdrivers(self.drivers, instance._cache, 'appium')
+            instance = builtin.get_library_instance("AppiumLibrary")
+            set_webdrivers(self.drivers, instance._cache, "appium")
         except RuntimeError:
             pass
 
@@ -286,19 +280,19 @@ class WhiteLibraryListener:
     def end_suite(self, name, attributes):
         try:
             builtin = BuiltIn()
-            instance = builtin.get_library_instance('WhiteLibrary')
-            clear_drivers(self.drivers, 'white')
+            instance = builtin.get_library_instance("WhiteLibrary")
+            clear_drivers(self.drivers, "white")
             self.drivers.append(
                 dict(
                     instance=(
-                        getattr(instance, 'app', None),
-                        getattr(instance, 'window', None),
-                        getattr(instance, 'screenshotter', None),
+                        getattr(instance, "app", None),
+                        getattr(instance, "window", None),
+                        getattr(instance, "screenshotter", None),
                     ),
                     aliases=[],
                     current=True,
-                    type='white',
-                ),
+                    type="white",
+                )
             )
         except RuntimeError:
             pass
@@ -307,11 +301,11 @@ class WhiteLibraryListener:
     def start_suite(self, name, attributes):
         try:
             builtin = BuiltIn()
-            instance = builtin.get_library_instance('WhiteLibrary')
+            instance = builtin.get_library_instance("WhiteLibrary")
             for driver in self.drivers:
-                if driver.get('type') == 'white' and driver.get('current'):
-                    setattr(instance, 'app', driver['instance'][0])
-                    setattr(instance, 'window', driver['instance'][1])
-                    setattr(instance, 'screenshotter', driver['instance'][2])
+                if driver.get("type") == "white" and driver.get("current"):
+                    setattr(instance, "app", driver["instance"][0])
+                    setattr(instance, "window", driver["instance"][1])
+                    setattr(instance, "screenshotter", driver["instance"][2])
         except RuntimeError:
             pass
