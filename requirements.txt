@@ -8,6 +8,10 @@ pillow
 pygments==2.3.1
 robotframework
 
+sphinx
+sphinx-rtd-theme
+nbsphinx
+
 pytest
 pytest-runner
 setuptools-scm
@@ -22,9 +26,12 @@ pylama
 pylint
 
 faker
+text-unidecode==1.2
 iplantuml
 jupyter
 jupyterlab
+jupyter-contrib-nbextensions
+rise
 RESTinstance
 requests==2.21.0
 jsonschema==3.0.1

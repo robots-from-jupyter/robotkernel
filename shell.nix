@@ -50,14 +50,12 @@ let self = rec {
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
       jupyterlab
-      lti
       nbimporter
       opencv3
       RESTinstance
       rise
       robotframework
       robotframework-appiumlibrary
-      robotframework-debuglibrary
       robotframework-faker
       robotframework-seleniumlibrary
       robotframework-seleniumscreenshots
