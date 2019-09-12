@@ -1,5 +1,5 @@
 REF_NIXPKGS = branches nixos-19.03
-REF_SETUPNIX = tags v2.1
+REF_SETUPNIX = tags v3.0.3
 
 PYTHON ?= python3
 NIX_OPTIONS ?= --pure --argstr python $(PYTHON)
@@ -64,7 +64,7 @@ requirements-$(PYTHON).txt: requirements.txt
 		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell --argstr python $(PYTHON) setup.nix -A pip2nix \
 		--run "pip2nix generate -r requirements.txt \
 		--output=requirements-$(PYTHON).nix"'
-	@grep "name" requirements-$(PYTHON).nix |grep -Eo "\"(.*)\""|grep -Eo "[^\"]+"|sed -r "s|-([0-9\.]+)|==\1|g"|grep -v "setuptools=" > requirements-$(PYTHON).txt
+	@grep "pname =\|version =" requirements-$(PYTHON).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON).txt
 
 .PHONY: upgrade
 upgrade:
@@ -87,12 +87,12 @@ upgrade-nix-nixpkgs:
 
 upgrade-nix-setupnix:
 	@echo "Updating setup @ setup.nix using $(REF_SETUPNIX)"; \
-	rev=$$(curl https://api.github.com/repos/datakurre/setup.nix/$(firstword $(REF_SETUPNIX)) \
+	rev=$$(curl https://api.github.com/repos/nix-community/setup.nix/$(firstword $(REF_SETUPNIX)) \
 		| jq -er '.[] | select(.name == "$(lastword $(REF_SETUPNIX))").commit.sha'); \
 	echo "Latest commit sha: $$rev"; \
-	sha=$$(nix-prefetch-url --unpack https://github.com/datakurre/setup.nix/archive/$$rev.tar.gz); \
+	sha=$$(nix-prefetch-url --unpack https://github.com/nix-community/setup.nix/archive/$$rev.tar.gz); \
 	sed -i \
 		-e "7s|.*|    # $(REF_SETUPNIX)|" \
-		-e "8s|.*|    url = \"https://github.com/datakurre/setup.nix/archive/$$rev.tar.gz\";|" \
+		-e "8s|.*|    url = \"https://github.com/nix-community/setup.nix/archive/$$rev.tar.gz\";|" \
 		-e "9s|.*|    sha256 = \"$$sha\";|" \
 		setup.nix

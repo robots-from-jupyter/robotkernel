@@ -4,9 +4,9 @@
     sha256 = "06cqc37yj23g3jbwvlf9704bl5dg8vrzqvs5y2q18ayg9sw61i6z";
   }) {}
 , setup ? import (builtins.fetchTarball {
-    # tags v2.1
-    url = "https://github.com/datakurre/setup.nix/archive/e835238aed6a0058cf3fd0f3d6ae603532db5cb4.tar.gz";
-    sha256 = "0gak3pg5nrrhxj2cws313jz80pmdys047ypnyhagvrfry5a9wa48";
+    # tags v3.0.3
+    url = "https://github.com/nix-community/setup.nix/archive/b13b7ee5f95ba4dc050c82ed1225f40225823ec1.tar.gz";
+    sha256 = "1k2d8fdlf9m0drmhg5jr0dvzw8i4ylhr7nhryfifwim5y8amhc2b";
   })
 , python ? "python3"
 , pythonPackages ? builtins.getAttr (python + "Packages") pkgs
@@ -14,42 +14,9 @@
 }:
 
 let overrides = self: super: {
-  "faker" = super."faker".overrideDerivation(old: {
-    postPatch = "";
+  "pytest-mock" = super."pytest-mock".overridePythonAttrs(old: {
+     doCheck = false;
   });
-  "graphviz" = pythonPackages.graphviz;
-  "importlib-metadata" = super."importlib-metadata".overridePythonAttrs(old: {
-    buildInputs = [ self."setuptools-scm" ];
-  });
-  "iplantuml" = super."iplantuml".overridePythonAttrs(old: {
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.plantuml ];
-    postPatch = ''
-      sed -i "s|/usr/local/bin/plantuml.jar|${pkgs.plantuml}/lib/plantuml.jar|" iplantuml/__init__.py
-    '';
-  });
-  "robotframework" = super."robotframework".overridePythonAttrs(old: {
-    nativeBuildInputs = [ pkgs.unzip ];
-    propagatedBuildInputs = old.propagatedBuildInputs ++ [
-      pythonPackages.tkinter
-    ];
-  });
-  "pylama" = super."pylama".overrideDerivation(old: {
-    postPatch = "rm -rf tests";  # conflicts with json5
-  });
-  "robotframework-appiumlibrary" =
-  super."robotframework-appiumlibrary".overridePythonAttrs(old: {
-    buildInputs = [ self."pytest-runner" ];
-  });
-  "simplegeneric" = super."simplegeneric".overridePythonAttrs(old: {
-    nativeBuildInputs = [ pkgs.unzip ];
-  });
-  "testfixtures" = super."testfixtures".overrideDerivation(old: {
-    patches = [];
-  });
-  "zipp" = super."zipp".overridePythonAttrs(old: {
-    buildInputs = [ self."setuptools-scm" ];
-  });
-
 }; in
 
 setup {
