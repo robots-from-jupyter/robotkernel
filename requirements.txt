@@ -1,43 +1,42 @@
-docutils==0.14
+docutils
 ipykernel
 ipywidgets
 lunr
 nbformat
 nbimporter
 pillow
-pygments==2.3.1
+pygments
 robotframework
 
+nbsphinx
 sphinx
 sphinx-rtd-theme
-nbsphinx
 
 pytest
 pytest-runner
-setuptools-scm
 
 black
 coverage
 coveralls
 isort
 pdbpp
-pydocstyle==3.0.0
+pydocstyle
 pylama
 pylint
 
 faker
-text-unidecode==1.2
 iplantuml
+jsonschema
 jupyter
-jupyterlab
 jupyter-contrib-nbextensions
-rise
+jupyterlab
+requests
 RESTinstance
-requests==2.21.0
-jsonschema==3.0.1
+rise
 robotframework-appiumlibrary
 robotframework-faker
 robotframework-seleniumlibrary
 robotframework-seleniumscreenshots
+text-unidecode==1.2
 
 Appium-Python-Client

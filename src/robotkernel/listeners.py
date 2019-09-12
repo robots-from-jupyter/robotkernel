@@ -2,7 +2,6 @@
 from robot.errors import DataError
 from robot.libdocpkg import LibraryDocumentation
 from robot.libraries.BuiltIn import BuiltIn
-
 import inspect
 
 
@@ -50,7 +49,11 @@ class RobotVariablesListener:
             elif output_dir and isinstance(value, str) and value.startswith(output_dir):
                 continue
             try:
-                builtin.set_suite_variable(name, value)
+                if name.startswith("&") and hasattr(value, "items"):
+                    value = " ".join([f"{k}={v}" for k, v in value.items()])
+                    builtin.set_suite_variable(name, value)
+                else:
+                    builtin.set_suite_variable(name, value)
             except AttributeError:
                 # AttributeError: 'slice' object has no attribute 'split'
                 pass

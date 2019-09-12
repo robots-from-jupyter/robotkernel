@@ -32,7 +32,6 @@ from robotkernel.utils import lunr_query
 from robotkernel.utils import scored_results
 from robotkernel.utils import yield_current_connection
 from traceback import format_exc
-
 import re
 import robot
 import sys

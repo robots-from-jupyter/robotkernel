@@ -1,5 +1,5 @@
 REF_NIXPKGS = branches nixos-19.03
-REF_SETUPNIX = tags v3.0.3
+REF_SETUPNIX = tags v3.1.0
 
 PYTHON ?= python3
 NIX_OPTIONS ?= --pure --argstr python $(PYTHON)
@@ -57,6 +57,7 @@ requirements-$(PYTHON).nix: requirements-$(PYTHON).txt
 	nix-shell --pure -p cacert libffi nix \
 		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell --argstr python $(PYTHON) setup.nix -A pip2nix \
 		--run "pip2nix generate -r requirements-$(PYTHON).txt \
+		--no-binary json5 --no-binary jupyter \
 		--output=requirements-$(PYTHON).nix"'
 
 requirements-$(PYTHON).txt: requirements.txt

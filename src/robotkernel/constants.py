@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from robot.libdocpkg.model import KeywordDoc
-
 import re
 
 

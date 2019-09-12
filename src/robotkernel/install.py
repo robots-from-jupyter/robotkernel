@@ -5,7 +5,6 @@
 from glob import glob
 from IPython.utils.tempdir import TemporaryDirectory
 from jupyter_client.kernelspec import KernelSpecManager
-
 import argparse
 import json
 import os
