@@ -3,7 +3,7 @@
   Distributed under the terms of the BSD-3-Clause License
 */
 
-import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
+import { JupyterLab, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
 import { PLUGIN_ID } from '.';
 
@@ -17,7 +17,7 @@ function activate(app: JupyterLab) {
 /**
  * Initialization data for the jupyterlab_robotmode extension.
  */
-const extension: JupyterLabPlugin<void> = {
+const extension: JupyterFrontEndPlugin<void> = {
   activate,
   autoStart: true,
   id: PLUGIN_ID
