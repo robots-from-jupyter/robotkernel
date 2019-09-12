@@ -1,13 +1,14 @@
 Robotkernel
 ===========
 
-`Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_.
+`Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_. Check a `video to see it in action`_.
 
 Requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework
 3.1 or later.
 
 Log | Report -links on existing notebooks are only active on trusted notebooks.
 
+.. _video to see it in action: https://youtu.be/uYGh9_c3b7s
 .. _Robot Framework: http://robotframework.org/
 .. _IPython: https://ipython.org/
 .. _Jupyter Notebook: https://jupyter.readthedocs.io/en/latest/
