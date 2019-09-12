@@ -11,8 +11,7 @@ import re
 
 
 class DisplayKernel(Kernel):
-    """BaseKernel with interactive shell for display hooks and display
-    update utility functions"""
+    """BaseKernel with interactive shell for display hooks."""
 
     shell = Instance(
         "IPython.core.interactiveshell.InteractiveShellABC", allow_none=True
@@ -59,8 +58,7 @@ class DisplayKernel(Kernel):
         super(DisplayKernel, self).start()
 
     def set_parent(self, ident, parent):
-        """Overridden from parent to tell the display hook and output streams
-        about the parent message.
+        """Overridden from parent to tell the display hook and output streams about the parent message.
         """
         super(DisplayKernel, self).set_parent(ident, parent)
         self.shell.set_parent(parent)
@@ -112,7 +110,7 @@ class DisplayKernel(Kernel):
 
 
 class ProgressUpdater(StringIO):
-    """Wrapper designed to capture robot.api.logger.console and display it"""
+    """Wrapper designed to capture robot.api.logger.console and display it."""
 
     colors = re.compile(r"\[[0-?]+[^m]+m")
 

@@ -21,7 +21,7 @@ import re
 
 
 def javascript_uri(html, filename=""):
-    """Because data-uri for text/html is not supported by IE"""
+    """Because data-uri for text/html is not supported by IE."""
     if isinstance(html, str):
         html = html.encode("utf-8")
     return (
@@ -68,8 +68,7 @@ def lunr_builder(ref, fields):
 
 
 def readable_keyword(s):
-    """Return keyword with only the first letter in title case
-    """
+    """Return keyword with only the first letter in title case."""
     if s and not s.startswith("*") and not s.startswith("["):
         if s.count("."):
             library, name = s.rsplit(".", 1)
@@ -81,7 +80,7 @@ def readable_keyword(s):
 
 
 def detect_robot_context(code, cursor_pos):
-    """Return robot code context in cursor position"""
+    """Return robot code context in cursor position."""
     code = code[:cursor_pos]
     line = code.rsplit("\n")[-1]
     context_parts = code.rsplit("***", 2)
@@ -168,7 +167,7 @@ def get_lunr_completions(needle, index, keywords, context):
 
 
 def to_html(obj):
-    """Return object as highlighted JSON"""
+    """Return object as highlighted JSON."""
     return highlight("json", json.dumps(obj, sort_keys=False, indent=4))
 
 
