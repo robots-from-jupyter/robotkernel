@@ -4,7 +4,7 @@ graft docs
 graft tests
 recursive-include src *.js
 include LICENSE *.rst *.nix
-exclude Makefile Dockerfile requirements.txt *.ipynb
+exclude Makefile Dockerfile requirements*.txt *.ipynb
 prune binder
 prune examples
 prune src/jupyterlab_robotmode
