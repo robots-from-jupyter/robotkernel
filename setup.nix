@@ -4,9 +4,9 @@
     sha256 = "06cqc37yj23g3jbwvlf9704bl5dg8vrzqvs5y2q18ayg9sw61i6z";
   }) {}
 , setup ? import (builtins.fetchTarball {
-    # tags v3.0.3
-    url = "https://github.com/nix-community/setup.nix/archive/b13b7ee5f95ba4dc050c82ed1225f40225823ec1.tar.gz";
-    sha256 = "1k2d8fdlf9m0drmhg5jr0dvzw8i4ylhr7nhryfifwim5y8amhc2b";
+    # tags v3.1.0
+    url = "https://github.com/nix-community/setup.nix/archive/129a384786f2d5985e1067e9b505f8cfc907e9fa.tar.gz";
+    sha256 = "1dp9bzivqaqqc2d9bnfy6jh37rfz6mvqaqbxy34l998y0khv5fpv";
   })
 , python ? "python3"
 , pythonPackages ? builtins.getAttr (python + "Packages") pkgs
@@ -15,7 +15,13 @@
 
 let overrides = self: super: {
   "pytest-mock" = super."pytest-mock".overridePythonAttrs(old: {
-     doCheck = false;
+    doCheck = false;
+  });
+  "json5" = super."json5".overridePythonAttrs(old: {
+    postPatch = "rm -r tests";
+  });
+  "RESTinstance" = super."RESTinstance".overridePythonAttrs(old: {
+    postInstall = "rm -f $out/bin/robot";
   });
 }; in
 
