@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0rc2 (unreleased)
--------------------
+1.0 (2019-09-12)
+----------------
 
 - Fix issue where log and report links did not open on JupyterLab 1.0
   [datakurre]
