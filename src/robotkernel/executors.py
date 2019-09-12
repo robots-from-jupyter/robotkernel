@@ -20,7 +20,6 @@ from traceback import format_exc
 from typing import Dict
 from typing import List
 from typing import Tuple
-
 import base64
 import ipywidgets
 import os

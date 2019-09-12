@@ -7,7 +7,6 @@ from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
 from robot.parsing import populators
 from robot.parsing import TEST_EXTENSIONS
 from robot.parsing.robotreader import RobotReader
-
 import re
 import sys
 import types

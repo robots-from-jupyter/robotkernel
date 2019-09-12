@@ -11,7 +11,6 @@ from robot.parsing.settings import Fixture
 from robot.parsing.tablepopulators import NullPopulator
 from robot.parsing.txtreader import TxtReader
 from robot.utils import get_error_message
-
 import os
 
 

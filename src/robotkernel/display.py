@@ -7,7 +7,6 @@ from robotkernel.constants import THROBBER
 from traitlets import Any
 from traitlets import Instance
 from traitlets import Type
-
 import re
 
 

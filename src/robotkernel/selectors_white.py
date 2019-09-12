@@ -21,7 +21,6 @@ from System.Windows.Forms import Keys
 from System.Windows.Forms import Screen
 from System.Windows.Forms import Timer
 from TestStack.White.InputDevices import Mouse
-
 import os
 import time
 
