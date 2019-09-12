@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 2.4.0 (2019-09-12)
+
+- Fix compatibility with JupyterLab 1.0
+
 ### 2.3.1 (2019-03-06)
 
 - Fix highlighting mode label to match robotkernel's
