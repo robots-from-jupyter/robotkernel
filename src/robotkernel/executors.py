@@ -277,7 +277,7 @@ def run_robot_suite(
         (widget and kernel.send_display_data or kernel.send_update_display_data)(
             {
                 "text/html": ""
-                '<p><a href="{}">Log</a> | <a href="{}">Report</a></p>'.format(
+                '<p><a href="about:" onClick="{}">Log</a> | <a href="about:" onClick="{}">Report</a></p>'.format(
                     javascript_uri(log, "log.html"),
                     javascript_uri(report, "report.html"),
                 )
