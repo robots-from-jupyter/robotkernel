@@ -32,10 +32,10 @@ class TestCaseString(TestCaseFile):
 class SafeSettingsTable(TestCaseFileSettingTable):
     def __init__(self, parent):
         super(SafeSettingsTable, self).__init__(parent)
-        self.suite_setup = OverridingFixture('Suite Setup', self)
-        self.suite_teardown = OverridingFixture('Suite Teardown', self)
-        self.test_setup = OverridingFixture('Test Setup', self)
-        self.test_teardown = OverridingFixture('Test Teardown', self)
+        self.suite_setup = OverridingFixture("Suite Setup", self)
+        self.suite_teardown = OverridingFixture("Suite Teardown", self)
+        self.test_setup = OverridingFixture("Test Setup", self)
+        self.test_teardown = OverridingFixture("Test Teardown", self)
 
 
 class OverridingFixture(Fixture):
@@ -65,6 +65,6 @@ class FromStringPopulator(FromFilePopulator):
     def populate(self, source):
         LOGGER.info("Parsing string '%s'." % source)
         try:
-            TxtReader().read(BytesIO(source.encode('utf-8')), self)
+            TxtReader().read(BytesIO(source.encode("utf-8")), self)
         except Exception:
             raise DataError(get_error_message())

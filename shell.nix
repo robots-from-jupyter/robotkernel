@@ -1,6 +1,7 @@
-{ pkgs ? import (fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/3a4ffdd38b56801ce616aa08791121d36769e884.tar.gz";
-    sha256 = "1vfmmd88x4rmgrz95xzr67xpmp1cqbrk6cfdadxv8ifqk0gsbrm7";
+{ pkgs ? import (builtins.fetchTarball {
+    # branches nixos-19.03
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/96151a48dd6662fb3f84bd16bbfe8a34f59d717a.tar.gz";
+    sha256 = "06cqc37yj23g3jbwvlf9704bl5dg8vrzqvs5y2q18ayg9sw61i6z";
   }) {}
 , sikuli ? false
 , vim ? false

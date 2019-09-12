@@ -15,8 +15,9 @@ except ImportError:
 try:
     import pywintypes
     import win32com.client
+
     try:
-        AutoIt = win32com.client.Dispatch('AutoItX3.Control')
+        AutoIt = win32com.client.Dispatch("AutoItX3.Control")
     except pywintypes.com_error:
         AutoIt = None
 except ImportError:
@@ -35,28 +36,25 @@ except ImportError:
 
 
 IS_SELENIUM_SELECTOR_NEEDLE = re.compile(
-    r'^id=|^id:|'
-    r'^name=|^name:|'
-    r'^css=|^css:|'
-    r'^tag=|^tag:|'
-    r'^link=|^link:|'
-    r'^partial link=|^partial link:|'
-    r'^xpath=|^xpath:',
+    r"^id=|^id:|"
+    r"^name=|^name:|"
+    r"^css=|^css:|"
+    r"^tag=|^tag:|"
+    r"^link=|^link:|"
+    r"^partial link=|^partial link:|"
+    r"^xpath=|^xpath:"
 )
-IS_APPIUM_SELECTOR_NEEDLE = re.compile(r'^id=|^id:|^xpath=|^xpath:')
-IS_AUTOIT_SELECTOR_NEEDLE = re.compile(r'^strTitle=|^strControl=')
-IS_WHITE_SELECTOR_NEEDLE = re.compile(r'^ae=|^ae:|^template=|^template:')
-IS_ID_SELECTOR_NEEDLE = re.compile(r'^id=|^id:')
-IS_NAME_SELECTOR_NEEDLE = re.compile(r'^name=|^name:')
-IS_CSS_SELECTOR_NEEDLE = re.compile(r'^css=|^css:')
-IS_TAG_SELECTOR_NEEDLE = re.compile(r'^tag=|^tag:')
-IS_LINK_SELECTOR_NEEDLE = re.compile(
-    r'^link=|^link:|'
-    r'^partial link:|^partial link=',
-)
-IS_XPATH_SELECTOR_NEEDLE = re.compile(r'^xpath=|^xpath:')
-FORM_TAG_NAMES = ['input', 'textarea', 'select', 'button', 'datalist']
-IS_TEXT = re.compile(r'^[\w\s]+$', re.U)
+IS_APPIUM_SELECTOR_NEEDLE = re.compile(r"^id=|^id:|^xpath=|^xpath:")
+IS_AUTOIT_SELECTOR_NEEDLE = re.compile(r"^strTitle=|^strControl=")
+IS_WHITE_SELECTOR_NEEDLE = re.compile(r"^ae=|^ae:|^template=|^template:")
+IS_ID_SELECTOR_NEEDLE = re.compile(r"^id=|^id:")
+IS_NAME_SELECTOR_NEEDLE = re.compile(r"^name=|^name:")
+IS_CSS_SELECTOR_NEEDLE = re.compile(r"^css=|^css:")
+IS_TAG_SELECTOR_NEEDLE = re.compile(r"^tag=|^tag:")
+IS_LINK_SELECTOR_NEEDLE = re.compile(r"^link=|^link:|" r"^partial link:|^partial link=")
+IS_XPATH_SELECTOR_NEEDLE = re.compile(r"^xpath=|^xpath:")
+FORM_TAG_NAMES = ["input", "textarea", "select", "button", "datalist"]
+IS_TEXT = re.compile(r"^[\w\s]+$", re.U)
 
 SELECTOR_HIGHLIGHT_STYLE_SCRIPT = """
 (function() {
@@ -131,21 +129,19 @@ def is_selector(needle):
 
 
 def get_element_highlight_script(results, old_elements):
-    script = ''
+    script = ""
     counter = 0
     arguments = []
     elements = [r[1] for r in results]
     for element in old_elements:
         if element not in elements:
-            script += (
-                f'arguments[{counter:d}].removeAttribute("data-robotkernel");'
-            )
+            script += f'arguments[{counter:d}].removeAttribute("data-robotkernel");'
             arguments.append(element)
             counter += 1
     for completion, element in results:
         if element not in old_elements:
             script += (
-                f'arguments[{counter:d}].setAttribute('
+                f"arguments[{counter:d}].setAttribute("
                 f'"data-robotkernel", "{completion}");'
             )
             arguments.append(element)
@@ -155,15 +151,14 @@ def get_element_highlight_script(results, old_elements):
 
 def clear_selector_highlights(driver):
     script, arguments = get_element_highlight_script(
-        [],
-        driver.find_elements_by_css_selector('[data-robotkernel]'),
+        [], driver.find_elements_by_css_selector("[data-robotkernel]")
     )
     if script:
         driver.execute_script(script, *arguments)
 
 
 def get_selector_completions(needle, driver):
-    if repr(driver).startswith('<appium.webdriver'):
+    if repr(driver).startswith("<appium.webdriver"):
         return get_appium_selector_completions(needle, driver)
     else:
         return get_selenium_selector_completions(needle, driver)
@@ -175,12 +170,10 @@ def get_selenium_selector_completions(needle, driver):
         styles = 'style[data-name="robotkernel"]'
         if not driver.find_elements_by_css_selector(styles):
             with pkg_resources.resource_stream(
-                    'robotkernel',
-                    'static/simmerjs/simmer.js',
+                "robotkernel", "static/simmerjs/simmer.js"
             ) as fp:
                 driver.execute_script(
-                    fp.read().decode('utf-8') +
-                    SELECTOR_HIGHLIGHT_STYLE_SCRIPT,
+                    fp.read().decode("utf-8") + SELECTOR_HIGHLIGHT_STYLE_SCRIPT
                 )
         can_highlight = True
     except WebDriverException:
@@ -190,13 +183,12 @@ def get_selenium_selector_completions(needle, driver):
     try:
         results = _get_selenium_selector_completions(needle, driver)
     except WebDriverException as e:
-        return ['Exception (press esc to clear):', str(e)]
+        return ["Exception (press esc to clear):", str(e)]
 
     # Highlight
     if can_highlight:
         script, arguments = get_element_highlight_script(
-            results,
-            driver.find_elements_by_css_selector('[data-robotkernel]'),
+            results, driver.find_elements_by_css_selector("[data-robotkernel]")
         )
         driver.execute_script(script, *arguments)
 
@@ -209,7 +201,7 @@ def get_appium_selector_completions(needle, driver):
     try:
         results = _get_appium_selector_completions(needle, driver)
     except WebDriverException as e:
-        return ['Exception (press esc to clear):', str(e)]
+        return ["Exception (press esc to clear):", str(e)]
 
     # Return
     return [r[0] for r in results]
@@ -224,29 +216,29 @@ def get_autoit_selector_completions(needle, driver=AutoIt):
 
 
 def _get_white_selector_completions(needle, driver):
-    if needle in ['ae=', 'ae:']:
+    if needle in ["ae=", "ae:"]:
         result = driver().pick()
         if result:
             return [
-                completion for completion in [
+                completion
+                for completion in [
                     f'id:{result["AutomationIdProperty"]}',
                     f'text:{result["NameProperty"]}',
                     f'help_text:{result["HelpTextProperty"]}',
                     f'class_name:{result["ClassNameProperty"]}',
                     f'control_type:{result["ControlTypeProperty"]}',
-                ] if completion.split(':', 1)[-1]
+                ]
+                if completion.split(":", 1)[-1]
             ]
         else:
             return []
-    elif needle in ['template=', 'template:']:
+    elif needle in ["template=", "template:"]:
         result = driver().pick(snip=True)
-        if result and 'bytes' in result:
-            filename = f'{int(time.time())}.png'
-            with open(os.path.join(os.getcwd(), filename), 'bw') as fp:
-                fp.write(result['bytes'])
-            return [
-                f'template=${{EXECDIR}}{os.path.sep * 2}{filename}',
-            ]
+        if result and "bytes" in result:
+            filename = f"{int(time.time())}.png"
+            with open(os.path.join(os.getcwd(), filename), "bw") as fp:
+                fp.write(result["bytes"])
+            return [f"template=${{EXECDIR}}{os.path.sep * 2}{filename}"]
         else:
             return []
 
@@ -290,9 +282,9 @@ def _get_appium_selector_completions(needle, driver):
 
 
 def _get_autoit_selector_completions(needle, driver):
-    if needle.startswith('strTitle='):
+    if needle.startswith("strTitle="):
         return get_autoit_win_selector_completions(needle, driver)
-    elif needle.startswith('strControl='):
+    elif needle.startswith("strControl="):
         return get_autoit_control_selector_completions(needle, driver)
     else:
         return []
@@ -301,16 +293,15 @@ def _get_autoit_selector_completions(needle, driver):
 def get_simmer_matches(elements, driver):
     matches = []
     if elements:
-        script = 'return ['
-        script += ', '.join([
-            f'window.Simmer(arguments[{idx:d}])'
-            for idx in range(len(elements))
-        ])
-        script += '];'
+        script = "return ["
+        script += ", ".join(
+            [f"window.Simmer(arguments[{idx:d}])" for idx in range(len(elements))]
+        )
+        script += "];"
         results = driver.execute_script(script, *elements)
         for idx in range(len(results)):
             if results[idx]:
-                matches.append((f'css:{results[idx]}', elements[idx]))
+                matches.append((f"css:{results[idx]}", elements[idx]))
     return matches
 
 
@@ -322,15 +313,14 @@ def get_selenium_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = (
-            driver.find_elements_by_css_selector(f'[id="{needle}"]')
-            or driver.find_elements_by_css_selector(f'[id*="{needle}"]')
-        )
+        results = driver.find_elements_by_css_selector(
+            f'[id="{needle}"]'
+        ) or driver.find_elements_by_css_selector(f'[id*="{needle}"]')
     else:
-        results = driver.find_elements_by_xpath('//*[@id]')
+        results = driver.find_elements_by_xpath("//*[@id]")
     for result in visible_or_all(results):
-        id_ = result.get_attribute('id')
-        matches.append((f'id:{id_}', result))
+        id_ = result.get_attribute("id")
+        matches.append((f"id:{id_}", result))
     return matches
 
 
@@ -339,14 +329,12 @@ def get_appium_id_selector_completions(needle, driver):
     matches = []
     if needle:
         results = driver.find_elements_by_xpath(
-            f'//*['
-            f'contains(@resource-id, "{needle}")'
-            f']',
+            f"//*[" f'contains(@resource-id, "{needle}")' f"]"
         )
     else:
-        results = driver.find_elements_by_xpath('//*[@resource-id]')
+        results = driver.find_elements_by_xpath("//*[@resource-id]")
     for result in visible_or_all(results):
-        id_ = result.get_attribute('resource-id')
+        id_ = result.get_attribute("resource-id")
         matches.append((f'xpath=//*[@resource-id="{id_}"]', result))
     return matches
 
@@ -355,22 +343,22 @@ def get_selenium_name_selector_completions(needle, driver):
     needle = needle[5:]
     matches = []
     if needle:
-        results = (
-            driver.find_elements_by_css_selector(f'[name="{needle}"]')
-            or driver.find_elements_by_css_selector(f'[name*="{needle}"]')
-        )
+        results = driver.find_elements_by_css_selector(
+            f'[name="{needle}"]'
+        ) or driver.find_elements_by_css_selector(f'[name*="{needle}"]')
     else:
-        results = driver.find_elements_by_xpath('//*[@name]')
+        results = driver.find_elements_by_xpath("//*[@name]")
     for result in visible_or_all(results):
-        name = result.get_attribute('name')
-        matches.append((f'name:{name}', result))
+        name = result.get_attribute("name")
+        matches.append((f"name:{name}", result))
     return matches
 
 
 def get_selenium_needle_from_user(driver):
     try:
-        return driver.execute_async_script(
-            """\
+        return (
+            driver.execute_async_script(
+                """\
 var node = document.getElementById('robotkernel-picker') ||
        document.createElement('div');
 node.callback = arguments[arguments.length - 1];
@@ -384,16 +372,18 @@ node.setAttribute('onClick',
 ');'
 );
 document.body.appendChild(node);
-    """,
-        ) or ''
+    """
+            )
+            or ""
+        )
     except TimeoutException:
         driver.execute_script(
             """\
 var node = document.getElementById('robotkernel-picker');
 if (node) { node.parentNode.removeChild(node); }
-""",
+"""
         )
-        return ''
+        return ""
 
 
 def get_selenium_css_selector_completions(needle, driver):
@@ -406,21 +396,20 @@ def get_selenium_css_selector_completions(needle, driver):
     if needle:
         results = driver.find_elements_by_css_selector(needle)
     for result in visible_or_all(results):
-        id_ = result.get_attribute('id')
-        if ' ' in needle:  # always include simmer result for complex needles
+        id_ = result.get_attribute("id")
+        if " " in needle:  # always include simmer result for complex needles
             unresolved.append(result)
         if id_:
-            matches.append((f'id:{id_}', result))
+            matches.append((f"id:{id_}", result))
             continue
-        elif (result.tag_name in FORM_TAG_NAMES
-              and result.get_attribute('name')):
-            name = result.get_attribute('name')
-            matches.append((f'name:{name}', result))
+        elif result.tag_name in FORM_TAG_NAMES and result.get_attribute("name"):
+            name = result.get_attribute("name")
+            matches.append((f"name:{name}", result))
             continue
-        elif result.tag_name == 'a' and result.text:
-            matches.append((f'link:{result.text}', result))
+        elif result.tag_name == "a" and result.text:
+            matches.append((f"link:{result.text}", result))
             continue
-        elif ' ' not in needle:
+        elif " " not in needle:
             unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
     return matches
@@ -434,14 +423,14 @@ def get_selenium_tag_selector_completions(needle, driver):
     if needle:
         results = driver.find_elements_by_css_selector(needle)
     for result in visible_or_all(results):
-        id_ = result.get_attribute('id')
+        id_ = result.get_attribute("id")
         if id_:
-            matches.append((f'id:{id_}', result))
+            matches.append((f"id:{id_}", result))
             continue
         if result.tag_name in FORM_TAG_NAMES:
-            name = result.get_attribute('name')
+            name = result.get_attribute("name")
             if name:
-                matches.append((f'name:{name}', result))
+                matches.append((f"name:{name}", result))
                 continue
         unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
@@ -454,10 +443,10 @@ def get_selenium_link_selector_completions(needle, driver):
     if needle:
         results = driver.find_elements_by_partial_link_text(needle)
     else:
-        results = driver.find_elements_by_xpath('//a')
+        results = driver.find_elements_by_xpath("//a")
     for result in visible_or_all(results):
         if result.text:
-            matches.append((f'link:{result.text}', result))
+            matches.append((f"link:{result.text}", result))
     return matches
 
 
@@ -469,14 +458,14 @@ def get_selenium_xpath_selector_completions(needle, driver):
     if needle:
         results = driver.find_elements_by_xpath(needle)
     for result in visible_or_all(results):
-        id_ = result.get_attribute('id')
+        id_ = result.get_attribute("id")
         if id_:
-            matches.append((f'id:{id_}', result))
+            matches.append((f"id:{id_}", result))
             continue
         if result.tag_name in FORM_TAG_NAMES:
-            name = result.get_attribute('name')
+            name = result.get_attribute("name")
             if name:
-                matches.append((f'name:{name}', result))
+                matches.append((f"name:{name}", result))
                 continue
         unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
@@ -488,22 +477,20 @@ def get_appium_xpath_selector_completions(needle, driver):
     matches = []
     if IS_TEXT.match(needle):
         results = driver.find_elements_by_xpath(
-            f'//*['
-            f'contains(@text, "{needle}")'
-            f']',
+            f"//*[" f'contains(@text, "{needle}")' f"]"
         )
     elif needle:
         results = driver.find_elements_by_xpath(needle)
     else:
-        results = driver.find_elements_by_xpath('//*[@resource-id]')
+        results = driver.find_elements_by_xpath("//*[@resource-id]")
     for result in visible_or_all(results):
-        id_ = result.get_attribute('resource-id')
+        id_ = result.get_attribute("resource-id")
         if id_:
             matches.append((f'xpath=//*[@resource-id="{id_}"]', result))
             continue
         else:
-            class_ = result.get_attribute('class')
-            text = result.get_attribute('text')
+            class_ = result.get_attribute("class")
+            text = result.get_attribute("text")
             matches.append((f'xpath=//{class_}[@text="{text}"]', result))
             continue
 
@@ -511,39 +498,39 @@ def get_appium_xpath_selector_completions(needle, driver):
 
 
 def get_autoit_win_selector_completions(needle, driver):
-    needle = needle[len('strTitle='):].strip()
+    needle = needle[len("strTitle=") :].strip()
     matches = []
     if needle:
         results = driver.WinList(needle)[0][1:]
         for result in results:
-            matches.append(f'strTitle={result}  strText=')
+            matches.append(f"strTitle={result}  strText=")
     else:
-        title = driver.WinGetTitle('')
-        driver.ToolTip('Select window')
+        title = driver.WinGetTitle("")
+        driver.ToolTip("Select window")
         while True:
             time.sleep(1)
-            title_ = driver.WinGetTitle('')
+            title_ = driver.WinGetTitle("")
             if title_ != title:
-                driver.ToolTip('')
-                matches.append(f'strTitle={title_}  strText=')
+                driver.ToolTip("")
+                matches.append(f"strTitle={title_}  strText=")
                 break
     return matches
 
 
 def get_autoit_control_selector_completions(needle, driver):  # noqa: C901
-    needle = needle[len('strControl='):].strip()
+    needle = needle[len("strControl=") :].strip()
     if needle:
         return []
 
     matches = []
-    title = driver.WinGetTitle('')
-    driver.ToolTip('Select control')
+    title = driver.WinGetTitle("")
+    driver.ToolTip("Select control")
 
     while True:
         time.sleep(1)
-        title_ = driver.WinGetTitle('')
+        title_ = driver.WinGetTitle("")
         if title_ != title:
-            driver.ToolTip('')
+            driver.ToolTip("")
 
             pointer_x = driver.MouseGetPosX()
             pointer_y = driver.MouseGetPosY()
@@ -555,22 +542,22 @@ def get_autoit_control_selector_completions(needle, driver):  # noqa: C901
             for class_ in driver.WinGetClassList(title_).split():
                 counter.setdefault(class_, 0)
                 counter[class_] += 1
-                ref = f'{class_}{counter[class_]:d}'
-                handle = driver.ControlGetHandle(title_, '', ref)
+                ref = f"{class_}{counter[class_]:d}"
+                handle = driver.ControlGetHandle(title_, "", ref)
 
-                x = driver.WinGetPosX(f'[HANDLE:{handle}]')
+                x = driver.WinGetPosX(f"[HANDLE:{handle}]")
                 if x > pointer_x:  # control begins too late x
                     continue
 
-                w = driver.ControlGetPosWidth(title_, '', ref)
+                w = driver.ControlGetPosWidth(title_, "", ref)
                 if (x + w) < pointer_x:  # control ends too early x
                     continue
 
-                y = driver.WinGetPosY(f'[HANDLE:{handle}]')
+                y = driver.WinGetPosY(f"[HANDLE:{handle}]")
                 if y > pointer_y:  # control begins too late y
                     continue
 
-                h = driver.ControlGetPosHeight(title_, '', ref)
+                h = driver.ControlGetPosHeight(title_, "", ref)
                 if (y + h) < pointer_y:  # control ends too late y
                     continue
 
@@ -579,10 +566,10 @@ def get_autoit_control_selector_completions(needle, driver):  # noqa: C901
 
                 match = [ref, w * h]
 
-            driver.ToolTip('')
+            driver.ToolTip("")
 
             if match:
-                matches.append(f'strControl={match[0]}')
+                matches.append(f"strControl={match[0]}")
 
             break
     return matches

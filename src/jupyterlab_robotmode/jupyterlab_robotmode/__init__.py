@@ -4,7 +4,4 @@
 
 
 def _jupyter_labextension_paths():
-    return [{
-        'name': 'jupyterlab_robotmode',
-        'src': 'static',
-    }]
+    return [{"name": "jupyterlab_robotmode", "src": "static"}]
