@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.1 (unreleased)
+1.0.1 (2019-09-19)
 ------------------
 
 - Fix issue where ${CURDIR} was broken on Windows, because it contained path without
