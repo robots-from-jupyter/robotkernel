@@ -4,8 +4,12 @@ Changelog
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix issue where ${CURDIR} was broken on Windows, because it contained path without
+  escaped path separators required by Robot Framework
+  [datakurre]
+- Fix issue where suite variable listener reported errors when running robot suites,
+  because it tried to restore dictionary variables with empty value
+  [datakurre]
 
 1.0 (2019-09-12)
 ----------------
