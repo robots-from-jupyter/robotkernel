@@ -49,9 +49,10 @@ class RobotVariablesListener:
             elif output_dir and isinstance(value, str) and value.startswith(output_dir):
                 continue
             try:
-                if name.startswith("&") and hasattr(value, "items"):
-                    value = " ".join([f"{k}={v}" for k, v in value.items()])
-                    builtin.set_suite_variable(name, value)
+                if name.startswith("&{"):
+                    if value and hasattr(value, "items"):
+                        value = " ".join([f"{k}={v}" for k, v in value.items()])
+                        builtin.set_suite_variable(name, value)
                 else:
                     builtin.set_suite_variable(name, value)
             except AttributeError:
