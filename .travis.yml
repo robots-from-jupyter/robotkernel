@@ -1,10 +1,10 @@
 language: nix
 before_install:
 - sudo mkdir -p /etc/nix
-- echo "substituters = https://cache.nixos.org/ https://datakurre.cachix.org/" | sudo
+- echo "substituters = https://cache.nixos.org/ https://robots-from-jupyter.cachix.org/" | sudo
   tee -a /etc/nix/nix.conf
 - echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-  datakurre.cachix.org-1:ayZJTy5BDd8K4PW9uc9LHV+WCsdi/fu1ETIYZMooK78=" | sudo tee
+  robots-from-jupyter.cachix.org-1:181UTo4rIog6BLr9D4t79g5W8yLcf9+LDEaDZIN+dJw"  | sudo tee
   -a /etc/nix/nix.conf
 script:
 - nix-shell setup.nix -A shell --run "make test && python -m robotkernel.install

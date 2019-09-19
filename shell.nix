@@ -121,6 +121,10 @@ in with self;
 
 pkgs.stdenv.mkDerivation rec {
   name = "jupyter";
+  env = pkgs.buildEnv { name = name; paths = buildInputs; };
+  builder = builtins.toFile "builder.sh" ''
+    source $stdenv/setup; ln -s $env $out
+  '';
   buildInputs = [
     pkgs.firefox
     pkgs.geckodriver
