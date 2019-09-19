@@ -12,6 +12,7 @@ from robot.parsing.tablepopulators import NullPopulator
 from robot.parsing.txtreader import TxtReader
 from robot.utils import get_error_message
 import os
+import platform
 
 
 class TestCaseString(TestCaseFile):
@@ -59,7 +60,13 @@ class FromStringPopulator(FromFilePopulator):
     def __init__(self, datafile):
         self._datafile = datafile
         self._populator = NullPopulator()
-        self._curdir = os.getcwd()  # Jupyter running directory for convenience
+        # Jupyter running directory for convenience
+        if platform.system() == "Windows" and os.path.sep == "\\":
+            # Because Robot Framework uses the backslash (\) as an escape character in
+            # the test data, using a literal backslash requires duplicating it.
+            self._curdir = os.getcwd().replace(os.path.sep, os.path.sep * 2)
+        else:
+            self._curdir = os.getcwd()
 
     def populate(self, source):
         LOGGER.info("Parsing string '%s'." % source)
