@@ -1,4 +1,4 @@
-name: python3
+name: robotkernel
 channels:
   - conda-forge
 dependencies:
