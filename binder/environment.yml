@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - opencv
+  - pip
   - pip:
     - RESTinstance==1.0.1
     - pillow==6.1.0
