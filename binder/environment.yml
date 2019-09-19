@@ -2,7 +2,7 @@ name: robotkernel
 channels:
   - conda-forge
 dependencies:
-  - opencv
+  - opencv==3.1
   - pip
   - pip:
     - RESTinstance==1.0.1
