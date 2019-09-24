@@ -166,7 +166,7 @@ def inject_ipywidgets(
             if "=" in arg:
                 arg, default = arg.split("=", 1)
             else:
-                arg, default = arg, None
+                default = None
             arguments.append((arg, normalize_argument(arg), default))
         inject_ipywidget(kernel, data, listeners, silent, display_id, name, arguments)
 

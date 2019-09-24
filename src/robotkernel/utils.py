@@ -151,13 +151,13 @@ def get_lunr_completions(needle, index, keywords, context):
         ref = result["ref"]
         if ref.startswith("__") and not ref.startswith(context):
             continue
-        elif not ref.startswith(context) and context not in [
+        if not ref.startswith(context) and context not in [
             "__tasks__",
             "__keywords__",
             "__settings__",
         ]:
             continue
-        elif not needle.count("."):
+        if not needle.count("."):
             keyword = keywords[ref].name
             if keyword not in matches:
                 matches.append(readable_keyword(keyword))

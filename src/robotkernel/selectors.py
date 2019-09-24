@@ -402,14 +402,14 @@ def get_selenium_css_selector_completions(needle, driver):
         if id_:
             matches.append((f"id:{id_}", result))
             continue
-        elif result.tag_name in FORM_TAG_NAMES and result.get_attribute("name"):
+        if result.tag_name in FORM_TAG_NAMES and result.get_attribute("name"):
             name = result.get_attribute("name")
             matches.append((f"name:{name}", result))
             continue
-        elif result.tag_name == "a" and result.text:
+        if result.tag_name == "a" and result.text:
             matches.append((f"link:{result.text}", result))
             continue
-        elif " " not in needle:
+        if " " not in needle:
             unresolved.append(result)
     matches.extend(get_simmer_matches(unresolved, driver))
     return matches
@@ -488,11 +488,10 @@ def get_appium_xpath_selector_completions(needle, driver):
         if id_:
             matches.append((f'xpath=//*[@resource-id="{id_}"]', result))
             continue
-        else:
-            class_ = result.get_attribute("class")
-            text = result.get_attribute("text")
-            matches.append((f'xpath=//{class_}[@text="{text}"]', result))
-            continue
+        class_ = result.get_attribute("class")
+        text = result.get_attribute("text")
+        matches.append((f'xpath=//{class_}[@text="{text}"]', result))
+        continue
 
     return matches
 

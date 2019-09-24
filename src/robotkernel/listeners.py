@@ -46,7 +46,7 @@ class RobotVariablesListener:
         for name, value in self.variables.items():
             if name in BUILTIN_VARIABLES:
                 continue
-            elif output_dir and isinstance(value, str) and value.startswith(output_dir):
+            if output_dir and isinstance(value, str) and value.startswith(output_dir):
                 continue
             try:
                 if name.startswith("&{"):

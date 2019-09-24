@@ -28,7 +28,7 @@ def exec_code_into_module(code, module):
 
 def NotebookReader():  # noqa: N802
     try:
-        import nbformat
+        import nbformat  # noqa
     except ImportError:
         raise DataError(
             "Using Notebook test data requires having "

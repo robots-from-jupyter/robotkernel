@@ -190,8 +190,8 @@ class WhiteLibraryCompanion:
     """
 
     def match_template(self, template: str, similarity: float = 0.8):
-        import numpy as np
-        import cv2 as cv
+        import numpy as np  # noqa
+        import cv2 as cv  # noqa
 
         screenshot = PickSnipTool.take_screenshot(as_bytes=True)
         image = cv.imdecode(np.frombuffer(screenshot, np.uint8), cv.IMREAD_COLOR)
