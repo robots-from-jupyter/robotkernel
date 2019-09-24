@@ -10,7 +10,7 @@ dependencies:
     - robotframework==3.1.2
     - robotframework-appiumlibrary==1.5.0.1
     - robotframework-faker==4.2.0
-    - robotframework-seleniumlibrary==3.3.1
+    - robotframework-seleniumlibrary==4.0.0
     - robotframework-seleniumscreenshots==0.9.5
     - selenium==3.141.0
     - urllib3==1.25.3
