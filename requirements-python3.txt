@@ -70,7 +70,7 @@ parso==0.5.1
 pdbpp==0.10.0
 pexpect==4.7.0
 pickleshare==0.7.5
-pillow==6.1.0
+pillow==6.2.0
 plantweb==1.2.1
 pluggy==0.13.0
 ply==3.11
