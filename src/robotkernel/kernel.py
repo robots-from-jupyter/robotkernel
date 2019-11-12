@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict  # noqa
+from collections import OrderedDict
 from IPython.utils.tokenutil import line_at_cursor
-from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
-from robot.parsing import populators
-from robot.parsing import TEST_EXTENSIONS
 from robotkernel import __version__
 from robotkernel.completion_finders import complete_libraries
 from robotkernel.constants import CONTEXT_LIBRARIES
+from robotkernel.constants import HAS_NBIMPORTER
 from robotkernel.constants import VARIABLE_REGEXP
 from robotkernel.display import DisplayKernel
 from robotkernel.exceptions import BrokenOpenConnection
 from robotkernel.executors import execute_python
 from robotkernel.executors import execute_robot
-from robotkernel.executors import parse_robot
 from robotkernel.listeners import AppiumConnectionsListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import RobotVariablesListener
 from robotkernel.listeners import SeleniumConnectionsListener
 from robotkernel.listeners import WhiteLibraryListener
-from robotkernel.nbreader import NotebookReader
+from robotkernel.monkeypatches import inject_libdoc_ipynb_support
+from robotkernel.monkeypatches import inject_robot_ipynb_support
 from robotkernel.selectors import clear_selector_highlights
 from robotkernel.selectors import get_autoit_selector_completions
 from robotkernel.selectors import get_selector_completions
@@ -34,22 +32,17 @@ from robotkernel.utils import lunr_builder
 from robotkernel.utils import lunr_query
 from robotkernel.utils import scored_results
 from robotkernel.utils import yield_current_connection
-from traceback import format_exc
 import re
 import robot
 import sys
 import uuid
 
 
-try:
+if HAS_NBIMPORTER:
     import nbimporter  # noqa
 
-    HAS_NBIMPORTER = True
-except ImportError:
-    HAS_NBIMPORTER = False
 
-
-# noinspection PyAbstractClass
+# noinspection PyAbstractClass,DuplicatedCode
 class RobotKernel(DisplayKernel):
     implementation = "IRobot"
     implementation_version = __version__
@@ -67,10 +60,8 @@ class RobotKernel(DisplayKernel):
     def __init__(self, **kwargs):
         super(RobotKernel, self).__init__(**kwargs)
         # Enable nbreader
-        if "ipynb" not in populators.READERS:
-            populators.READERS["ipynb"] = NotebookReader
-            TEST_EXTENSIONS.add("ipynb")
-            RESOURCE_EXTENSIONS.add("ipynb")
+        inject_robot_ipynb_support()
+        inject_libdoc_ipynb_support()
 
         # History to repeat after kernel restart
         self.robot_history = OrderedDict()
@@ -240,30 +231,7 @@ class RobotKernel(DisplayKernel):
                 )
             self.robot_variables.extend(VARIABLE_REGEXP.findall(code, re.U & re.M))
 
-            # Populate
-            try:
-                data = parse_robot(code, self.robot_history)
-            except Exception as e:
-                if not silent:
-                    self.send_error(
-                        {
-                            "ename": e.__class__.__name__,
-                            "evalue": str(e),
-                            "traceback": list(format_exc().splitlines()),
-                        }
-                    )
-                return {
-                    "status": "error",
-                    "ename": e.__class__.__name__,
-                    "evalue": str(e),
-                    "traceback": list(format_exc().splitlines()),
-                }
-
-            # Update catalog
-            keywords_indexer = RobotKeywordsIndexerListener(self.robot_catalog)
-            # noinspection PyProtectedMember
-            keywords_indexer._import_from_suite_data(data)
-
+            # Configure listeners
             listeners = [
                 SeleniumConnectionsListener(self.robot_connections),
                 AppiumConnectionsListener(self.robot_connections),
@@ -273,13 +241,7 @@ class RobotKernel(DisplayKernel):
             ]
 
             # Execute test case
-            result = execute_robot(
-                self,
-                code,
-                data,  # passing history would be proper, but waste parsing
-                listeners,
-                silent,
-            )
+            result = execute_robot(self, code, self.robot_history, listeners, silent,)
 
             # Save history
             if result["status"] == "ok":

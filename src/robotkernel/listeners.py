@@ -113,10 +113,10 @@ class RobotKeywordsIndexerListener:
         if len(self.catalog["keywords"]):
             self.catalog["index"] = self.catalog["builder"].build()
 
-    def _import_from_suite_data(self, data):
-        self._resource_import(data.keywords)
+    def _import_from_suite_data(self, suite):
+        self._resource_import(suite.resource.keywords)
         try:
-            for import_data in data.setting_table.imports.data:
+            for import_data in suite.resource.imports:
                 attributes = {}
                 if import_data.type == "Library":
                     alias = import_data.alias or import_data.name

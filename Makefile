@@ -1,8 +1,12 @@
 REF_NIXPKGS = branches nixos-19.09
 REF_SETUPNIX = tags v3.3.0
 
-PYTHON ?= python3
-NIX_OPTIONS ?= --pure --argstr python $(PYTHON)
+PYTHON ?= python36
+ROBOTFRAMEWORK ?= rf32
+NIX_OPTIONS ?= \
+  --pure \
+  --argstr python $(PYTHON) \
+  --argstr robotframework $(ROBOTFRAMEWORK)
 
 .PHONY: all
 all: test
@@ -11,10 +15,10 @@ nix-%:
 	nix-shell $(NIX_OPTIONS) setup.nix -A develop --run "$(MAKE) $*"
 
 .PHONY: shell
-shell: requirements-$(PYTHON).nix
+shell: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 	nix-shell $(NIX_OPTIONS) setup.nix -A develop
 
-env: requirements-$(PYTHON).nix
+env: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 	nix-build $(NIX_OPTIONS) setup.nix -A env -o env
 
 .PHONY: test
@@ -29,7 +33,7 @@ check:
 
 build: result
 
-result: requirements-$(PYTHON).nix
+result: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 	nix-build $(NIX_OPTIONS) setup.nix -A bdist_wheel
 
 .PHONY: clean
@@ -51,21 +55,23 @@ format:
 htmlcov: .coverage
 	coverage html
 
-requirements: requirements-$(PYTHON).nix
+requirements: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
-requirements-$(PYTHON).nix: requirements-$(PYTHON).txt
-	nix-shell --pure -p cacert libffi nix \
+requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
+	nix-shell -p cacert libffi nix \
 		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell --argstr python $(PYTHON) setup.nix -A pip2nix \
-		--run "pip2nix generate -r requirements-$(PYTHON).txt \
+		--run "pip2nix generate -r requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt \
 		--no-binary json5 --no-binary jupyter \
-		--output=requirements-$(PYTHON).nix"'
+		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
 
-requirements-$(PYTHON).txt: requirements.txt
-	nix-shell --pure -p cacert libffi nix \
-		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell --argstr python $(PYTHON) setup.nix -A pip2nix \
-		--run "pip2nix generate -r requirements.txt \
-		--output=requirements-$(PYTHON).nix"'
-	@grep "pname =\|version =" requirements-$(PYTHON).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON).txt
+requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt: requirements-$(ROBOTFRAMEWORK).txt
+	nix-shell -p cacert libffi nix \
+		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell \
+		--argstr python $(PYTHON) \
+		--argstr robotframework $(ROBOTFRAMEWORK) setup.nix -A pip2nix \
+		--run "pip2nix generate -r requirements-$(ROBOTFRAMEWORK).txt \
+		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
+	@grep "pname =\|version =" requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
 
 .PHONY: upgrade
 upgrade:

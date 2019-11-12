@@ -12,12 +12,22 @@ from operator import itemgetter
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 from robot.libdocpkg.htmlwriter import DocToHtml
-from robot.parsing.settings import Documentation
+from robotkernel.constants import HAS_RF32_PARSER
 import base64
 import json
 import os
 import pygments
 import re
+
+
+if HAS_RF32_PARSER:
+
+    class Documentation:
+        pass  # No longer with RF32
+
+
+else:
+    from robot.parsing.settings import Documentation
 
 
 def javascript_uri(html, filename=""):

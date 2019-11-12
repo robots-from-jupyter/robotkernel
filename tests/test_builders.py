@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-from robotkernel.model import TestCaseString
+from robotkernel.builders import build_suite
 
 
-def test_string():
-    case = TestCaseString()
-    case.populate('''
-*** Settings ***
-
-Library  Collections
-
+TEST_SUITE = """\
 *** Settings ***
 
 Library  Collections
@@ -25,7 +19,11 @@ Head
 Get head
     ${array}=  Create list  1  2  3  4  5
     ${head}=  Head  ${array}
-    Should be equal  ${
-''')
-    assert len(case.keywords) == 1
-    assert len(case.testcase_table.tests) == 1
+    Should be equal  ${head}  1
+"""
+
+
+def test_string():
+    suite = build_suite(TEST_SUITE, {})
+    assert len(suite.resource.keywords) == 1
+    assert len(suite.tests) == 1

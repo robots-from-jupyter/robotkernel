@@ -4,20 +4,19 @@ from io import StringIO
 from IPython.core.display import clear_output
 from IPython.core.display import display
 from PIL import Image
-from robot.model import TestSuite
 from robot.reporting import ResultWriter
-from robot.running import TestSuiteBuilder
+from robot.running.model import TestSuite
+from robotkernel.builders import build_suite
 from robotkernel.display import DisplayKernel
 from robotkernel.display import ProgressUpdater
 from robotkernel.listeners import ReturnValueListener
+from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import StatusEventListener
-from robotkernel.model import TestCaseString
 from robotkernel.utils import data_uri
 from robotkernel.utils import javascript_uri
 from robotkernel.utils import to_mime_and_metadata
 from tempfile import TemporaryDirectory
 from traceback import format_exc
-from typing import Dict
 from typing import List
 from typing import Tuple
 import base64
@@ -55,61 +54,59 @@ def execute_python(kernel: DisplayKernel, code: str, module: str, silent: bool):
         }
 
 
-def parse_robot(code: str, cell_history: Dict[str, str]):
-    data = TestCaseString()
-    for historical in cell_history.values():
-        data.populate(historical)
-    data.testcase_table.tests.clear()
-    data.populate(code)
-    return data
-
-
 def normalize_argument(name):
     return re.sub(r"\W", "_", re.sub(r"^[^\w]*|[^\w]*$", "", name, re.U), re.U)
 
 
 def execute_ipywidget(
     kernel: DisplayKernel,
-    data: TestCaseString,
+    code: str,
+    history: OrderedDict,
     listeners: list,
     silent: bool,
     display_id: str,
+    rpa: bool,
     name,
     arguments,
     values,
 ):
-    header = getattr(data.testcase_table, "name", "Tasks") or "Tasks"
-    table = f"""\
+    header = rpa and "Tasks" or "Test Cases"
+    code += f"""\
+
 *** {header} ***
 
 {name}
     {name}  {'  '.join([values[a[1]] for a in arguments])}
 """
-    data.testcase_table.tests.clear()
-    data.populate(table)
-
-    # Build
-    builder = TestSuiteBuilder()
-    data.source = os.getcwd()  # allow Library and Resource from CWD work
-    suite = builder._build_suite(data)
-    suite._name = "Jupyter"
-
+    suite = build_suite(code, history)
+    suite.rpa = True
     with TemporaryDirectory() as path:
         run_robot_suite(kernel, suite, listeners, silent, display_id, path, widget=True)
 
 
 def inject_ipywidget(
     kernel: DisplayKernel,
-    data: TestCaseString,
+    code: str,
+    history: OrderedDict,
     listeners: list,
     silent: bool,
     display_id: str,
+    rpa: bool,
     name: str,
     arguments: List[Tuple[str, str, str]],
 ):
     def execute(**values):
         execute_ipywidget(
-            kernel, data, listeners, silent, display_id, name, arguments, values
+            kernel,
+            code,
+            history,
+            listeners,
+            silent,
+            display_id,
+            rpa,
+            name,
+            arguments,
+            values,
         )
 
     widgets = []
@@ -153,13 +150,14 @@ def inject_ipywidget(
 def inject_ipywidgets(
     kernel: DisplayKernel,
     code: str,
-    data: TestCaseString,
+    history: OrderedDict,
     listeners: list,
     silent: bool,
     display_id: str,
+    rpa: bool,
 ):
-    code_data = parse_robot(code, {})
-    for keyword in code_data.keywords:
+    suite_ = build_suite(code, {})
+    for keyword in suite_.resource.keywords:
         name = keyword.name
         arguments = []
         for arg in keyword.args:
@@ -168,24 +166,43 @@ def inject_ipywidgets(
             else:
                 default = None
             arguments.append((arg, normalize_argument(arg), default))
-        inject_ipywidget(kernel, data, listeners, silent, display_id, name, arguments)
+        inject_ipywidget(
+            kernel, code, history, listeners, silent, display_id, rpa, name, arguments
+        )
 
 
 def execute_robot(
     kernel: DisplayKernel,
     code: str,
-    data: TestCaseString,
+    history: OrderedDict,
     listeners: list,
     silent: bool,
 ):
-    # Build
-    builder = TestSuiteBuilder()
-    data.source = os.getcwd()  # allow Library and Resource from CWD work
-    suite = builder._build_suite(data)
-    suite._name = "Jupyter"
-
-    # Run
     display_id = str(uuid.uuid4())
+    try:
+        suite = build_suite(code, history)
+    except Exception as e:
+        if not silent:
+            kernel.send_error(
+                {
+                    "ename": e.__class__.__name__,
+                    "evalue": str(e),
+                    "traceback": list(format_exc().splitlines()),
+                }
+            )
+        return {
+            "status": "error",
+            "ename": e.__class__.__name__,
+            "evalue": str(e),
+            "traceback": list(format_exc().splitlines()),
+        }
+
+    # Update keywords catalog
+    for listener in listeners:
+        if isinstance(listener, RobotKeywordsIndexerListener):
+            # noinspection PyProtectedMember
+            listener._import_from_suite_data(suite)
+
     if suite.tests:
         with TemporaryDirectory() as path:
             reply = run_robot_suite(kernel, suite, listeners, silent, display_id, path)
@@ -194,7 +211,9 @@ def execute_robot(
         if code == last_code:
             setattr(kernel, "_last_code", "")
         else:
-            inject_ipywidgets(kernel, code, data, listeners, silent, display_id)
+            inject_ipywidgets(
+                kernel, code, history, listeners, silent, display_id, suite.rpa
+            )
             setattr(kernel, "_last_code", code)
         reply = {"status": "ok", "execution_count": kernel.execution_count}
 

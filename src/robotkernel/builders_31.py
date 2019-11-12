@@ -7,12 +7,35 @@ from robot.parsing.model import _TestData
 from robot.parsing.model import KeywordTable
 from robot.parsing.model import TestCaseFileSettingTable
 from robot.parsing.populators import FromFilePopulator
+from robot.parsing.robotreader import RobotReader
 from robot.parsing.settings import Fixture
 from robot.parsing.tablepopulators import NullPopulator
-from robot.parsing.txtreader import TxtReader
+from robot.running import TestSuiteBuilder
 from robot.utils import get_error_message
+from typing import Dict
 import os
 import platform
+
+
+def build_suite(code: str, cell_history: Dict[str, str]):
+    # Init
+    data = TestCaseString()
+    data.source = os.getcwd()  # allow Library and Resource from CWD work
+
+    # Populate history, but ignore tests
+    for historical in cell_history.values():
+        data.populate(historical)
+        data.testcase_table.tests.clear()
+
+    # Populate current
+    data.populate(code)
+
+    # Wrap up
+    builder = TestSuiteBuilder()
+    suite = builder._build_suite(data)
+    suite._name = "Jupyter"
+
+    return suite
 
 
 class TestCaseString(TestCaseFile):
@@ -71,6 +94,6 @@ class FromStringPopulator(FromFilePopulator):
     def populate(self, source):
         LOGGER.info("Parsing string '%s'." % source)
         try:
-            TxtReader().read(BytesIO(source.encode("utf-8")), self)
+            RobotReader().read(BytesIO(source.encode("utf-8")), self)
         except Exception:
             raise DataError(get_error_message())
