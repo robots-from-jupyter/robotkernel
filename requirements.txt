@@ -25,6 +25,7 @@ pylama
 pylint
 
 faker
+graphviz
 iplantuml
 jsonschema
 jupyter
@@ -35,8 +36,9 @@ RESTinstance
 rise
 robotframework-appiumlibrary
 robotframework-faker
-robotframework-seleniumlibrary==4.0.0
+robotframework-seleniumlibrary==4.1.0
 robotframework-seleniumscreenshots
+robotframework-seleniumtestability
 text-unidecode==1.3
 
 Appium-Python-Client

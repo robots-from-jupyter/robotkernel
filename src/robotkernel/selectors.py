@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from robotkernel.exceptions import BrokenOpenConnection
 import os
 import pkg_resources
 import re
@@ -25,6 +26,7 @@ except ImportError:
 
 try:
     from selenium.common.exceptions import WebDriverException
+    from selenium.common.exceptions import InvalidSessionIdException
     from selenium.common.exceptions import TimeoutException
 except ImportError:
 
@@ -150,9 +152,14 @@ def get_element_highlight_script(results, old_elements):
 
 
 def clear_selector_highlights(driver):
-    script, arguments = get_element_highlight_script(
-        [], driver.find_elements_by_css_selector("[data-robotkernel]")
-    )
+    try:
+        script, arguments = get_element_highlight_script(
+            [], driver.find_elements_by_css_selector("[data-robotkernel]")
+        )
+    except InvalidSessionIdException:
+        raise BrokenOpenConnection(driver)
+    except WebDriverException:
+        return
     if script:
         driver.execute_script(script, *arguments)
 

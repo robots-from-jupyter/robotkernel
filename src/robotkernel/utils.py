@@ -227,3 +227,15 @@ def yield_current_connection(connections, types_):
     ]:
         yield instance
         break
+
+
+def close_current_connection(connections, connection_to_close):
+    match = None
+    for connection in connections:
+        if connection["instance"] is connection_to_close:
+            match = connection
+            break
+    if match is not None:
+        if hasattr(match["instance"], "quit"):
+            match["instance"].quit()
+        connections.remove(match)
