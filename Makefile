@@ -1,5 +1,5 @@
-REF_NIXPKGS = branches nixos-19.03
-REF_SETUPNIX = tags v3.1.0
+REF_NIXPKGS = branches nixos-19.09
+REF_SETUPNIX = tags v3.3.0
 
 PYTHON ?= python3
 NIX_OPTIONS ?= --pure --argstr python $(PYTHON)

@@ -1,12 +1,12 @@
 { pkgs ? import (builtins.fetchTarball {
-    # branches nixos-19.03
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/96151a48dd6662fb3f84bd16bbfe8a34f59d717a.tar.gz";
-    sha256 = "06cqc37yj23g3jbwvlf9704bl5dg8vrzqvs5y2q18ayg9sw61i6z";
+    # branches nixos-19.09
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/c75de8bc12cc7e713206199e5ca30b224e295041.tar.gz";
+    sha256 = "1awipcjfvs354spzj2la1nzmi9rh2ci2mdapzf4kkabf58ilra6x";
   }) {}
 , setup ? import (builtins.fetchTarball {
-    # tags v3.1.0
-    url = "https://github.com/nix-community/setup.nix/archive/129a384786f2d5985e1067e9b505f8cfc907e9fa.tar.gz";
-    sha256 = "1dp9bzivqaqqc2d9bnfy6jh37rfz6mvqaqbxy34l998y0khv5fpv";
+    # tags v3.3.0
+    url = "https://github.com/nix-community/setup.nix/archive/322c73833bb54ee7e9c7f48582cdb9d8315c2456.tar.gz";
+    sha256 = "1v1rgv1rl7za7ha3ngs6zap0b61z967aavh4p2ydngp44w5m2j5a";
   })
 , python ? "python3"
 , pythonPackages ? builtins.getAttr (python + "Packages") pkgs

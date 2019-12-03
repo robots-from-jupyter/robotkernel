@@ -8,6 +8,7 @@ from robotkernel import __version__
 from robotkernel.constants import CONTEXT_LIBRARIES
 from robotkernel.constants import VARIABLE_REGEXP
 from robotkernel.display import DisplayKernel
+from robotkernel.exceptions import BrokenOpenConnection
 from robotkernel.executors import execute_python
 from robotkernel.executors import execute_robot
 from robotkernel.executors import parse_robot
@@ -24,6 +25,7 @@ from robotkernel.selectors import get_white_selector_completions
 from robotkernel.selectors import is_autoit_selector
 from robotkernel.selectors import is_selector
 from robotkernel.selectors import is_white_selector
+from robotkernel.utils import close_current_connection
 from robotkernel.utils import detect_robot_context
 from robotkernel.utils import get_keyword_doc
 from robotkernel.utils import get_lunr_completions
@@ -139,7 +141,10 @@ class RobotKernel(DisplayKernel):
             for driver in yield_current_connection(
                 self.robot_connections, ["selenium"]
             ):
-                clear_selector_highlights(driver)
+                try:
+                    clear_selector_highlights(driver)
+                except BrokenOpenConnection:
+                    close_current_connection(self.robot_connections, driver)
             context = detect_robot_context(code, cursor_pos)
             matches = get_lunr_completions(
                 needle,
@@ -207,7 +212,10 @@ class RobotKernel(DisplayKernel):
 
         # Clear selector completion highlights
         for driver in yield_current_connection(self.robot_connections, ["selenium"]):
-            clear_selector_highlights(driver)
+            try:
+                clear_selector_highlights(driver)
+            except BrokenOpenConnection:
+                close_current_connection(self.robot_connections, driver)
 
         # Support %%python module ModuleName cell magic
         match = re.match("^%%python module ([a-zA-Z_]+)", code)

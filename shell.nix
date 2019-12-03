@@ -1,7 +1,7 @@
 { pkgs ? import (builtins.fetchTarball {
-    # branches nixos-19.03
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/96151a48dd6662fb3f84bd16bbfe8a34f59d717a.tar.gz";
-    sha256 = "06cqc37yj23g3jbwvlf9704bl5dg8vrzqvs5y2q18ayg9sw61i6z";
+    # branches nixos-19.09
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/c75de8bc12cc7e713206199e5ca30b224e295041.tar.gz";
+    sha256 = "1awipcjfvs354spzj2la1nzmi9rh2ci2mdapzf4kkabf58ilra6x";
   }) {}
 , sikuli ? false
 , vim ? false
@@ -44,7 +44,7 @@ let self = rec {
   jupyter = pythonPackages.jupyter.overridePythonAttrs (old: {
     propagatedBuildInputs =
     with pythonPackages; old.propagatedBuildInputs ++ [
-      graphviz
+      (graphviz.overrideDerivation(old: { doCheck = false; }))
       iplantuml
       ipywidgets
       jupyter-contrib-nbextensions
@@ -58,6 +58,7 @@ let self = rec {
       robotframework-appiumlibrary
       robotframework-faker
       robotframework-seleniumlibrary
+      robotframework-seleniumtestability
       robotframework-seleniumscreenshots
       robotkernel
       tkinter
