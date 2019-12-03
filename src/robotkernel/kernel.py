@@ -165,8 +165,9 @@ class RobotKernel(DisplayKernel):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
-        needle = re.split(r"\s{2,}|\t| \| ", line[:line_cursor])[-1].lstrip()
-        needle = needle.strip().lower()
+        left_needle = re.split(r"\s{2,}|\t| \| ", line[:line_cursor])[-1]
+        right_needle = re.split(r"\s{2,}|\t| \| ", line[line_cursor:])[0]
+        needle = left_needle.lstrip().lower() + right_needle.rstrip().lower()
 
         reply_content = {
             "status": "ok",
