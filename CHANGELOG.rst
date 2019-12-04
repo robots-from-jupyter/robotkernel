@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.1.1 (unreleased)
-------------------
+1.2rc1 (2019-12-05)
+-------------------
 
 - Add support for Robot Framework 3.2a1
   [Asko Soukka]
