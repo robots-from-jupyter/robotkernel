@@ -4,8 +4,12 @@ Changelog
 1.0.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix issue where text strings feed to JSON displayed a warning
+  [datakurre]
+- Fix JupyterLab context help support to work when clicked in the middlle of a keyword
+  [datakurre]
+- Fix to close dangling Selenium connections
+  [datakurre]
 
 1.0.1 (2019-09-19)
 ------------------
