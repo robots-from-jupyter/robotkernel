@@ -1,13 +1,16 @@
 syntax: glob
 *.egg-info
 *.pyc
+.cache
 .DS_Store
 .idea
 .ipynb_checkpoints
 .jupyter
 .jupyterlab
+.jupyter-config
 .pytest_cache
 /build/
+/examples/button.png
 /geckodriver.log
 /html/
 /log.html
@@ -15,6 +18,8 @@ syntax: glob
 /report.html
 /result
 /selenium-screenshot-*.png
-/src/jupyterlab_robotmode/node_modules/
 /src/jupyterlab_robotmode/lib/
+/src/jupyterlab_robotmode/node_modules/
 /tmp/
+/Untitle*.ipynb
+
