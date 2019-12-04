@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.3 (unreleased)
+1.1.0 (2019-12-05)
 ------------------
 
 - Add Library autocompletion after Library keyword within Settings
