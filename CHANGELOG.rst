@@ -4,8 +4,8 @@ Changelog
 1.0.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add Library autocompletion after Library keyword within Settings
+  [datakurre]
 
 1.0.2 (2019-12-04)
 ------------------
