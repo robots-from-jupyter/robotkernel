@@ -206,11 +206,14 @@ def to_mime_and_metadata(obj) -> (dict, dict):  # noqa: C901
     elif hasattr(obj, "_repr_svg_"):
         return {"image/svg": obj._repr_svg_()}, {}
     try:
-        data, metadata = JSON(data=obj, expanded=True)._repr_json_()
-        return (
-            {"application/json": data, "text/html": f"<pre>{to_html(obj)}</pre>"},
-            metadata,
-        )
+        if isinstance(obj, str):
+            return ({"text/html": f"<pre>{to_html(obj)}</pre>"}, {})
+        else:
+            data, metadata = JSON(data=obj, expanded=True)._repr_json_()
+            return (
+                {"application/json": data, "text/html": f"<pre>{to_html(obj)}</pre>"},
+                metadata,
+            )
     except (TypeError, JSONDecodeError):
         pass
     try:
