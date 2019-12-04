@@ -135,8 +135,9 @@ pkgs.stdenv.mkDerivation rec {
     ++ (with pkgs; stdenv.lib.optionals sikuli [ jre8 ]);
   shellHook = ''
     mkdir -p $(pwd)/.jupyter
-    export JUPYTER_CONFIG_DIR=${jupyter_config_dir}/share/jupyter
-    export JUPYTER_PATH=${jupyter_config_dir}/share/jupyter
+    cp -R ${jupyter_config_dir}/share/jupyter/* $(pwd)/.jupyter
+    export JUPYTER_CONFIG_DIR=$(pwd)/.jupyter
+    export JUPYTER_PATH=$(pwd)/.jupyter
     export JUPYTER_DATA_DIR=$(pwd)/.jupyter
     export JUPYTER_RUNTIME_DIR=$(pwd)/.jupyter
     export SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt

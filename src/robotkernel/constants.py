@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
 from robot.libdocpkg.model import KeywordDoc
+import pkg_resources
 import re
+
+
+try:
+    pkg_resources.get_distribution("robotframework>=3.2a1")
+    HAS_RF32_PARSER = True
+except pkg_resources.VersionConflict:
+    HAS_RF32_PARSER = False
+
+try:
+    pkg_resources.get_distribution("nbimport")
+    HAS_NBIMPORTER = True
+except pkg_resources.DistributionNotFound:
+    HAS_NBIMPORTER = False
 
 
 VARIABLE_REGEXP = re.compile(r"[$@&%]\{[\w\s]+\}")
