@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.2 (unreleased)
+1.0.2 (2019-12-04)
 ------------------
 
 - Fix issue where text strings feed to JSON displayed a warning
