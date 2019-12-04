@@ -5,6 +5,7 @@ from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
 from robot.parsing import populators
 from robot.parsing import TEST_EXTENSIONS
 from robotkernel import __version__
+from robotkernel.completion_finders import complete_libraries
 from robotkernel.constants import CONTEXT_LIBRARIES
 from robotkernel.constants import VARIABLE_REGEXP
 from robotkernel.display import DisplayKernel
@@ -106,6 +107,7 @@ class RobotKernel(DisplayKernel):
         self.robot_connections = []
 
     def do_complete(self, code, cursor_pos):
+        context = detect_robot_context(code, cursor_pos)
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset
@@ -136,6 +138,8 @@ class RobotKernel(DisplayKernel):
             matches = get_autoit_selector_completions(needle)
         elif is_white_selector(needle):
             matches = get_white_selector_completions(needle)
+        elif context == "__settings__" or line.lower().startswith("library "):
+            matches = complete_libraries(needle.lower())
         else:
             # Clear selector completion highlights
             for driver in yield_current_connection(
@@ -145,7 +149,6 @@ class RobotKernel(DisplayKernel):
                     clear_selector_highlights(driver)
                 except BrokenOpenConnection:
                     close_current_connection(self.robot_connections, driver)
-            context = detect_robot_context(code, cursor_pos)
             matches = get_lunr_completions(
                 needle,
                 self.robot_catalog["index"],
