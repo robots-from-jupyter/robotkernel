@@ -4,8 +4,13 @@ Changelog
 1.2rc3 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix issue where updated global variables were overridden from saved variables
+  from the previous execution
+  [datakurre]
+- Add support for displaying multiline text return values
+  [datakurre]
+- Add support for sticky JupyterLibrary webdriver connections
+  [datakurre]
 
 1.2rc2 (2019-12-05)
 -------------------
