@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.2rc3 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
 1.2rc2 (2019-12-05)
 -------------------
 
