@@ -217,7 +217,7 @@ def to_mime_and_metadata(obj) -> (dict, dict):  # noqa: C901
         return {"image/svg": obj._repr_svg_()}, {}
     try:
         if isinstance(obj, str):
-            return ({"text/html": f"<pre>{to_html(obj)}</pre>"}, {})
+            return {"text/html": f"<pre>{to_html(obj)}</pre>".replace("\\n", "\n")}, {}
         else:
             data, metadata = JSON(data=obj, expanded=True)._repr_json_()
             return (
