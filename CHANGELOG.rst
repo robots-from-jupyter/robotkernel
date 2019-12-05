@@ -1,11 +1,11 @@
 Changelog
 =========
 
-1.1.1 (2019-12-05)
+1.1.1 (unreleased)
 ------------------
 
 - Fix issue where library autocompletion override settings keywords autocompletion
-  [Asko Soukka]  [datakurre]
+  [datakurre]
 
 1.1.0 (2019-12-05)
 ------------------
