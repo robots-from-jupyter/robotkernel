@@ -136,6 +136,7 @@ pkgs.stdenv.mkDerivation rec {
   shellHook = ''
     mkdir -p $(pwd)/.jupyter
     cp -R ${jupyter_config_dir}/share/jupyter/* $(pwd)/.jupyter
+    chmod u+w -R $(pwd)/.jupyter
     export JUPYTER_CONFIG_DIR=$(pwd)/.jupyter
     export JUPYTER_PATH=$(pwd)/.jupyter
     export JUPYTER_DATA_DIR=$(pwd)/.jupyter

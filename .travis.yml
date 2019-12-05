@@ -21,6 +21,7 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+    condition: $ROBOTFRAMEWORK = rf32
 env:
   matrix:
   - ROBOTFRAMEWORK=rf31
