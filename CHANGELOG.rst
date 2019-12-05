@@ -4,14 +4,15 @@ Changelog
 1.2rc2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix issue where library autocompletion override settings keywords
+  autocompletion
+  [datakurre]
 
 1.2rc1 (2019-12-05)
 -------------------
 
 - Add support for Robot Framework 3.2a1
-  [Asko Soukka]
+  [datakurre]
 
 1.1.0 (2019-12-05)
 ------------------
