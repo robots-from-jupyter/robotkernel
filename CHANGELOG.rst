@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2rc3 (unreleased)
+1.2rc3 (2019-12-06)
 -------------------
 
 - Fix issue where updated global variables were overridden from saved variables
