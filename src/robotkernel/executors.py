@@ -11,6 +11,7 @@ from robotkernel.display import DisplayKernel
 from robotkernel.display import ProgressUpdater
 from robotkernel.listeners import ReturnValueListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
+from robotkernel.listeners import RobotVariablesListener
 from robotkernel.listeners import StatusEventListener
 from robotkernel.utils import data_uri
 from robotkernel.utils import javascript_uri
@@ -197,11 +198,15 @@ def execute_robot(
             "traceback": list(format_exc().splitlines()),
         }
 
-    # Update keywords catalog
     for listener in listeners:
+        # Update keywords catalog
         if isinstance(listener, RobotKeywordsIndexerListener):
             # noinspection PyProtectedMember
             listener._import_from_suite_data(suite)
+        # Drop global variables from cache
+        if isinstance(listener, RobotVariablesListener):
+            for variable in suite.resource.variables:
+                listener.variables.pop(variable.name, None)
 
     if suite.tests:
         with TemporaryDirectory() as path:

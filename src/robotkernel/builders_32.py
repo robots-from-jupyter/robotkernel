@@ -13,7 +13,6 @@ import os
 import robot.parsing.parser
 
 
-# def build_suite(source, datapath=None, parent_defaults=None):
 def build_suite(code: str, cell_history: Dict[str, str]):
     # Init
     suite = TestSuite(name="Jupyter", source=os.getcwd())
@@ -35,10 +34,15 @@ def build_suite(code: str, cell_history: Dict[str, str]):
 
     # Strip duplicate keywords
     keywords = {}
-    for keyword in reversed(suite.resource.keywords):
-        if keyword.name not in keywords:
-            keywords[keyword.name] = keyword
+    for keyword in suite.resource.keywords:
+        keywords[keyword.name] = keyword
     suite.resource.keywords._items = tuple(list(keywords.values()))
+
+    # Strip duplicate variables
+    variables = {}
+    for variable in suite.resource.variables:
+        variables[variable.name] = variable
+    suite.resource.variables._items = tuple(list(variables.values()))
 
     # Detect RPA
     suite.rpa = _get_rpa_mode(ast)
