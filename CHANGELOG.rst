@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.1.1 (unreleased)
+1.1.0 (2019-12-05)
 ------------------
 
 - Fix issue where library autocompletion override settings keywords autocompletion
