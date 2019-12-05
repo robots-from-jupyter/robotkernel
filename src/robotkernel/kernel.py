@@ -11,6 +11,7 @@ from robotkernel.exceptions import BrokenOpenConnection
 from robotkernel.executors import execute_python
 from robotkernel.executors import execute_robot
 from robotkernel.listeners import AppiumConnectionsListener
+from robotkernel.listeners import JupyterConnectionsListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import RobotVariablesListener
 from robotkernel.listeners import SeleniumConnectionsListener
@@ -122,7 +123,7 @@ class RobotKernel(DisplayKernel):
         elif is_selector(needle):
             matches = []
             for driver in yield_current_connection(
-                self.robot_connections, ["selenium", "appium"]
+                self.robot_connections, ["selenium", "jupyter", "appium"]
             ):
                 matches = get_selector_completions(needle.rstrip(), driver)
         elif is_autoit_selector(needle):
@@ -141,7 +142,7 @@ class RobotKernel(DisplayKernel):
         else:
             # Clear selector completion highlights
             for driver in yield_current_connection(
-                self.robot_connections, ["selenium"]
+                self.robot_connections, ["selenium", "jupyter"]
             ):
                 try:
                     clear_selector_highlights(driver)
@@ -213,7 +214,9 @@ class RobotKernel(DisplayKernel):
                     del sys.modules[name]
 
         # Clear selector completion highlights
-        for driver in yield_current_connection(self.robot_connections, ["selenium"]):
+        for driver in yield_current_connection(
+            self.robot_connections, ["selenium", "jupyter"]
+        ):
             try:
                 clear_selector_highlights(driver)
             except BrokenOpenConnection:
@@ -241,6 +244,7 @@ class RobotKernel(DisplayKernel):
             # Configure listeners
             listeners = [
                 SeleniumConnectionsListener(self.robot_connections),
+                JupyterConnectionsListener(self.robot_connections),
                 AppiumConnectionsListener(self.robot_connections),
                 WhiteLibraryListener(self.robot_connections),
                 RobotKeywordsIndexerListener(self.robot_catalog),

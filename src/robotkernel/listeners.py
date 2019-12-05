@@ -248,6 +248,32 @@ class SeleniumConnectionsListener:
             pass
 
 
+class JupyterConnectionsListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, drivers: list):
+        self.drivers = drivers
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def end_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance("JupyterLibrary")
+            clear_drivers(self.drivers, "jupyter")
+            self.drivers.extend(get_webdrivers(instance._drivers, "jupyter"))
+        except RuntimeError:
+            pass
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def start_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            instance = builtin.get_library_instance("JupyterLibrary")
+            set_webdrivers(self.drivers, instance._drivers, "jupyter")
+        except RuntimeError:
+            pass
+
+
 class AppiumConnectionsListener:
     ROBOT_LISTENER_API_VERSION = 2
 
