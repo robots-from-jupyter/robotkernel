@@ -138,7 +138,14 @@ class RobotKernel(DisplayKernel):
             matches = get_autoit_selector_completions(needle)
         elif is_white_selector(needle):
             matches = get_white_selector_completions(needle)
-        elif context == "__settings__" or line.lower().startswith("library "):
+        elif context == "__settings__" and any(
+            [
+                line.lower().startswith("library "),
+                "import library " in line.lower(),
+                "reload library " in line.lower(),
+                "get library instance" in line.lower(),
+            ]
+        ):
             matches = complete_libraries(needle.lower())
         else:
             # Clear selector completion highlights
