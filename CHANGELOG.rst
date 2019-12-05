@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2rc2 (unreleased)
+1.2rc2 (2019-12-05)
 -------------------
 
 - Fix issue where library autocompletion override settings keywords
