@@ -18,7 +18,7 @@ deploy:
   local-dir: "./build"
   target-branch: gh-pages
   keep-history: false
-  cleanup: true
+  skip_cleanup: true
   on:
     branch: master
 env:
