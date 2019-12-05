@@ -8,7 +8,7 @@ before_install:
   -a /etc/nix/nix.conf
 script:
 - nix-shell setup.nix -A shell --argstr robotframework $ROBOTFRAMEWORK --run "make test && python -m robotkernel.install
-  && jupyter nbconvert --execute tests/Smoketest.ipynb && nbrobot -F ipynb tests"
+  && jupyter nbconvert --execute tests/Smoketest.ipynb && nbrobot -v BROWSER:headlessfirefox -F ipynb tests atest"
 after_success:
 - nix-shell setup.nix -A shell --argstr robotframework $ROBOTFRAMEWORK --run "LC_ALL=C sphinx-build docs build"
 - touch build/.nojekyll

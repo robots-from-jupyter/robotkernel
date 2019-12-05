@@ -44,11 +44,11 @@ let self = setup {
   buildInputs = with pkgs; [
     pandoc  # required by nbsphinx
   ];
-}; in self // rec {
-  shell = self.shell.override {
+}; in self // {
+  shell = self.shell.overridePythonAttrs(old: {
     postShellHook = ''
       export JUPYTER_PATH=${self.install}/share/jupyter
       export JUPYTERLAB_DIR=${self.pythonPackages.jupyterlab}/share/jupyter/lab
     '';
-  };
+  });
 }
