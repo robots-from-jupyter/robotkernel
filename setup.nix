@@ -18,15 +18,22 @@ let overrides = self: super: {
 # "pytest-mock" = super."pytest-mock".overridePythonAttrs(old: {
 #   doCheck = false;
 # });
-# "json5" = super."json5".overridePythonAttrs(old: {
-#   postPatch = "rm -r tests";
-# });
-# "RESTinstance" = super."RESTinstance".overridePythonAttrs(old: {
-#   postInstall = "rm -f $out/bin/robot";
-# });
+  "json5" = super."json5".overridePythonAttrs(old: {
+    postPatch = "rm -r tests";
+  });
+  "robotframework-jupyterlibrary" = super."robotframework-jupyterlibrary".overridePythonAttrs(old: {
+    src = builtins.fetchurl {  # master 2019-12-05
+      url = "https://github.com/robots-from-jupyter/robotframework-jupyterlibrary/archive/6a9a8a2c844bf6f435ed806216afe501f0dd0ca2.tar.gz";
+      sha256 = "b750286b3d13411002f10094884b1963b54f45901dfa2fcd40703bd23c85f455";
+    };
+    format = "setuptools";
+  });
+  "RESTinstance" = super."RESTinstance".overridePythonAttrs(old: {
+    postInstall = "rm -f $out/bin/robot";
+  });
 }; in
 
-setup {
+let self = setup {
   inherit pkgs pythonPackages overrides;
   src = ./.;
   requirements = requirements;
@@ -35,6 +42,13 @@ setup {
     firefox
   ];
   buildInputs = with pkgs; [
-    pandoc  # requierd by nbsphinx
+    pandoc  # required by nbsphinx
   ];
+}; in self // rec {
+  shell = self.shell.override {
+    postShellHook = ''
+      export JUPYTER_PATH=${self.install}/share/jupyter
+      export JUPYTERLAB_DIR=${self.pythonPackages.jupyterlab}/share/jupyter/lab
+    '';
+  };
 }
