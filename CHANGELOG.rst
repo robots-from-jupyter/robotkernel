@@ -1,34 +1,24 @@
 Changelog
 =========
 
-1.2rc4 (unreleased)
+1.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
-
-1.2rc3 (2019-12-06)
--------------------
-
-- Fix issue where updated global variables were overridden from saved variables
-  from the previous execution
+- Add support for Robot Framework 3.2a1
   [datakurre]
 - Add support for displaying multiline text return values
   [datakurre]
 - Add support for sticky JupyterLibrary webdriver connections
   [datakurre]
+- Fix issue where updated global variables were overridden from saved
+  variables from the previous execution
+  [datakurre]
 
-1.2rc2 (2019-12-05)
--------------------
+1.1.1 (2019-12-05)
+------------------
 
 - Fix issue where library autocompletion override settings keywords
   autocompletion
-  [datakurre]
-
-1.2rc1 (2019-12-05)
--------------------
-
-- Add support for Robot Framework 3.2a1
   [datakurre]
 
 1.1.0 (2019-12-05)
