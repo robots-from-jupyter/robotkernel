@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.2 (unreleased)
--------------------
+1.2 (2019-12-06)
+----------------
 
 - Add support for Robot Framework 3.2a1
   [datakurre]
