@@ -4,22 +4,36 @@
     sha256 = "1awipcjfvs354spzj2la1nzmi9rh2ci2mdapzf4kkabf58ilra6x";
   }) {}
 , setup ? import (builtins.fetchTarball {
-    # tags v3.3.0
-    url = "https://github.com/nix-community/setup.nix/archive/322c73833bb54ee7e9c7f48582cdb9d8315c2456.tar.gz";
-    sha256 = "1v1rgv1rl7za7ha3ngs6zap0b61z967aavh4p2ydngp44w5m2j5a";
+    # tags v3.4.0
+    url = "https://github.com/nix-community/setup.nix/archive/60ea39a442cbcb446dcc53be395c90764a7019bc.tar.gz";
+    sha256 = "0rk5flzwfgw5wwp4hc9lmihc499shq82gbswsz8vb9fdsbnv12h1";
   })
 , python ? "python36"
 , robotframework ? "rf32"
 , pythonPackages ? builtins.getAttr (python + "Packages") pkgs
-, requirements ? ./. + "/requirements-${python}-${robotframework}.nix"
+, requirements ? { pkgs, fetchurl, fetchgit, fetchhg }:
+  let generated = import (./. + "/requirements-${python}-${robotframework}.nix")
+    { inherit pkgs fetchurl fetchgit fetchhg; };
+  in self: super: generated self super // (with pythonPackages; {
+    "matplotlib" = buildPythonPackage {
+      inherit (matplotlib) pname version src;
+    };
+  })
 }:
 
 let overrides = self: super: {
-# "pytest-mock" = super."pytest-mock".overridePythonAttrs(old: {
-#   doCheck = false;
-# });
+  "fancycompleter" = super."fancycompleter".overridePythonAttrs(old: {
+    nativeBuildInputs = [
+      self."setuptools-scm"
+    ];
+  });
   "json5" = super."json5".overridePythonAttrs(old: {
-    postPatch = "rm -r tests";
+    postInstall = "rm -r $out/${self.python.sitePackages}/tests";
+  });
+  "pdbpp" = super."pdbpp".overridePythonAttrs(old: {
+    nativeBuildInputs = [
+      self."setuptools-scm"
+    ];
   });
   "robotframework-jupyterlibrary" = super."robotframework-jupyterlibrary".overridePythonAttrs(old: {
     src = builtins.fetchurl {  # master 2019-12-05

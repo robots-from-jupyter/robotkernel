@@ -53,6 +53,7 @@ let self = rec {
       nbimporter
       opencv3
       RESTinstance
+      matplotlib
       rise
       robotframework
       robotframework-appiumlibrary

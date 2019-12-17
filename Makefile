@@ -59,16 +59,18 @@ requirements: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
 requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
 	nix-shell -p cacert libffi nix \
-		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell --argstr python $(PYTHON) setup.nix -A pip2nix \
+		--run 'nix-shell \
+		--argstr python $(PYTHON) setup.nix \
+		-A pip2nix \
 		--run "pip2nix generate -r requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt \
-		--no-binary json5 --no-binary jupyter \
+		--no-binary jupyter \
 		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
 
 requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt: requirements-$(ROBOTFRAMEWORK).txt
 	nix-shell -p cacert libffi nix \
-		--run 'HOME="$(PWD)" NIX_CONF_DIR="$(PWD)" nix-shell \
-		--argstr python $(PYTHON) \
-		--argstr robotframework $(ROBOTFRAMEWORK) setup.nix -A pip2nix \
+		--run 'nix-shell \
+		--argstr python $(PYTHON) --argstr robotframework $(ROBOTFRAMEWORK) setup.nix \
+		-A pip2nix \
 		--run "pip2nix generate -r requirements-$(ROBOTFRAMEWORK).txt \
 		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
 	@grep "pname =\|version =" requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
