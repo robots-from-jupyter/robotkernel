@@ -1,7 +1,7 @@
 Install RobotKernel
 ===================
 
-Installing RobotKernel requires Python 3.6 or later and Robot Framework 3.1 or later.
+Installing RobotKernel requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework Robot Framework 3.1 or later.
 
 
 Virtualenv installation
@@ -13,15 +13,14 @@ RobotKernel can be installed using the usual Python package manager tools, like 
 
    $ pip install robotkernel
 
-For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
+For JupyterLab it is recommended to also install the Robot Framework syntax highlighting and Jupyter widgets support:
 
 .. code:: bash
 
    $ jupyter labextension install jupyterlab_robotmode
    $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-For some environments it might be required to run the following command to
-manually register robotkernel as Jupyter kernel:
+For some environments it might be required to run the following command to manually register robotkernel as an available Jupyter kernel:
 
 .. code:: bash
 
@@ -37,7 +36,7 @@ Install Robotkernel from Python 3 notebook
 
 After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
 
-For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
+For JupyterLab it is recommended to also install the Robot Framework syntax highlighting and Jupyter widgets support:
 
 .. code:: bash
 
