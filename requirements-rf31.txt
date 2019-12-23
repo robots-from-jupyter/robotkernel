@@ -16,7 +16,7 @@ pytest
 pytest-runner
 
 black
-coverage
+coverage==4.5.4
 coveralls
 isort
 pdbpp

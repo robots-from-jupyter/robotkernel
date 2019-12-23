@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
+from io import BytesIO
 from io import StringIO
 from IPython.core.display import clear_output
 from IPython.core.display import display
@@ -20,7 +21,9 @@ from tempfile import TemporaryDirectory
 from traceback import format_exc
 from typing import List
 from typing import Tuple
+from urllib.parse import unquote
 import base64
+import binascii
 import ipywidgets
 import os
 import re
@@ -332,15 +335,28 @@ def process_screenshots(kernel: DisplayKernel, path: str, silent: bool):
             filename = os.path.join(path, src)
         elif os.path.exists(os.path.join(cwd, src)):
             filename = os.path.join(cwd, src)
+        elif src.startswith("data:"):
+            filename = None
+            try:
+                spec, uri = src.split(",", 1)
+                spec, encoding = spec.split(";", 1)
+                spec, mimetype = spec.split(":", 1)
+                if not (encoding == "base64" and mimetype.startswith("image/")):
+                    continue
+                data = base64.b64decode(unquote(uri).encode("utf-8"))
+                im = Image.open(BytesIO(data))
+            except (binascii.Error, IndexError, ValueError):
+                continue
         else:
             continue
-        im = Image.open(filename)
-        mimetype = Image.MIME[im.format]
-        # Fix issue where Pillow on Windows returns APNG for PNG
-        if mimetype == "image/apng":
-            mimetype = "image/png"
-        with open(filename, "rb") as fp:
-            data = fp.read()
+        if filename:
+            im = Image.open(filename)
+            mimetype = Image.MIME[im.format]
+            # Fix issue where Pillow on Windows returns APNG for PNG
+            if mimetype == "image/apng":
+                mimetype = "image/png"
+            with open(filename, "rb") as fp:
+                data = fp.read()
         uri = data_uri(mimetype, data)
         xml = xml.replace('a href="{}"'.format(src), "a")
         xml = xml.replace(
