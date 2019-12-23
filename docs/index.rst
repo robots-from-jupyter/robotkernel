@@ -3,14 +3,14 @@ RobotKernel
 
 RobotKernel is a `Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_.
 
-Requires Python 3.6 or later and Robot Framework 3.1 or later.
+RobotKernel requires Python 3.6 or later and Robot Framework 3.1 or later.
 
 .. _Robot Framework: http://robotframework.org/
 .. _IPython: https://ipython.org/
 .. _Jupyter Notebook: https://jupyter.readthedocs.io/en/latest/
 .. _JupyterLab: https://jupyterlab.readthedocs.io/en/stable/
 
-Check also `ipythonrobotframework`_ for alternative Robot Framework IPython kernel.
+For alternative Robot Framework IPython kernel, please, check out `ipythonrobotframework`_ 
 
 .. _ipythonrobotframework: https://github.com/gtri/irobotframework
 
@@ -18,13 +18,13 @@ Check also `ipythonrobotframework`_ for alternative Robot Framework IPython kern
 Try RobotKernel
 ---------------
 
-You can try RobotKernel without installing it at MyBinder_ cloud:
+You can try RobotKernel without installing it for free at MyBinder_ cloud:
 
-Jupyter Notebook: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
+* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
 
-JupyterLab: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
+* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
 
-Note: Log | Report -links on existing notebooks are only active on trusted notebooks.
+Please, note: Log | Report -links on pre-run notebooks may not be clickable until notebook is "trusted" or the related cells have been executed again.
 
 .. _MyBinder: https://mybinder.org/
 
