@@ -6,10 +6,10 @@
 self: super: {
   "Appium-Python-Client" = super.buildPythonPackage rec {
     pname = "Appium-Python-Client";
-    version = "0.48";
+    version = "0.49";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/9b/f2/a02eade6a1cd3c463b5493453cc4c7fecf6eada448844af1c416bcf0f971/Appium-Python-Client-0.48.tar.gz";
-      sha256 = "12chn01y8l8mka9hgajnnpw0h8x75c2j7wwfjmz4xvxysalk884f";
+      url = "https://files.pythonhosted.org/packages/ce/9d/2cf2934bc219d6dfd749fb1d4cbe2f01dcd32eaedd7c6f2bbed0ad2297a8/Appium-Python-Client-0.49.tar.gz";
+      sha256 = "05prxk5b3si8zanqd67xwlgsizg947b4ncs7b8nr9a3mv3npkd4p";
     };
     format = "setuptools";
     doCheck = false;
@@ -879,6 +879,22 @@ self: super: {
       self."pyyaml"
       self."tornado"
       self."traitlets"
+    ];
+  };
+  "jupyter-starters" = super.buildPythonPackage rec {
+    pname = "jupyter-starters";
+    version = "0.1.0a3";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/e7/1e/546ba1f87d34d72d80f2aa3d112894a59f682e94a04bcbe8042a61df9eb7/jupyter_starters-0.1.0a3-py3-none-any.whl";
+      sha256 = "0skikk25lckr76l27vrl139kjm084px2py6r4anljpgi0z2r84q0";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."notebook"
     ];
   };
   "jupyterlab" = super.buildPythonPackage rec {

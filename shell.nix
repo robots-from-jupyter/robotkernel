@@ -47,6 +47,7 @@ let self = rec {
       (graphviz.overrideDerivation(old: { doCheck = false; }))
       iplantuml
       ipywidgets
+      jupyter-starters
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
       jupyterlab
@@ -109,6 +110,7 @@ let self = rec {
       ln -s ${widgetsnbextension}/share/jupyter/nbextensions/* $out/share/jupyter/nbextensions
 
       ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+      # ${pythonPackages.python.withPackages (ps: with ps; [ notebook ])}/bin/jupyter serverextension enable --prefix=$out --py jupyter_starters
 
       echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
