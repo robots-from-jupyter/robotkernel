@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.1 (unreleased)
+1.2.1 (2019-12-30)
 ------------------
 
 - Fix issue where data uri images were not displayed on notebook
