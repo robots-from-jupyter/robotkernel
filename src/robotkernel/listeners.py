@@ -53,6 +53,8 @@ class RobotVariablesListener:
                     if value and hasattr(value, "items"):
                         value = " ".join([f"{k}={v}" for k, v in value.items()])
                         builtin.set_suite_variable(name, value)
+                elif name.startswith("@{"):
+                    builtin.set_suite_variable(f"${name[1:]}", value)
                 else:
                     builtin.set_suite_variable(name, value)
             except AttributeError:
