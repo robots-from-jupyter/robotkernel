@@ -7,7 +7,7 @@ jupyter serverextension enable --sys-prefix --py jupyter_starters
 cd src/jupyterlab_robotmode && npm install && npm run build && cd ../..
 jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
 jupyter labextension install src/jupyterlab_robotmode --no-build
-jupyter labextension install @deathbeds/jupyterlab-starters --no-build
+jupyter labextension install @deathbeds/jupyterlab-starters@0.2.0-a0 --no-build
 jupyter lab build --minimize=True --dev-build=False --debug
 mkdir -p .jupyter/
 cp binder/jupyter_notebook_config.json .jupyter/

@@ -279,10 +279,10 @@ self: super: {
   };
   "coveralls" = super.buildPythonPackage rec {
     pname = "coveralls";
-    version = "1.9.2";
+    version = "1.10.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/d7/d6/7d32c9c34a621c201c4bb3f61f4c828ee8655f2c7edc3a547e1dea6a7e67/coveralls-1.9.2-py2.py3-none-any.whl";
-      sha256 = "0n755ms3v8p1fw62g50c5yp5brl60x4fz9hwc1bdj87prm82lli5";
+      url = "https://files.pythonhosted.org/packages/8d/1f/fef169beefbdeca7566ba481d3c75d96855915731accbcf5c75155d0ee6f/coveralls-1.10.0-py2.py3-none-any.whl";
+      sha256 = "1v0sg72rn29cvpz3ppz9by0zzrazjxrn3l42sy54ph1a5fhhfvlh";
     };
     format = "wheel";
     doCheck = false;
@@ -469,10 +469,10 @@ self: super: {
   };
   "imagesize" = super.buildPythonPackage rec {
     pname = "imagesize";
-    version = "1.1.0";
+    version = "1.2.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/fc/b6/aef66b4c52a6ad6ac18cf6ebc5731ed06d8c9ae4d3b2d9951f261150be67/imagesize-1.1.0-py2.py3-none-any.whl";
-      sha256 = "1n51yc4rsz0ajx5qw35x1b1ya524alwbwzgvzrrmj54rxgirsd1z";
+      url = "https://files.pythonhosted.org/packages/31/b2/b5522a0c8d11e4aff83f8342f3f0dea68c2fb25aa44403e420587f0ce204/imagesize-1.2.0-py2.py3-none-any.whl";
+      sha256 = "1898hacrsc6y5jfz3rkaqdagi7q6fcjblzfaigacff90dadg2rb9";
     };
     format = "wheel";
     doCheck = false;
@@ -534,10 +534,10 @@ self: super: {
   };
   "ipython" = super.buildPythonPackage rec {
     pname = "ipython";
-    version = "7.10.2";
+    version = "7.11.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/c4/c0/dc2e62d068f0f63910a3ab565a7fbbe1a20946b23f0945525826d9bbc98f/ipython-7.10.2-py3-none-any.whl";
-      sha256 = "19jjw6g8hqcldyl590k8zmbwqj0hiyl5i4qyc5d5iz6lsfdjf2hr";
+      url = "https://files.pythonhosted.org/packages/05/d7/77b7a1988c99227f52402f93fb0f7e88c97239960516f53907ebbc44149c/ipython-7.11.0-py3-none-any.whl";
+      sha256 = "0wp0zlvcy67y6c619zivz724yaxvz0lmai7zz4gf6a8n3l8y4w6c";
     };
     format = "wheel";
     doCheck = false;
@@ -883,10 +883,10 @@ self: super: {
   };
   "jupyter-starters" = super.buildPythonPackage rec {
     pname = "jupyter-starters";
-    version = "0.1.0a3";
+    version = "0.2.0a0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/e7/1e/546ba1f87d34d72d80f2aa3d112894a59f682e94a04bcbe8042a61df9eb7/jupyter_starters-0.1.0a3-py3-none-any.whl";
-      sha256 = "0skikk25lckr76l27vrl139kjm084px2py6r4anljpgi0z2r84q0";
+      url = "https://files.pythonhosted.org/packages/44/20/e963927b9ff2a715c393b4cf355beee316c8793c17c6816c6be76aa78388/jupyter_starters-0.2.0a0-py3-none-any.whl";
+      sha256 = "09fyl9v4zsrayy6758xm249vxvlyhcd6mbcmyd9mlzzcs67kd6a5";
     };
     format = "wheel";
     doCheck = false;
@@ -937,10 +937,10 @@ self: super: {
   };
   "jupytext" = super.buildPythonPackage rec {
     pname = "jupytext";
-    version = "1.3.0";
+    version = "1.3.1";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/2a/f2/5d4e5ca8d849f86a13f395ded44d2d12dca2b90332f89f3d301d1527b4ae/jupytext-1.3.0.tar.gz";
-      sha256 = "12ng3qxc52l1jr9nxnphpfjpkavz7lw81n6w7cx3mkykdmb3rcp0";
+      url = "https://files.pythonhosted.org/packages/da/cb/f3f65cf58a9098099f50373502edfc855f09effbcec6f6067c6ca2f749f1/jupytext-1.3.1.tar.gz";
+      sha256 = "073vpvq3n6jky54rr7jrd318x4qri9kbc73938vzpsrxqrhasaqk";
     };
     format = "setuptools";
     doCheck = false;
@@ -1230,12 +1230,12 @@ self: super: {
   };
   "pathspec" = super.buildPythonPackage rec {
     pname = "pathspec";
-    version = "0.6.0";
+    version = "0.7.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/7a/68/5902e8cd7f7b17c5879982a3a3ee2ad0c3b92b80c79989a2d3e1ca8d29e1/pathspec-0.6.0.tar.gz";
-      sha256 = "0p7ab7jx3wgg7xdj2q8yk99cz3xv2a5p1r8q9kfylnvqn34cr1g2";
+      url = "https://files.pythonhosted.org/packages/34/fa/c5cc4f796eb954b56fd1f6c7c315647b18b027e0736c9ae87b73bbb1f933/pathspec-0.7.0-py2.py3-none-any.whl";
+      sha256 = "093lbryn86k1bl0jcz76qsxb1mlz7ns5gkvn54hyy773shr0cfqn";
     };
-    format = "setuptools";
+    format = "wheel";
     doCheck = false;
     buildInputs = [];
     checkInputs = [];
@@ -1403,10 +1403,10 @@ self: super: {
   };
   "py" = super.buildPythonPackage rec {
     pname = "py";
-    version = "1.8.0";
+    version = "1.8.1";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/76/bc/394ad449851729244a97857ee14d7cba61ddb268dce3db538ba2f2ba1f0f/py-1.8.0-py2.py3-none-any.whl";
-      sha256 = "1ylkczijmfk6vrv8dj4sdfdmpwf38yhs6rkplb783cz5mramgxk4";
+      url = "https://files.pythonhosted.org/packages/99/8d/21e1767c009211a62a8e3067280bfce76e89c9f876180308515942304d2d/py-1.8.1-py2.py3-none-any.whl";
+      sha256 = "1c0k53dl6vxs8g6cmzqg73v7iqk4andfwav2zngazh6vln1xs3y2";
     };
     format = "wheel";
     doCheck = false;
@@ -1512,10 +1512,10 @@ self: super: {
   };
   "pyparsing" = super.buildPythonPackage rec {
     pname = "pyparsing";
-    version = "2.4.5";
+    version = "2.4.6";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/c0/0c/fc2e007d9a992d997f04a80125b0f183da7fb554f1de701bbb70a8e7d479/pyparsing-2.4.5-py2.py3-none-any.whl";
-      sha256 = "07ycd91pbkfzwpb7c7k06rw4bsz248xvcwmhyr5iyaigszn9by90";
+      url = "https://files.pythonhosted.org/packages/5d/bc/1e58593167fade7b544bfe9502a26dc860940a79ab306e651e7f13be68c2/pyparsing-2.4.6-py2.py3-none-any.whl";
+      sha256 = "1v6wwyi13kb51rs131a9awxn1jhkjralm2vgzm2qvh2hab5xqhn3";
     };
     format = "wheel";
     doCheck = false;
@@ -1758,12 +1758,12 @@ self: super: {
   };
   "robotframework-faker" = super.buildPythonPackage rec {
     pname = "robotframework-faker";
-    version = "4.2.0";
+    version = "4.3.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/b1/84/5499497187fba5ca0f6e2326372bc914567a7de28686a76bfc5ce4199b76/robotframework_faker-4.2.0-py2.py3-none-any.whl";
-      sha256 = "0rzqkzjdfmcda20x9jj9rp5pc1d6wljy1a65ijm91cf0kabgwsvb";
+      url = "https://files.pythonhosted.org/packages/e8/a9/49dac652e7854e392b8b48d2865495b816d4477e7cd926dab91f9be8cd05/robotframework-faker-4.3.0.tar.gz";
+      sha256 = "1pai2l71zsk561afdhvpp7pmqng68gff1lbqpzb2jyllc5vf36k4";
     };
-    format = "wheel";
+    format = "setuptools";
     doCheck = false;
     buildInputs = [];
     checkInputs = [];
