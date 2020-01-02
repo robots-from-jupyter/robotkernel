@@ -18,4 +18,4 @@ dependencies:
     - robotframework-seleniumscreenshots==0.9.5
     - selenium==3.141.0
     - urllib3==1.25.3
-    - jupyter-starters==0.2.0a0
+    - jupyter-starters==0.2.1a0

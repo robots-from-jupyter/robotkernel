@@ -1,0 +1,13 @@
+{
+  "StarterManager": {
+    "extra_starters": {
+      "robotkernel-quickstart": {
+        "label": "",
+        "description": "",
+        "type": "notebook",
+        "py_src": "robotkernel",
+        "src": "static/starter/quickstart-starter.ipynb"
+      }
+    }
+  }
+}

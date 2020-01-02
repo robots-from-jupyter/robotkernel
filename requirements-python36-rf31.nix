@@ -154,10 +154,10 @@ self: super: {
   };
   "babel" = super.buildPythonPackage rec {
     pname = "babel";
-    version = "2.7.0";
+    version = "2.8.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/2c/60/f2af68eb046c5de5b1fe6dd4743bf42c074f7141fe7b2737d3061533b093/Babel-2.7.0-py2.py3-none-any.whl";
-      sha256 = "1asqc722hrksgwyliflhdaryzd7qjmvasf2vna355idpdh8fd4mg";
+      url = "https://files.pythonhosted.org/packages/15/a1/522dccd23e5d2e47aed4b6a16795b8213e3272c7506e625f2425ad025a19/Babel-2.8.0-py2.py3-none-any.whl";
+      sha256 = "1m2jq6g2crhvp96npmr0l96j8nsngfwbwsis5mkj7dzq205ylw6n";
     };
     format = "wheel";
     doCheck = false;
@@ -534,10 +534,10 @@ self: super: {
   };
   "ipython" = super.buildPythonPackage rec {
     pname = "ipython";
-    version = "7.11.0";
+    version = "7.11.1";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/05/d7/77b7a1988c99227f52402f93fb0f7e88c97239960516f53907ebbc44149c/ipython-7.11.0-py3-none-any.whl";
-      sha256 = "0wp0zlvcy67y6c619zivz724yaxvz0lmai7zz4gf6a8n3l8y4w6c";
+      url = "https://files.pythonhosted.org/packages/1c/f3/c8be38ee117d02508bb8b9158eb41ca416f442a6e8e3b3159c2f2d14ed79/ipython-7.11.1-py3-none-any.whl";
+      sha256 = "12hx2yq31949qlhd40ap0bci2ymhqhb33kyx5yfz5jn9gzfqcxiq";
     };
     format = "wheel";
     doCheck = false;
@@ -883,10 +883,10 @@ self: super: {
   };
   "jupyter-starters" = super.buildPythonPackage rec {
     pname = "jupyter-starters";
-    version = "0.2.0a0";
+    version = "0.2.1a0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/44/20/e963927b9ff2a715c393b4cf355beee316c8793c17c6816c6be76aa78388/jupyter_starters-0.2.0a0-py3-none-any.whl";
-      sha256 = "09fyl9v4zsrayy6758xm249vxvlyhcd6mbcmyd9mlzzcs67kd6a5";
+      url = "https://files.pythonhosted.org/packages/91/53/c6403156ce7aab9917b7e81d578cbd66930c0f534a43a901a40bcabb83a6/jupyter_starters-0.2.1a0-py3-none-any.whl";
+      sha256 = "1yv3385y2v87l7bzwf1fvrxj8brsw21p6vdqpghk8r06sj3vhf5r";
     };
     format = "wheel";
     doCheck = false;
