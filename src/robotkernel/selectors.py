@@ -177,7 +177,7 @@ def get_selenium_selector_completions(needle, driver):
         styles = 'style[data-name="robotkernel"]'
         if not driver.find_elements_by_css_selector(styles):
             with pkg_resources.resource_stream(
-                "robotkernel", "static/simmerjs/simmer.js"
+                "robotkernel", "resources/simmerjs/simmer.js"
             ) as fp:
                 driver.execute_script(
                     fp.read().decode("utf-8") + SELECTOR_HIGHLIGHT_STYLE_SCRIPT

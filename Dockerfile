@@ -33,8 +33,8 @@ COPY --from=0 /usr/local/share/jupyter /usr/local/share/jupyter
 RUN mkdir -p /tmp/.jupyter
 RUN echo "import os; c.NotebookApp.ip = os.environ.get('JUPYTER_NOTEBOOK_IP', '0.0.0.0')" > /tmp/.jupyter/jupyter_notebook_config.py
 
-ADD example.ipynb /tmp
-RUN chmod a+w /tmp/example.ipynb
+ADD quickstart.ipynb /tmp
+RUN chmod a+w /tmp/quickstart.ipynb
 
 ENV PATH="/opt/jupyter/bin:${PATH}"
 ENV HOME=/tmp

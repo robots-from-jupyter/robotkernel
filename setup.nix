@@ -21,7 +21,10 @@
   })
 }:
 
-let overrides = self: super: {
+
+let
+  kernel_js = ./src/robotkernel/resources/kernel/kernel.js;
+  overrides = self: super: {
   "fancycompleter" = super."fancycompleter".overridePythonAttrs(old: {
     nativeBuildInputs = [
       self."setuptools-scm"
@@ -29,6 +32,12 @@ let overrides = self: super: {
   });
   "json5" = super."json5".overridePythonAttrs(old: {
     postInstall = "rm -r $out/${self.python.sitePackages}/tests";
+  });
+  "notebook" = super."notebook".overridePythonAttrs(old: {
+    postInstall = ''
+      mkdir -p $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework
+      cp ${kernel_js} $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework/robotframework.js
+    '';
   });
   "pdbpp" = super."pdbpp".overridePythonAttrs(old: {
     nativeBuildInputs = [
