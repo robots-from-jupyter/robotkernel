@@ -106,11 +106,11 @@ upgrade-nix-setupnix:
 		-e "9s|.*|    sha256 = \"$$sha\";|" \
 		setup.nix
 
-src/robotkernel/resources/notebooks/tutorial/00\ JupyterLab\ User\ Interface.html: examples/notebooks/JupyterLab.ipynb
+examples/JupyterLab.html: examples/JupyterLab.ipynb
 	jupyter nbconvert \
 		--to html \
 		--TemplateExporter.exclude_input=True \
 		--TemplateExporter.exclude_input_prompt=True \
 		--TemplateExporter.exclude_output_prompt=True \
-		--TemplateExporter.template_file=nbconvert.tpl \
-		"examples/notebooks/JupyterLab.ipynb"
+		--TemplateExporter.template_file=docs/nbconvert.tpl \
+		"examples/JupyterLab.ipynb"
