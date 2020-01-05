@@ -394,9 +394,7 @@ self: super: {
     doCheck = false;
     buildInputs = [];
     checkInputs = [];
-    nativeBuildInputs = [
-      self."setuptools-scm"
-    ];
+    nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
   "flex" = super.buildPythonPackage rec {
@@ -883,10 +881,10 @@ self: super: {
   };
   "jupyter-starters" = super.buildPythonPackage rec {
     pname = "jupyter-starters";
-    version = "0.2.1a0";
+    version = "0.2.2a0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/91/53/c6403156ce7aab9917b7e81d578cbd66930c0f534a43a901a40bcabb83a6/jupyter_starters-0.2.1a0-py3-none-any.whl";
-      sha256 = "1yv3385y2v87l7bzwf1fvrxj8brsw21p6vdqpghk8r06sj3vhf5r";
+      url = "https://files.pythonhosted.org/packages/f9/6f/a1d20698e5a25b0efb3a11e56449182f29e50c511d5099ddd7875ae6a80f/jupyter_starters-0.2.2a0-py3-none-any.whl";
+      sha256 = "0wlv99x4b5lh7al303jxr3lykd81977w8zznscm3bz0j10zq5l6n";
     };
     format = "wheel";
     doCheck = false;
@@ -1253,9 +1251,7 @@ self: super: {
     doCheck = false;
     buildInputs = [];
     checkInputs = [];
-    nativeBuildInputs = [
-      self."setuptools-scm"
-    ];
+    nativeBuildInputs = [];
     propagatedBuildInputs = [
       self."fancycompleter"
       self."pygments"
@@ -1294,10 +1290,10 @@ self: super: {
   };
   "pillow" = super.buildPythonPackage rec {
     pname = "pillow";
-    version = "6.2.1";
+    version = "7.0.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/5b/bb/cdc8086db1f15d0664dd22a62c69613cdc00f1dd430b5b19df1bea83f2a3/Pillow-6.2.1.tar.gz";
-      sha256 = "1c8wkzc58f5wdh006jvmwdk3wxld1xgagcbdvj7iv17qi0m9fkmz";
+      url = "https://files.pythonhosted.org/packages/39/47/f28067b187dd664d205f75b07dcc6e0e95703e134008a14814827eebcaab/Pillow-7.0.0.tar.gz";
+      sha256 = "0il99hpk1nz8nf11w4s1fl46g00l234x687ib91k3q4m82kdk7jd";
     };
     format = "setuptools";
     doCheck = false;
@@ -2200,10 +2196,10 @@ self: super: {
   };
   "wcwidth" = super.buildPythonPackage rec {
     pname = "wcwidth";
-    version = "0.1.7";
+    version = "0.1.8";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/7e/9f/526a6947247599b084ee5232e4f9190a38f398d7300d866af3ab571a5bfe/wcwidth-0.1.7-py2.py3-none-any.whl";
-      sha256 = "0z6yi9wgxisnsz14c5zpz123bd2rslg7cgsmcjl40yxg4lcygszl";
+      url = "https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl";
+      sha256 = "00y6ygli28v1bs963rj199jlifi0kk10vpyl1fr4bgiryn1r7llg";
     };
     format = "wheel";
     doCheck = false;
