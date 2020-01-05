@@ -1,148 +1,143 @@
 Robotkernel
 ===========
 
-`Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_. Check a `video to see it in action`_.
+RobotKernel is a `Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_. It powers RobotLab_ – the Robot Framework JupyterLab distribution. Check a `video to see it in action`_ and `read the documentation`_.
 
-Requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework
-3.1 or later.
-
-Log | Report -links on existing notebooks are only active on trusted notebooks.
+RobotKernel requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework Robot Framework 3.1 or later.
 
 .. _video to see it in action: https://youtu.be/uYGh9_c3b7s
+.. _read the documentation: https://robots-from-jupyter.github.io/robotkernel/
 .. _Robot Framework: http://robotframework.org/
 .. _IPython: https://ipython.org/
 .. _Jupyter Notebook: https://jupyter.readthedocs.io/en/latest/
 .. _JupyterLab: https://jupyterlab.readthedocs.io/en/stable/
+.. _RobotLab: https://github.com/robots-from-jupyter/robotlab/releases
+
+For alternative Robot Framework IPython kernel, check out `ipythonrobotframework`_.
+
+.. _ipythonrobotframework: https://github.com/gtri/irobotframework
 
 
-Try Robotkernel at Binder
--------------------------
+Try RobotKernel
+---------------
 
-Jupyter Notebook: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
+You can try RobotKernel instantly without installing it at MyBinder_ cloud:
 
-JupyterLab: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
+* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
+
+* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
+
+Note: Log | Report -links on saved notebooks may not be clickable `until notebook is "trusted"`__ ("Trust Notebook" in JupyterLab Commands) the related cells have been executed again.
+
+.. _MyBinder: https://mybinder.org/
+__ https://jupyter-notebook.readthedocs.io/en/latest/security.html#updating-trust
 
 
-Install Robotkernel
+Install RobotKernel
 -------------------
+
+RobotKernel can be installed using the usual Python package manager tools, like pip:
 
 .. code:: bash
 
    $ pip install robotkernel
 
-For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
+For JupyterLab it is recommended to also install the Robot Framework syntax highlighting and Jupyter widgets support:
 
 .. code:: bash
 
    $ jupyter labextension install jupyterlab_robotmode
    $ jupyter labextension install @jupyter-widgets/jupyterlab-manager
 
-For some environments it might be required to run the following command to
-manually register robotkernel as Jupyter kernel:
+For some environments it might be required to run the following command to manually register robotkernel as an available Jupyter kernel:
 
 .. code:: bash
 
    $ python -m robotkernel.install
 
 
-Install Robotkernel from Python 3 notebook
-------------------------------------------
+Export to .robot
+----------------
 
-.. code:: bash
-
-   !pip install robotkernel
-
-After refreshing the notebook, it is possible change the kernel to Robot Framework kernel or create a new notebook with Robot Framework kernel.
-
-For JupyterLab you should also install the companion syntax highlighting and Jupyter widgets support:
-
-.. code:: bash
-
-   !jupyter labextension install jupyterlab_robotmode
-   !jupyter labextension install @jupyter-widgets/jupyterlab-manager
-
-
-Export robot files
-------------------
-
-It is possible to export test suites direclty from Jupyter Notebook or JupyterLab user interface (into traditional ``.robot`` files), but also from command line:
+It is possible to export Robot Framework Jupyter notebooks to regular plain text ``.robot`` files for usage without Jupyter:
 
 .. code:: bash
 
    $ jupyter nbconvert --to script example.ipynb
 
+.. _nbconvert: https://nbconvert.readthedocs.io/
+
 
 Execute notebooks
 -----------------
 
-Robotkernel installs script named ``nbrobot``, which the Robot Frameworks test runner ``robot`` with support for executing Jupyter notebooks created with Robotkernel:
+RobotKernel installs a script named ``nbrobot``. It can be used instead of Robot Framework's ``robot`` test runner to execute Robot Framework with ``.ipynb``-extension support:
 
 .. code:: bash
 
    $ nbrobot example.ipynb
 
-In addition, it is also possible to execute notebooks as such, resulting into a new notebook with embedded execution logs and reports:
+
+Hacking RobotKernel
+-------------------
+
+Create and activate a new Python virtual environment:
 
 .. code:: bash
-
-   $ jupyter nbconvert --to notebook --execute example.ipynb
-
-This will stop the execution at first failing test case.
-
-When execution with errors, to also get a result notebook with execution logs saved, an extra flag ``--ExecutePreprocessor.allow_errors=True`` must be set:
-
-.. code:: bash
-
-   $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute example.ipynb
-
-This `may change`__ in future versions of nbconvert.
-
-__ https://github.com/jupyter/nbconvert/issues/626
-
-Note that when executing a notebook, each cell with tests cases or tasks will be executed as its own suite. It might be more efficient to export notebook into a robot script and execute that with the traditional robot runner.
-
-
-Local installation and development
-----------------------------------
-
-See also: http://jupyter.readthedocs.io/en/latest/install.html
-
-Create and activate clean Python virtual environment::
 
     $ venv myenv
     $ source myenv/bin/activate
 
-Install Jupyter::
+Install Jupyter:
+
+.. code:: bash
 
     $ pip install --upgrade pip setuptools
     $ pip install jupyter
 
-Clone this kernel::
+Clone this kernel:
+
+.. code:: bash
 
     $ git clone https://github.com/robots-from-jupyter/robotkernel.git
     $ cd robotkernel
 
-Install the kernel into virtualenv in develop mode::
+Install the kernel into the virtualenv in develop mode:
+
+.. code:: bash
 
     $ python setup.py develop
+    $ python -m robotkernel.install
 
-Launch the jupyter::
+Launch the jupyter:
+
+.. code:: bash
 
     $ jupyter notebook
 
 Reloading the kernel reloads the code.
 
+`Learn more about Jupyter kernel development.`__
 
-Nix-shell (https://nixos.org/nix/)
-----------------------------------
+__ http://jupyter.readthedocs.io/en/latest/install.html
 
-This repository includes opinionated instructions for running and developing Robotkernel with Nix for Jupyter Notebook:
+
+Nix-shell
+---------
+
+This repository includes an opinionated environment for running and developing RobotKernel with Nix_ with `Cachix-powered binary cache`__.
+
+__ https://robots-from-jupyter.cachix.org/
+
+Launch Jupyter Notebook with RobotKernel:
 
 .. code:: bash
 
    $ nix-shell -E 'import (fetchTarball https://github.com/robots-from-jupyter/robotkernel/archive/master.tar.gz + "/shell.nix")' --run "jupyter notebook"
 
-And for Jupyter Lab:
+.. _Nix: https://nixos.org/nix/
+
+Launch JupyterLab with RobotKernel:
 
 .. code:: bash
 
@@ -151,14 +146,11 @@ And for Jupyter Lab:
    $ jupyter lab --app-dir=.jupyterlab
    $ exit
 
-Add ``--arg sikuli true`` to include SikuliLibrary_.
-
 Add ``--arg vim true`` to enable `vim bindings`_.
 
-.. _SikuliLibrary: https://github.com/rainmanwy/robotframework-SikuliLibrary
 .. _vim bindings: https://github.com/lambdalisue/jupyter-vim-binding
 
-Development environment with Nix:
+Open development environment with Nix:
 
 .. code:: bash
 

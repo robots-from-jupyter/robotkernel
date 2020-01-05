@@ -51,7 +51,7 @@ class RobotKernel(DisplayKernel):
     language_version = robot.__version__
     language_info = {
         "mimetype": "text/plain",
-        "name": "robotframework",
+        "name": "Robot Framework",
         "file_extension": ".robot",
         "codemirror_mode": "robotframework",
         "pygments_lexer": "robotframework",

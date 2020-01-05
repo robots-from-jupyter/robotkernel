@@ -105,3 +105,12 @@ upgrade-nix-setupnix:
 		-e "8s|.*|    url = \"https://github.com/nix-community/setup.nix/archive/$$rev.tar.gz\";|" \
 		-e "9s|.*|    sha256 = \"$$sha\";|" \
 		setup.nix
+
+examples/JupyterLab.html: examples/JupyterLab.ipynb
+	jupyter nbconvert \
+		--to html \
+		--TemplateExporter.exclude_input=True \
+		--TemplateExporter.exclude_input_prompt=True \
+		--TemplateExporter.exclude_output_prompt=True \
+		--TemplateExporter.template_file=docs/nbconvert.tpl \
+		"examples/JupyterLab.ipynb"

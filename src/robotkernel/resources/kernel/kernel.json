@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "python",
+    "-m",
+    "robotkernel.kernel",
+    "-f",
+    "{connection_file}"
+  ],
+  "codemirror_mode": "robotframework",
+  "display_name": "Robot Framework",
+  "language": "robotframework"
+}

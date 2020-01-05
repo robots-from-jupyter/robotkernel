@@ -28,6 +28,7 @@ faker
 iplantuml
 jsonschema
 jupyter
+jupyter-starters==0.2.2a0
 jupyter-contrib-nbextensions
 jupyterlab
 jupytext

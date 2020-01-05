@@ -47,6 +47,7 @@ let self = rec {
       (graphviz.overrideDerivation(old: { doCheck = false; }))
       iplantuml
       ipywidgets
+      jupyter-starters
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
       jupyterlab
@@ -101,6 +102,7 @@ let self = rec {
       source $stdenv/setup
       mkdir -p $out/share/jupyter/nbextensions
       mkdir -p $out/share/jupyter/migrated
+      mkdir -p $out/share/jupyter/jupyter_notebook_config.d
 
       ln -s ${jupyter_nbconfig} $out/share/jupyter/nbconfig
       ln -s ${jupyter-contrib-nbextensions}/${pythonPackages.python.sitePackages}/jupyter-contrib-nbextensions/nbextensions/* $out/share/jupyter/nbextensions
@@ -109,6 +111,11 @@ let self = rec {
       ln -s ${widgetsnbextension}/share/jupyter/nbextensions/* $out/share/jupyter/nbextensions
 
       ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+      cp -R ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/etc/jupyter/jupyter_notebook_config.d/* $out/share/jupyter/jupyter_notebook_config.d
+
+      JUPYTER_CONFIG_DIR=$out/share/jupyter \
+      PATH=${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin \
+      ${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin/jupyter serverextension enable --py jupyter_starters
 
       echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
