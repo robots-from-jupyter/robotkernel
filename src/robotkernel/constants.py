@@ -11,7 +11,7 @@ except pkg_resources.VersionConflict:
     HAS_RF32_PARSER = False
 
 try:
-    pkg_resources.get_distribution("nbimport")
+    pkg_resources.get_distribution("nbimporter")
     HAS_NBIMPORTER = True
 except pkg_resources.DistributionNotFound:
     HAS_NBIMPORTER = False
