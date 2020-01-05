@@ -1,11 +1,19 @@
 Changelog
 =========
 
-1.2.1 (unreleased)
+1.2.2 (unreleased)
 ------------------
 
 - Nothing changed yet.
 
+
+1.2.1 (2019-12-30)
+------------------
+
+- Fix issue where data uri images were not displayed on notebook
+  [datakurre]
+- Fix issue where list type suite variables were not correctly restored
+  [datakurre]
 
 1.2 (2019-12-06)
 ----------------
