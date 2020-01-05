@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.2.3 (unreleased)
-------------------
+1.3rc1 (2020-01-06)
+-------------------
 
 - Update documentation and package jupyterlab-starters-configuratoin
   [datakurre]
