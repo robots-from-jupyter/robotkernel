@@ -4,8 +4,8 @@ Changelog
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix regression where wrong nbimporter was not automatically imported
+  [datakurre]
 
 1.2.1 (2019-12-30)
 ------------------
