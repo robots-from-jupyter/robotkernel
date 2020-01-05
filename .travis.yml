@@ -10,7 +10,6 @@ script:
 - nix-shell setup.nix -A shell --argstr robotframework $ROBOTFRAMEWORK --run "make test && python -m robotkernel.install
   && jupyter nbconvert --execute tests/Smoketest.ipynb && nbrobot -v BROWSER:headlessfirefox -F ipynb tests atest"
 after_success:
-- rm docs/tutorial && ln -s ../src/robotkernel/resources/notebooks/tutorial docs
 - nix-shell setup.nix -A shell --argstr robotframework $ROBOTFRAMEWORK --run "LC_ALL=C sphinx-build docs build"
 - touch build/.nojekyll
 deploy:
