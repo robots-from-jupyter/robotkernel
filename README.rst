@@ -23,9 +23,9 @@ Try RobotKernel
 
 You can try RobotKernel instantly without installing it at MyBinder_ cloud:
 
-* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/quickstart.ipynb
+* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
 
-* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/quickstart.ipynb
+* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
 
 Note: Log | Report -links on saved notebooks may not be clickable `until notebook is "trusted"`__ ("Trust Notebook" in JupyterLab Commands) the related cells have been executed again.
 
@@ -63,7 +63,7 @@ It is possible to export Robot Framework Jupyter notebooks to regular plain text
 
 .. code:: bash
 
-   $ jupyter nbconvert --to script quickstart.ipynb
+   $ jupyter nbconvert --to script example.ipynb
 
 .. _nbconvert: https://nbconvert.readthedocs.io/
 
@@ -75,7 +75,7 @@ RobotKernel installs a script named ``nbrobot``. It can be used instead of Robot
 
 .. code:: bash
 
-   $ nbrobot quickstart.ipynb
+   $ nbrobot example.ipynb
 
 
 Hacking RobotKernel

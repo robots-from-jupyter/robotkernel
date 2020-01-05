@@ -20,9 +20,9 @@ Try RobotKernel
 
 You can try RobotKernel instantly without installing it at MyBinder_ cloud:
 
-* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/quickstart.ipynb
+* Launch JupyterLab with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=lab/tree/example.ipynb
 
-* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/quickstart.ipynb
+* Launch Jupyter Notebook with RobotKernel: https://mybinder.org/v2/gh/robots-from-jupyter/robotkernel/master?urlpath=tree/example.ipynb
 
 Note: Log | Report -links on saved notebooks may not be clickable `until notebook is "trusted"`__ ("Trust Notebook" in JupyterLab Commands) the related cells have been executed again.
 
@@ -79,7 +79,7 @@ From command-line with nbconvert_:
 
 .. code:: bash
 
-   $ jupyter nbconvert --to script quickstart.ipynb
+   $ jupyter nbconvert --to script example.ipynb
 
 .. _nbconvert: https://nbconvert.readthedocs.io/
 
@@ -96,19 +96,19 @@ RobotKernel installs a script named ``nbrobot``. It can be used instead of Robot
 
 .. code:: bash
 
-   $ nbrobot quickstart.ipynb
+   $ nbrobot example.ipynb
 
 In addition, it is also possible to execute notebooks with nbconvert_ to result a new notebook with embedded execution logs and reports:
 
 .. code:: bash
 
-   $ jupyter nbconvert --to notebook --execute quickstart.ipynb
+   $ jupyter nbconvert --to notebook --execute example.ipynb
 
 On execution error, the partially executed notebook may not be saved until an extra argument ``--ExecutePreprocessor.allow_errors=True`` is given:
 
 .. code:: bash
 
-   $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute quickstart.ipynb
+   $ jupyter nbconvert --ExecutePreprocessor.allow_errors=True --to notebook --execute example.ipynb
 
 This `may change`__ in future versions of nbconvert.
 
