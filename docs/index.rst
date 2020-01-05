@@ -47,15 +47,15 @@ Learn how to use author Robot Framework test suites or resource files with a Rob
 .. toctree::
    :maxdepth: 2
 
-   tutorial/01 Running Code.ipynb
-   tutorial/02 Python XKCD.ipynb
-   tutorial/03 Running Robot.ipynb
-   tutorial/04 Robot XKCD.ipynb
-   tutorial/05 Interactive Selenium.ipynb
-   tutorial/06 Importing Notebooks.ipynb
-   tutorial/07 Prototyping Keywords.ipynb
-   tutorial/08 Interactive WhiteLibrary.ipynb
-   tutorial/09 Prototyping Libraries.ipynb
+   notebooks/01 Running Code.ipynb
+   notebooks/02 Python XKCD.ipynb
+   notebooks/03 Running Robot.ipynb
+   notebooks/04 Robot XKCD.ipynb
+   notebooks/05 Interactive Selenium.ipynb
+   notebooks/06 Importing Notebooks.ipynb
+   notebooks/07 Prototyping Keywords.ipynb
+   notebooks/08 Interactive WhiteLibrary.ipynb
+   notebooks/09 Prototyping Libraries.ipynb
 
 
 Export to .robot
