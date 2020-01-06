@@ -12,6 +12,7 @@ dependencies:
     - pillow==6.2.1
     - requests==2.22.0
     - RESTinstance==1.0.2
+    - rise==5.6.0
     - robotframework==3.1.2
     - robotframework-faker==4.2.0
     - robotframework-seleniumlibrary==4.1.0
