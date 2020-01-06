@@ -1,1 +1,2 @@
 firefox
+libgl1-mesa-glx
