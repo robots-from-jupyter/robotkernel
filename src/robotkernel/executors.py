@@ -84,8 +84,12 @@ def execute_ipywidget(
 """
     suite = build_suite(code, history)
     suite.rpa = True
-    with TemporaryDirectory() as path:
-        run_robot_suite(kernel, suite, listeners, silent, display_id, path, widget=True)
+    try:
+        with TemporaryDirectory() as path:
+            run_robot_suite(kernel, suite, listeners, silent, display_id, path, widget=True)
+    except PermissionError:
+        # Purging of TemporaryDirectory may fail e.g. with geckodriver.log still open
+        pass
 
 
 def inject_ipywidget(
@@ -212,8 +216,12 @@ def execute_robot(
                 listener.variables.pop(variable.name, None)
 
     if suite.tests:
-        with TemporaryDirectory() as path:
-            reply = run_robot_suite(kernel, suite, listeners, silent, display_id, path)
+        try:
+            with TemporaryDirectory() as path:
+                reply = run_robot_suite(kernel, suite, listeners, silent, display_id, path)
+        except PermissionError:
+            # Purging of TemporaryDirectory may fail e.g. with geckodriver.log still open
+            pass
     else:
         last_code = getattr(kernel, "_last_code", "")
         if code == last_code:
