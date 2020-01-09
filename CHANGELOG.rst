@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3rc2 (unreleased)
+1.3rc2 (2020-01-09)
 -------------------
 
 - Fix issue where execution raised breaking exception when temporary directory
