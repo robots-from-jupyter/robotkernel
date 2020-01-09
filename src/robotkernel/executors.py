@@ -86,7 +86,9 @@ def execute_ipywidget(
     suite.rpa = True
     try:
         with TemporaryDirectory() as path:
-            run_robot_suite(kernel, suite, listeners, silent, display_id, path, widget=True)
+            run_robot_suite(
+                kernel, suite, listeners, silent, display_id, path, widget=True
+            )
     except PermissionError:
         # Purging of TemporaryDirectory may fail e.g. with geckodriver.log still open
         pass
@@ -218,7 +220,9 @@ def execute_robot(
     if suite.tests:
         try:
             with TemporaryDirectory() as path:
-                reply = run_robot_suite(kernel, suite, listeners, silent, display_id, path)
+                reply = run_robot_suite(
+                    kernel, suite, listeners, silent, display_id, path
+                )
         except PermissionError:
             # Purging of TemporaryDirectory may fail e.g. with geckodriver.log still open
             pass
