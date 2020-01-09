@@ -4,8 +4,9 @@ Changelog
 1.3rc2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Fix issue where execution raised breaking exception when temporary directory
+  could not be cleared
+  [datakurre]
 
 1.3rc1 (2020-01-06)
 -------------------
