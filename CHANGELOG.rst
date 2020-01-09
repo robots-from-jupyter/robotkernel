@@ -4,20 +4,11 @@ Changelog
 1.3rc3 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
-
-1.3rc2 (2020-01-09)
--------------------
-
-- Fix issue where execution raised breaking exception when temporary directory
-  could not be cleared
+- Add jupyterlab-starters' based quick start and tutorial
   [datakurre]
-
-1.3rc1 (2020-01-06)
--------------------
-
-- Update documentation and package jupyterlab-starters-configuratoin
+- Fix issue where Selenium test or task execution resulted in breaking
+  exception, because temporary execution directory could not be cleared due to
+  open geckodriver.log
   [datakurre]
 
 1.2.2 (2020-01-05)
