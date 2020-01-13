@@ -21,3 +21,7 @@ def libdoc():
     inject_robot_ipynb_support()
     inject_libdoc_ipynb_support()
     return libdoc_cli(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    robot()

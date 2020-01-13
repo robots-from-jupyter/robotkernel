@@ -2,7 +2,7 @@ docutils
 ipykernel
 ipywidgets
 lunr
-nbformat
+nbformat==4.4.0
 nbimporter
 pillow
 pygments

@@ -2,11 +2,11 @@ docutils
 ipykernel
 ipywidgets
 lunr
-nbformat
+nbformat==4.4.0
 nbimporter
 pillow
 pygments
-robotframework==3.2a1
+robotframework==3.2b1
 
 nbsphinx
 sphinx
