@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from io import BytesIO
+from io import StringIO
 from robot.errors import DataError
 from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
 from robotkernel.constants import HAS_RF32_PARSER
@@ -10,7 +11,7 @@ import types
 
 
 if HAS_RF32_PARSER:
-    from robot.parsing.lexerwrapper import LexerWrapper
+    from robot.utils import FileReader
     from robot.running import importer
 else:
     from robot.parsing import populators
@@ -65,14 +66,16 @@ def NotebookReader():  # noqa: N802
     return NotebookReader()
 
 
-def ipynb_read(old):
-    def _read(self, path):
-        if os.path.splitext(path)[1].lower() == ".ipynb":
-            return NotebookReader().read(path, "")
+def _get_ipynb_file(old):
+    def _get_file(self, source, accept_text):
+        path = self._get_path(source, accept_text)
+        if path and os.path.splitext(path)[1].lower() == ".ipynb":
+            file = StringIO(NotebookReader().read(path, ""))
+            return file, os.path.basename(path), True
         else:
-            return old(self, path)
+            return old(self, source, accept_text)
 
-    return _read
+    return _get_file
 
 
 def inject_libdoc_ipynb_support():
@@ -83,7 +86,7 @@ def inject_robot_ipynb_support():
     # Enable nbreader
     if HAS_RF32_PARSER:
         # noinspection PyNoneFunctionAssignment,PyProtectedMember
-        LexerWrapper._read = ipynb_read(LexerWrapper._read)
+        FileReader._get_file = _get_ipynb_file(FileReader._get_file)
         importer.RESOURCE_EXTENSIONS += (".ipynb",)
     elif "ipynb" not in populators.READERS:
         populators.READERS["ipynb"] = NotebookReader
