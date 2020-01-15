@@ -47,6 +47,7 @@ let self = rec {
       (graphviz.overrideDerivation(old: { doCheck = false; }))
       iplantuml
       ipywidgets
+      jupytext
       jupyter-starters
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
@@ -75,6 +76,7 @@ let self = rec {
       load_extensions = {
         "jupyter-js-widgets/extension" = true;
         "rise/main" = true;
+        "jupytext/index" = true;
         "vim_binding/vim_binding" = if vim then true else false;
       };
       keys = {
@@ -116,6 +118,10 @@ let self = rec {
       JUPYTER_CONFIG_DIR=$out/share/jupyter \
       PATH=${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin \
       ${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin/jupyter serverextension enable --py jupyter_starters
+
+      JUPYTER_CONFIG_DIR=$out/share/jupyter \
+      PATH=${pythonPackages.python.withPackages (ps: with ps; [ notebook jupytext ])}/bin \
+      ${pythonPackages.python.withPackages (ps: with ps; [ notebook jupytext ])}/bin/jupyter serverextension enable jupytext
 
       echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
