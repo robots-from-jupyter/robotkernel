@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.4.0 (unreleased)
+1.4.0 (2020-04-27)
 ------------------
 
 - Add support for robotframework 3.2
