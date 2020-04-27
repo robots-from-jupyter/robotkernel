@@ -2,7 +2,7 @@
 from io import StringIO
 from robot.api import get_model
 from robot.errors import DataError
-from robot.running.builder.parsers import ErrorLogger
+from robot.running.builder.parsers import ErrorReporter
 from robot.running.builder.testsettings import TestDefaults
 from robot.running.builder.transformers import SettingsBuilder
 from robot.running.builder.transformers import SuiteBuilder
@@ -32,7 +32,7 @@ def build_suite(code: str, cell_history: Dict[str, str], data_only: bool = False
             data_only=data_only,
             curdir=os.getcwd().replace("\\", "\\\\"),
         )
-        ErrorLogger(historical).visit(ast)
+        ErrorReporter(historical).visit(ast)
         SettingsBuilder(suite, defaults).visit(ast)
         SuiteBuilder(suite, defaults).visit(ast)
 
@@ -43,7 +43,7 @@ def build_suite(code: str, cell_history: Dict[str, str], data_only: bool = False
     ast = get_model(
         StringIO(code), data_only=data_only, curdir=os.getcwd().replace("\\", "\\\\")
     )
-    ErrorLogger(code).visit(ast)
+    ErrorReporter(code).visit(ast)
     SettingsBuilder(suite, defaults).visit(ast)
     SuiteBuilder(suite, defaults).visit(ast)
 

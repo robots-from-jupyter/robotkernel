@@ -6,7 +6,7 @@ nbformat==4.4.0
 nbimporter
 pillow
 pygments
-robotframework==3.2b1
+robotframework==3.2
 
 nbsphinx
 sphinx

@@ -14,7 +14,7 @@ let self = rec {
   pythonPackages = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  }).pythonPackages;
+  }).targetPython.pkgs;
 
   sikulilibrary = (import ./pkgs/sikulixlibrary {
     inherit pkgs pythonPackages;
@@ -28,7 +28,7 @@ let self = rec {
   "robotkernel" = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  }).build;
+  }).package;
 
   # other packages
 
