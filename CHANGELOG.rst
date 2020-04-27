@@ -1,11 +1,13 @@
 Changelog
 =========
 
-1.3.1 (unreleased)
+1.4.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add support for robotframework 3.2
+  [datakurre]
+- Change kernel mimetype to "text/x-robotframework"
+  [datakurre]
 
 1.3.0 (2020-01-09)
 ------------------
