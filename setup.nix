@@ -8,7 +8,7 @@
 , robotframework ? "rf32"
 , requirements ?  ./. + "/requirements-${python}-${robotframework}.nix"
 , src ? ./.
-, buildInputs ? []
+, buildInputs ? with pkgs; [ firefox geckodriver pandoc ]
 , propagatedBuildInputs ? []
 , postShellHook ? ""
 }:
@@ -140,20 +140,38 @@ let
 
   # Final overrides to fix issues all the magic above cannot fix automatically
   overrides = self: super: {
+    "notebook" = let kernel_js = ./src/robotkernel/resources/kernel/kernel.js; in super."notebook".overridePythonAttrs(old: {
+      postInstall = ''
+        mkdir -p $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework
+        cp ${kernel_js} $out/${pythonPackages.python.sitePackages}/notebook/static/components/codemirror/mode/robotframework/robotframework.js
+      '';
+    });
+
     "pylama" = super."pylama".overridePythonAttrs(old: {
       postInstall = ''
         rm $out/${self.python.sitePackages}/tests/__pycache__/__init__.*
       '';
     });
+
     "pdbpp" = super."pdbpp".overridePythonAttrs(old: {
       nativeBuildInputs = old.nativeBuildInputs
         ++ [ self."setuptools_scm" ];
     });
+
     "RESTinstance" = super."RESTinstance".overridePythonAttrs(old: {
       postInstall = ''
         rm $out/bin/robot
       '';
     });
+
+    "robotframework-jupyterlibrary" = super."robotframework-jupyterlibrary".overridePythonAttrs(old: {
+      src = builtins.fetchurl {  # master 2019-12-05
+        url = "https://github.com/robots-from-jupyter/robotframework-jupyterlibrary/archive/6a9a8a2c844bf6f435ed806216afe501f0dd0ca2.tar.gz";
+        sha256 = "b750286b3d13411002f10094884b1963b54f45901dfa2fcd40703bd23c85f455";
+      };
+      format = "setuptools";
+    });
+
   };
 
 in rec {
@@ -198,10 +216,16 @@ in rec {
     '' + postShellHook;
   };
 
+  install = targetPython.withPackages (ps: [ package]);
+
   develop = package.overridePythonAttrs(old: {
     name = "${old.pname}-shell";
     nativeBuildInputs = with pkgs; [ cacert gnumake git entr nix env ]
       ++ buildInputs ++ propagatedBuildInputs;
+    postShellHook = ''
+      export JUPYTER_PATH=${install}/share/jupyter
+      export JUPYTERLAB_DIR=${targetPython.pkgs.jupyterlab}/share/jupyter/lab
+    '';
   });
 
   shell = develop;
