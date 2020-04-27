@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 3.0.1 (2020-04-17)
+
+- Loosen dependencies for Jupyterlab to better support Binder
+
 ### 3.0.0 (2020-04-17)
 
 - Package for Jupyterlab 2.x
