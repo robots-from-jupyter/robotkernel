@@ -20,6 +20,9 @@ def _get_rpa_mode(data):
     raise DataError("One file cannot have both tests and tasks.")
 
 
+# TODO: Refactor to use public API only
+# https://github.com/robotframework/robotframework/commit/fa024345cb58d154e1d8384552b62788d3ed6258
+
 def build_suite(code: str, cell_history: Dict[str, str], data_only: bool = False):
     # Init
     suite = TestSuite(name="Jupyter", source=os.getcwd())
