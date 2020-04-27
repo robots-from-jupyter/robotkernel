@@ -26,6 +26,10 @@ jupyter labextension link .
 
 ## Changelog
 
+### 3.0.0 (2020-04-17)
+
+- Package for Jupyterlab 2.x
+
 ### 2.4.0 (2019-09-12)
 
 - Fix compatibility with JupyterLab 1.0
