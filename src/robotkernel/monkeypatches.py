@@ -2,7 +2,6 @@
 from io import BytesIO
 from io import StringIO
 from robot.errors import DataError
-from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
 from robotkernel.constants import HAS_RF32_PARSER
 import os
 import re
@@ -11,11 +10,13 @@ import types
 
 
 if HAS_RF32_PARSER:
-    from robot.utils import FileReader
+    from robot.libdocpkg import builder
     from robot.running import importer
+    from robot.utils import FileReader
 else:
-    from robot.parsing import populators
+    from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
     from robot.parsing import TEST_EXTENSIONS
+    from robot.parsing import populators
     from robot.parsing.robotreader import RobotReader
 
 
@@ -79,7 +80,10 @@ def _get_ipynb_file(old):
 
 
 def inject_libdoc_ipynb_support():
-    RESOURCE_EXTENSIONS.add("ipynb")
+    if HAS_RF32_PARSER:
+        builder.RESOURCE_EXTENSIONS += (".ipynb",)
+    else:
+        RESOURCE_EXTENSIONS.add("ipynb")
 
 
 def inject_robot_ipynb_support():
