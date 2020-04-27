@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
     "lib": ["es6", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -7,8 +9,7 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "outDir": "./lib",
-    "target": "ES5",
-    "allowJs": true
+    "target": "ES5"
   },
   "include": ["src/*"]
 }

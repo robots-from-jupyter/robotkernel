@@ -7,15 +7,15 @@
     "url": "https://github.com/robots-from-jupyter/robotkernel/issues"
   },
   "dependencies": {
-    "@jupyterlab/application": ">=0.18.4"
+    "@jupyterlab/application": ">=2.1.1"
   },
   "peerDependencies": {
     "codemirror": "~5.39.0"
   },
   "devDependencies": {
-    "cross-env": "^5.2.0",
-    "rimraf": "~2.6.2",
-    "typescript": "~3.1.1"
+    "cross-env": "^7.0.2",
+    "rimraf": "~3.0.2",
+    "typescript": "~3.8.3"
   },
   "files": [
     "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
