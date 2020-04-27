@@ -1,7 +1,7 @@
 { pkgs ? import (builtins.fetchTarball {
-    # branches nixos-19.09
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/c75de8bc12cc7e713206199e5ca30b224e295041.tar.gz";
-    sha256 = "1awipcjfvs354spzj2la1nzmi9rh2ci2mdapzf4kkabf58ilra6x";
+    # branches nixos-20.03
+    url = "https://github.com/NixOS/nixpkgs-channels/archive/9137f05564eb50cc6f7042039aa9549a2e6e2340.tar.gz";
+    sha256 = "0yh2fnywhiyhzrkdlccp0l3bmdrqj0y1gysln6x7xfl2zj3aij7z";
   }) {}
 , sikuli ? false
 , vim ? false
@@ -14,7 +14,7 @@ let self = rec {
   pythonPackages = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  }).pythonPackages;
+  }).targetPython.pkgs;
 
   sikulilibrary = (import ./pkgs/sikulixlibrary {
     inherit pkgs pythonPackages;
@@ -28,7 +28,7 @@ let self = rec {
   "robotkernel" = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  }).build;
+  }).package;
 
   # other packages
 

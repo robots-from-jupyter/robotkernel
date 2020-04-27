@@ -1,12 +1,8 @@
-REF_NIXPKGS = branches nixos-19.09
-REF_SETUPNIX = tags v3.3.0
+REF_NIXPKGS = branches nixos-20.03
 
-PYTHON ?= python36
+PYTHON ?= python37
 ROBOTFRAMEWORK ?= rf32
-NIX_OPTIONS ?= \
-  --pure \
-  --argstr python $(PYTHON) \
-  --argstr robotframework $(ROBOTFRAMEWORK)
+NIX_OPTIONS ?= --argstr python $(PYTHON) --argstr robotframework $(ROBOTFRAMEWORK)
 
 .PHONY: all
 all: test
@@ -58,30 +54,18 @@ htmlcov: .coverage
 requirements: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
 requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
-	nix-shell -p cacert libffi nix \
-		--run 'nix-shell \
-		--argstr python $(PYTHON) setup.nix \
-		-A pip2nix \
-		--run "pip2nix generate -r requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt \
-		--no-binary jupyter \
-		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
+	nix-shell setup.nix $(NIX_OPTIONS) -A pip2nix --run "pip2nix generate -r requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt --no-binary jupyter --output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"
 
 requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt: requirements-$(ROBOTFRAMEWORK).txt
-	nix-shell -p cacert libffi nix \
-		--run 'nix-shell \
-		--argstr python $(PYTHON) --argstr robotframework $(ROBOTFRAMEWORK) setup.nix \
-		-A pip2nix \
-		--run "pip2nix generate -r requirements-$(ROBOTFRAMEWORK).txt \
-		--output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"'
+	nix-shell setup.nix $(NIX_OPTIONS) -A pip2nix --run "pip2nix generate -r requirements-$(ROBOTFRAMEWORK).txt --output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"
 	@grep "pname =\|version =" requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
 
 .PHONY: upgrade
 upgrade:
-	nix-shell --pure -p curl gnumake jq nix --run "make setup.nix"
+	nix-shell --pure -p cacert curl gnumake jq nix --run "make setup.nix"
 
-upgrade-nix: upgrade-nix-nixpkgs upgrade-nix-setupnix
-
-upgrade-nix-nixpkgs:
+.PHONY: setup.nix
+setup.nix:
 	@set -e pipefail; \
 	echo "Updating nixpkgs @ setup.nix using $(REF_NIXPKGS)"; \
 	rev=$$(curl https://api.github.com/repos/NixOS/nixpkgs-channels/$(firstword $(REF_NIXPKGS)) \
@@ -94,17 +78,6 @@ upgrade-nix-nixpkgs:
 		-e "4s|.*|    sha256 = \"$$sha\";|" \
 		setup.nix
 
-upgrade-nix-setupnix:
-	@echo "Updating setup @ setup.nix using $(REF_SETUPNIX)"; \
-	rev=$$(curl https://api.github.com/repos/nix-community/setup.nix/$(firstword $(REF_SETUPNIX)) \
-		| jq -er '.[] | select(.name == "$(lastword $(REF_SETUPNIX))").commit.sha'); \
-	echo "Latest commit sha: $$rev"; \
-	sha=$$(nix-prefetch-url --unpack https://github.com/nix-community/setup.nix/archive/$$rev.tar.gz); \
-	sed -i \
-		-e "7s|.*|    # $(REF_SETUPNIX)|" \
-		-e "8s|.*|    url = \"https://github.com/nix-community/setup.nix/archive/$$rev.tar.gz\";|" \
-		-e "9s|.*|    sha256 = \"$$sha\";|" \
-		setup.nix
 
 examples/JupyterLab.html: examples/JupyterLab.ipynb
 	jupyter nbconvert \
