@@ -16,5 +16,7 @@ jupyter labextension install --no-build \
 
 jupyter lab build --minimize=False --debug
 
+jupyter labextension list
+
 mkdir -p .jupyter/jupyter_notebook_config.d
 cp src/robotkernel/resources/starter/robotkernel-starter.json .jupyter/jupyter_notebook_config.d
