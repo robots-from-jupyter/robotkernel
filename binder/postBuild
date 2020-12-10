@@ -1,13 +1,22 @@
 #!/bin/bash
-curl -L https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz > geckodriver.tar.gz
-tar -xzf geckodriver.tar.gz -C /srv/conda/bin/
-pip install -e .
+set -eux
+pip install -e . -vv
 python -m robotkernel.install --sys-prefix
 jupyter serverextension enable --sys-prefix --py jupyter_starters
-cd src/jupyterlab_robotmode && npm install && npm run build && cd ../..
-jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
-jupyter labextension install src/jupyterlab_robotmode --no-build
-jupyter labextension install @deathbeds/jupyterlab-starters@0.3.0-a0 --no-build
-jupyter lab build --minimize=True --dev-build=False --debug
+
+pushd src/jupyterlab_robotmode
+    npm install
+    npm run build
+    jupyter labextension install --no-build $(npm pack)
+popd
+
+jupyter labextension install --no-build \
+    @deathbeds/jupyterlab-starters@0.3.0-a0 \
+    @jupyter-widgets/jupyterlab-manager
+
+jupyter lab build --minimize=False --debug
+
+jupyter labextension list
+
 mkdir -p .jupyter/jupyter_notebook_config.d
 cp src/robotkernel/resources/starter/robotkernel-starter.json .jupyter/jupyter_notebook_config.d
