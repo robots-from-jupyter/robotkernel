@@ -13,7 +13,7 @@ dependencies:
     - requests==2.22.0
     - RESTinstance==1.0.2
     - rise==5.6.1
-    - robotframework==3.2
+    - robotframework==4.0b1
     - robotframework-faker==5.0.0
     - robotframework-seleniumlibrary==4.3.0
     - robotframework-seleniumscreenshots==0.9.5
