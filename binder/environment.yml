@@ -1,11 +1,15 @@
 name: robotkernel
+
 channels:
   - conda-forge
+  - nodefaults
+
 dependencies:
   - opencv
   - python >=3.6,<3.9.0a0
   - jupyterlab >=2.1.1,<2.2
-  - nodejs >=11,<12
+  - nodejs >=14,<15
+  - geckodriver >=0.26.0,<0.27.0
   - pip
   - pip:
     - matplotlib==3.1.2
@@ -13,7 +17,7 @@ dependencies:
     - requests==2.22.0
     - RESTinstance==1.0.2
     - rise==5.6.1
-    - robotframework==3.2
+    - robotframework==4.0b1
     - robotframework-faker==5.0.0
     - robotframework-seleniumlibrary==4.3.0
     - robotframework-seleniumscreenshots==0.9.5

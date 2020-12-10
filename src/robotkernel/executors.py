@@ -274,7 +274,11 @@ def run_robot_suite(
     stats = results.statistics
 
     # Reply error on error
-    if stats.total.critical.failed:
+    try:
+        failed = stats.total.critical.failed
+    except AttributeError:  # >= RF 40
+        failed = stats.total.failed
+    if failed:
         if not silent:
             kernel.send_error(
                 {"ename": "", "evalue": "", "traceback": stdout.getvalue().splitlines()}
@@ -325,7 +329,11 @@ def run_robot_suite(
         )
 
     # Reply ok on pass
-    if stats.total.critical.failed:
+    try:
+        failed = stats.total.critical.failed
+    except AttributeError:  # >= RF 40
+        failed = stats.total.failed
+    if failed:
         return {
             "status": "error",
             "ename": "",

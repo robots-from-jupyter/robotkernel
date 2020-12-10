@@ -1,10 +1,13 @@
 Robotkernel
 ===========
 
+|Smoketest Badge|
+
 RobotKernel is a `Robot Framework`_ IPython_ kernel for `Jupyter Notebook`_ and JupyterLab_. It powers RobotLab_ – the Robot Framework JupyterLab distribution. Check a `video to see it in action`_ and `read the documentation`_.
 
 RobotKernel requires Python 3.6 or later with setuptools 40.5.0 later and Robot Framework Robot Framework 3.1 or later.
 
+.. |Smoketest Badge| image:: https://github.com/robots-from-jupyter/robotkernel/workflows/smoketest/badge.svg
 .. _video to see it in action: https://youtu.be/uYGh9_c3b7s
 .. _read the documentation: https://robots-from-jupyter.github.io/robotkernel/
 .. _Robot Framework: http://robotframework.org/
