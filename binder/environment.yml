@@ -1,6 +1,9 @@
 name: robotkernel
+
 channels:
   - conda-forge
+  - nodefaults
+
 dependencies:
   - opencv
   - python >=3.6,<3.9.0a0
