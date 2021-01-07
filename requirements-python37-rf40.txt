@@ -57,7 +57,7 @@ jupytext==1.4.2
 kitchen==1.2.6
 lazy-object-proxy==1.4.3
 lunr==0.5.8
-lxml==4.5.0
+lxml==4.6.2
 mccabe==0.6.1
 mistune==0.8.4
 more-itertools==8.2.0
