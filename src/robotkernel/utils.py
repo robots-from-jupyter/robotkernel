@@ -122,8 +122,18 @@ def get_keyword_doc(keyword):
     title = keyword.name.strip("*").strip()
     title_html = f"<strong>{title}</strong>"
     if keyword.args:
-        title += " " + ", ".join(keyword.args)
-        title_html += " " + ", ".join(keyword.args)
+        try:
+            title += " " + ", ".join(keyword.args)
+            title_html += " " + ", ".join(keyword.args)
+        except TypeError:  # RF >= 4.0
+            # TODO: Include default values and typing
+            args = (
+                keyword.args.positional_only
+                + keyword.args.named_only
+                + keyword.args.positional_or_named
+            )
+            title += " " + ", ".join(args)
+            title_html += " " + ", ".join(args)
     body = ""
     if keyword.doc:
         if isinstance(keyword.doc, Documentation):
