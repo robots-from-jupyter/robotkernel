@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.4.1 (unreleased)
+1.5.0 (2021-04-22)
 ------------------
 
 - Add support for robotframework 4.0
