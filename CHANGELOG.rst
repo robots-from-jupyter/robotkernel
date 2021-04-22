@@ -4,8 +4,8 @@ Changelog
 1.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add support for robotframework 4.0
+  [datakurre]
 
 1.4.0 (2020-04-27)
 ------------------
