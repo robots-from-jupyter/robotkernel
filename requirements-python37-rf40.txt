@@ -95,7 +95,7 @@ pytest==5.4.1
 pytest-runner==5.2
 python-dateutil==2.8.1
 pytz==2019.3
-pyyaml==5.3.1
+pyyaml==5.4
 pyzmq==19.0.0
 qtconsole==4.7.3
 qtpy==1.9.0
