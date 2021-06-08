@@ -74,7 +74,7 @@ pathspec==0.8.0
 pdbpp==0.10.2
 pexpect==4.8.0
 pickleshare==0.7.5
-pillow==7.1.2
+pillow==8.2.0
 plantweb==1.2.1
 pluggy==0.13.1
 ply==3.11
