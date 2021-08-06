@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
-from IPython.utils.tokenutil import line_at_cursor
 from robotkernel import __version__
 from robotkernel.completion_finders import complete_libraries
 from robotkernel.constants import CONTEXT_LIBRARIES
@@ -37,6 +36,12 @@ import re
 import robot
 import sys
 import uuid
+
+
+try:
+    from IPython.utils.tokenutil import line_at_cursor
+except (ImportError, RecursionError):
+    from pyolite.kernel import line_at_cursor
 
 
 if HAS_NBIMPORTER:
