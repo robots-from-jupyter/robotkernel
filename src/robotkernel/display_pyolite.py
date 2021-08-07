@@ -11,10 +11,18 @@ class DisplayKernel:
         self.display_pub = ipython_shell.display_pub
         self.displayhook = ipython_shell.displayhook
         self.displayhook.publish_execution_error = None
+        self.shell = ipython_shell
         self.interpreter = ipython_shell.kernel.interpreter
         self.comm_manager = ipython_shell.kernel.comm_manager
         self.execution_count = 0
-        self._parent_header = None
+
+    def _get_parent_header(self):
+        return self.shell.kernel._parent_header
+
+    def _set_parent_header(self, header):
+        self.shell.kernel._parent_header = header
+
+    _parent_header = property(_get_parent_header, _set_parent_header)
 
     def get_parent(self):
         # TODO mimick ipykernel's get_parent signature
