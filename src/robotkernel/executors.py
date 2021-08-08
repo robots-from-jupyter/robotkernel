@@ -130,7 +130,7 @@ def inject_ipywidget(
             widgets[0].description = "Executing..."
             for widget in widgets:
                 widget.disabled = True
-            clear_output(wait=True)
+            out.clear_output(wait=True)
             try:
                 execute(**values)
             finally:

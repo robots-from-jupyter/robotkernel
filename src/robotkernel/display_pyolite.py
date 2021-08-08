@@ -8,12 +8,11 @@ class DisplayKernel:
     """BaseKernel with interactive shell for display hooks."""
 
     def __init__(self, *args, **kwargs):
-        self.display_pub = ipython_shell.display_pub
-        self.displayhook = ipython_shell.displayhook
-        self.displayhook.publish_execution_error = None
-        self.shell = ipython_shell
-        self.interpreter = ipython_shell.kernel.interpreter
+        self.comm_info = ipython_shell.kernel.comm_info
         self.comm_manager = ipython_shell.kernel.comm_manager
+        self.interpreter = ipython_shell.kernel.interpreter
+        self.shell = ipython_shell
+        self.shell.displayhook.publish_execution_error = None
         self.execution_count = 0
 
     def _get_parent_header(self):
@@ -25,46 +24,38 @@ class DisplayKernel:
     _parent_header = property(_get_parent_header, _set_parent_header)
 
     def get_parent(self):
-        # TODO mimick ipykernel's get_parent signature
-        # (take a channel parameter)
-        return self._parent_header
+        return self.shell.kernel.get_parent()
 
     user_module = Any()
 
     def _user_module_changed(self, name, old, new):
-        pass
-        # if self.shell is not None:
-        #     self.shell.user_module = new
+        if self.shell is not None:
+            self.shell.user_module = new
 
     user_ns = Instance(dict, args=(), allow_none=True)
 
     def _user_ns_changed(self, name, old, new):
-        pass
-        # if self.shell is not None:
-        #     self.shell.user_ns = new
-        #     self.shell.init_user_ns()
+        if self.shell is not None:
+            self.shell.user_ns = new
+            self.shell.init_user_ns()
 
     def start(self):
-        pass
-        # self.shell.exit_now = False
-        # super(DisplayKernel, self).start()
+        self.execution_count = 0
+        self.shell.exit_now = False
 
     def set_parent(self, ident, parent):
-        """Overridden from parent to tell the display hook and output streams about the parent message.
-        """
-        pass
-        # super(DisplayKernel, self).set_parent(ident, parent)
-        # self.shell.set_parent(parent)
+        """Overridden from parent to tell the display hook and output streams about the parent message."""
+        self.shell.set_parent(parent)
 
     def do_shutdown(self, restart):
-        pass
-        # self.shell.exit_now = True
+        self.execution_count = 0
+        self.shell.exit_now = True
 
     def send_display_data(self, data=None, metadata=None, display_id=None):
         if isinstance(data, str):
-            self.display_pub.publish(**{"data": {"text/plain": data}})
+            self.shell.display_pub.publish(**{"data": {"text/plain": data}})
         else:
-            self.display_pub.publish(
+            self.shell.display_pub.publish(
                 **{
                     "data": data or {},
                     "metadata": metadata or {},
@@ -73,7 +64,7 @@ class DisplayKernel:
             )
 
     def send_update_display_data(self, data=None, metadata=None, display_id=None):
-        self.display_pub.publish(
+        self.shell.display_pub.publish(
             **{
                 "data": data or {},
                 "metadata": metadata or {},
@@ -83,17 +74,36 @@ class DisplayKernel:
         )
 
     def send_execute_result(self, data=None, metadata=None, display_id=None):
-        self.displayhook.publish_execution_result(
-            self.execution_count, data or {}, metadata or {},
+        self.shell.displayhook.publish_execution_result(
+            self.execution_count,
+            data or {},
+            metadata or {},
+            display_id and {"display_id": display_id} or {},
         )
 
     def send_error(self, content=None):
-        self.displayhook.publish_execution_error(
-            f"{content['ename']}", f"{content['evalue']}", f"{content['traceback']}",
+        self.shell.displayhook.publish_execution_error(
+            f"{content['ename']}",
+            f"{content['evalue']}",
+            f"{content['traceback']}",
         )
 
-    def run(self, code):
-        return self.do_execute(code, silent=False)
+    def inspect(self, code, cursor_pos, detail_level):
+        return self.do_inspect(code, cursor_pos, detail_level)
+
+    def is_complete(self, code, cursor_pos):
+        result = self.do_complete(code, cursor_pos)
+        if result["cursor_start"] != result["cursor_end"]:
+            result["status"] = "incomplete"
+            result["indent"] = " " * (
+                len(code[: result["cursor_end"]])
+                - len(code[: result["cursor_end"]].lstrip())
+            )
+        return result
 
     def complete(self, code, cursor_pos):
         return self.do_complete(code, cursor_pos)
+
+    def run(self, code):
+        self.execution_count += 1
+        return self.do_execute(code, silent=False)
