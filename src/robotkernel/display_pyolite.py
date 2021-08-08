@@ -1,43 +1,48 @@
 # -*- coding: utf-8 -*-
 from pyolite import ipython_shell
-from traitlets import Any
-from traitlets import Instance
+from IPython import get_ipython
 
 
 class DisplayKernel:
     """BaseKernel with interactive shell for display hooks."""
 
     def __init__(self, *args, **kwargs):
-        self.comm_info = ipython_shell.kernel.comm_info
-        self.comm_manager = ipython_shell.kernel.comm_manager
-        self.interpreter = ipython_shell.kernel.interpreter
         self.shell = ipython_shell
         self.shell.displayhook.publish_execution_error = None
         self.execution_count = 0
 
     def _get_parent_header(self):
-        return self.shell.kernel._parent_header
+        ip = get_ipython()
+        return ip.kernel._parent_header
 
     def _set_parent_header(self, header):
-        self.shell.kernel._parent_header = header
+        ip = get_ipython()
+        ip.kernel._parent_header = header
 
     _parent_header = property(_get_parent_header, _set_parent_header)
 
     def get_parent(self):
-        return self.shell.kernel.get_parent()
+        ip = get_ipython()
+        return ip.kernel.get_parent()
 
-    user_module = Any()
+    @property
+    def user_ns(self):
+        return self.shell.user_ns
 
-    def _user_module_changed(self, name, old, new):
-        if self.shell is not None:
-            self.shell.user_module = new
+    @property
+    def comm_manager(self):
+        ip = get_ipython()
+        return ip.kernel.comm_manager
 
-    user_ns = Instance(dict, args=(), allow_none=True)
+    @property
+    def comm_info(self):
+        ip = get_ipython()
+        return ip.kernel.comm_info
 
-    def _user_ns_changed(self, name, old, new):
-        if self.shell is not None:
-            self.shell.user_ns = new
-            self.shell.init_user_ns()
+    @property
+    def interpreter(self):
+        ip = get_ipython()
+        return ip.kernel.interpreter
 
     def start(self):
         self.execution_count = 0

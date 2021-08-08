@@ -2,7 +2,6 @@
 from collections import OrderedDict
 from io import BytesIO
 from io import StringIO
-from IPython.core.display import clear_output
 from IPython.core.display import display
 from PIL import Image
 from robot.reporting import ResultWriter
