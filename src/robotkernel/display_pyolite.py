@@ -2,6 +2,8 @@
 from pyolite import ipython_shell
 from IPython import get_ipython
 
+import json
+
 
 class DisplayKernel:
     """BaseKernel with interactive shell for display hooks."""
@@ -90,7 +92,7 @@ class DisplayKernel:
         self.shell.displayhook.publish_execution_error(
             f"{content['ename']}",
             f"{content['evalue']}",
-            f"{content['traceback']}",
+            json.dumps(content['traceback']),
         )
 
     def inspect(self, code, cursor_pos, detail_level):
