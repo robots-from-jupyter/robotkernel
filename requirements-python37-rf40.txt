@@ -51,7 +51,7 @@ jupyter-highlight-selected-word==0.2.0
 jupyter-latex-envs==1.4.6
 jupyter-nbextensions-configurator==0.4.1
 jupyter-starters==0.2.2a0
-jupyterlab==2.1.1
+jupyterlab==2.2.10
 jupyterlab-server==1.1.1
 jupytext==1.4.2
 kitchen==1.2.6
