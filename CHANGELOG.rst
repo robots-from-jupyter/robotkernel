@@ -4,8 +4,8 @@ Changelog
 1.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Fix set_parent signature
+  [martinRenou]
 
 1.5.0 (2021-04-22)
 ------------------
