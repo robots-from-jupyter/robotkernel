@@ -57,10 +57,10 @@ class DisplayKernel(Kernel):
         self.shell.exit_now = False
         super(DisplayKernel, self).start()
 
-    def set_parent(self, ident, parent):
+    def set_parent(self, ident, parent, *args, **kwargs):
         """Overridden from parent to tell the display hook and output streams about the parent message.
         """
-        super(DisplayKernel, self).set_parent(ident, parent)
+        super(DisplayKernel, self).set_parent(ident, parent, *args, **kwargs)
         self.shell.set_parent(parent)
 
     def do_shutdown(self, restart):
