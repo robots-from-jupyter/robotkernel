@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.5.1 (unreleased)
+1.5.1 (2021-09-28)
 ------------------
 
 - Fix set_parent signature
