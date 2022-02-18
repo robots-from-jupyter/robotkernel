@@ -3,8 +3,8 @@ import pkg_resources
 
 
 try:
-    import WhiteLibrary
     from robotkernel.selectors_white import WhiteLibraryCompanion
+    import WhiteLibrary
 
     assert WhiteLibrary
     assert WhiteLibraryCompanion

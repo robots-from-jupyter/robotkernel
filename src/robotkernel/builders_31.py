@@ -41,7 +41,7 @@ def build_suite(code: str, cell_history: Dict[str, str]):
 class TestCaseString(TestCaseFile):
     # noinspection PyMissingConstructor
     def __init__(self, parent=None, source=None):
-        super(TestCaseString, self).__init__(parent, source)
+        super().__init__(parent, source)
         self.setting_table = SafeSettingsTable(self)
         self.keyword_table = OverridingKeywordTable(self)
         _TestData.__init__(self, parent, source)
@@ -54,7 +54,7 @@ class TestCaseString(TestCaseFile):
 
 class SafeSettingsTable(TestCaseFileSettingTable):
     def __init__(self, parent):
-        super(SafeSettingsTable, self).__init__(parent)
+        super().__init__(parent)
         self.suite_setup = OverridingFixture("Suite Setup", self)
         self.suite_teardown = OverridingFixture("Suite Teardown", self)
         self.test_setup = OverridingFixture("Test Setup", self)
@@ -65,7 +65,7 @@ class OverridingFixture(Fixture):
     def populate(self, value, comment=None):
         # Always reset setting before populating it
         self.reset()
-        super(OverridingFixture, self).populate(value, comment)
+        super().populate(value, comment)
 
 
 class OverridingKeywordTable(KeywordTable):
@@ -75,7 +75,7 @@ class OverridingKeywordTable(KeywordTable):
             if self.keywords[i].name == name:
                 del self.keywords[i]
                 break
-        return super(OverridingKeywordTable, self).add(name)
+        return super().add(name)
 
 
 class FromStringPopulator(FromFilePopulator):
@@ -92,8 +92,8 @@ class FromStringPopulator(FromFilePopulator):
             self._curdir = os.getcwd()
 
     def populate(self, source):
-        LOGGER.info("Parsing string '%s'." % source)
+        LOGGER.info(f"Parsing string '{source}'.")
         try:
             RobotReader().read(BytesIO(source.encode("utf-8")), self)
-        except Exception:
-            raise DataError(get_error_message())
+        except Exception as e:
+            raise DataError(get_error_message()) from e
