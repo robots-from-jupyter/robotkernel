@@ -1,0 +1,14 @@
+{
+    "pip2nix": {
+        "branch": "master",
+        "description": "Freeze pip-installable packages into Nix expressions",
+        "homepage": "",
+        "owner": "nix-community",
+        "repo": "pip2nix",
+        "rev": "3ded07fcb8a4a491f36f1b8aac9c9c9c402d99fe",
+        "sha256": "0wqdfb9hbpqzs3z4x07a9z1hdl663xdyik7vm06z3pkb8i20kxq8",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/pip2nix/archive/3ded07fcb8a4a491f36f1b8aac9c9c9c402d99fe.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

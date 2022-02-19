@@ -5,7 +5,9 @@ from robot.libraries import STDLIBS
 from typing import List
 
 
-def complete_libraries(needle: str,) -> List[str]:
+def complete_libraries(
+    needle: str,
+) -> List[str]:
     """Complete library names."""
     matches = []
 

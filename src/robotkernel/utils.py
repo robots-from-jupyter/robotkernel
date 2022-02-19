@@ -30,7 +30,6 @@ if HAS_RF32_PARSER:
     class Documentation:
         pass  # No longer with RF32
 
-
 else:
     from robot.parsing.settings import Documentation
 
@@ -40,7 +39,7 @@ def javascript_uri(html, filename=""):
     if isinstance(html, str):
         html = html.encode("utf-8")
     return (
-        "javascript:(function(el){{"
+        "javascript:(function(el){{"  # noqa: C0209
         "var w=window.open();var d='{}';"
         "w.document.open();"
         "w.document.write(window.atob(d));"
@@ -58,7 +57,9 @@ def javascript_uri(html, filename=""):
 
 
 def data_uri(mimetype, data):
-    return "data:{};base64,{}".format(mimetype, base64.b64encode(data).decode("utf-8"))
+    return "data:{};base64,{}".format(  # noqa: C0209
+        mimetype, base64.b64encode(data).decode("utf-8")
+    )
 
 
 def highlight(language, data):

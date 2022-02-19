@@ -42,7 +42,7 @@ def install_my_kernel_spec(user=False, prefix=None):
     with TemporaryDirectory() as td:
         os.chmod(td, 0o755)  # Starts off as 700, not user readable
 
-        with open(os.path.join(td, "kernel.json"), "w") as f:
+        with open(os.path.join(td, "kernel.json"), "w", encoding="utf-8") as f:
             json.dump(kernel_json, f, indent=2, sort_keys=True)
 
         for res in glob(os.path.join(HERE, "resources", "kernel", "*")):

@@ -15,8 +15,8 @@ if HAS_RF32_PARSER:
     from robot.utils import FileReader
 else:
     from robot.libdocpkg.builder import RESOURCE_EXTENSIONS
-    from robot.parsing import TEST_EXTENSIONS
     from robot.parsing import populators
+    from robot.parsing import TEST_EXTENSIONS
     from robot.parsing.robotreader import RobotReader
 
 
@@ -29,11 +29,11 @@ def exec_code_into_module(code, module):
 def NotebookReader():  # noqa: N802
     try:
         import nbformat  # noqa
-    except ImportError:
+    except ImportError as e:
         raise DataError(
             "Using Notebook test data requires having "
             '"nbformat" module version 4.4.0 or newer installed.'
-        )
+        ) from e
 
     class NotebookReader(object):
         def read(self, ipynbfile, rawdata):
@@ -49,7 +49,7 @@ def NotebookReader():  # noqa: N802
                 match = re.match("^%%python module ([a-zA-Z_]+)", cell.source)
                 if match is not None:
                     module = match.groups()[0]
-                    cursor = len("%%python module {0:s}".format(module))
+                    cursor = len(f"%%python module {module}")
                     exec_code_into_module(cell.source[cursor:], module)
                     continue
 

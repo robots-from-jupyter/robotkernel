@@ -7,8 +7,8 @@ import time
 
 
 try:
-    import WhiteLibrary
     from robotkernel.selectors_white import PickSnipTool
+    import WhiteLibrary
 except ImportError:
     WhiteLibrary = None
     PickSnipTool = None
@@ -25,9 +25,9 @@ except ImportError:
     AutoIt = None
 
 try:
-    from selenium.common.exceptions import WebDriverException
     from selenium.common.exceptions import InvalidSessionIdException
     from selenium.common.exceptions import TimeoutException
+    from selenium.common.exceptions import WebDriverException
 except ImportError:
 
     class WebDriverException(Exception):
@@ -156,8 +156,8 @@ def clear_selector_highlights(driver):
         script, arguments = get_element_highlight_script(
             [], driver.find_elements_by_css_selector("[data-robotkernel]")
         )
-    except InvalidSessionIdException:
-        raise BrokenOpenConnection(driver)
+    except InvalidSessionIdException as e:
+        raise BrokenOpenConnection(driver) from e
     except WebDriverException:
         return
     if script:
@@ -541,7 +541,7 @@ def get_autoit_control_selector_completions(needle, driver):  # noqa: C901
             pointer_x = driver.MouseGetPosX()
             pointer_y = driver.MouseGetPosY()
             counter = {}
-            match = None
+            match = []
 
             time.sleep(1)
 

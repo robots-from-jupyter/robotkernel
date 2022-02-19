@@ -33,7 +33,7 @@ import uuid
 
 
 def execute_python(kernel: DisplayKernel, code: str, module: str, silent: bool):
-    """"Execute Python code str in the context of named module.
+    """Execute Python code str in the context of named module.
     If the named module is not found, a new module is introduced.
     """
     if module not in sys.modules:
@@ -217,7 +217,7 @@ def execute_robot(
             for variable in suite.resource.variables:
                 listener.variables.pop(variable.name, None)
 
-    if suite.tests:
+    if suite.tests:  # noqa: W0125
         try:
             with TemporaryDirectory() as path:
                 reply = run_robot_suite(
@@ -319,7 +319,7 @@ def run_robot_suite(
     if not silent:
         (widget and kernel.send_display_data or kernel.send_update_display_data)(
             {
-                "text/html": ""
+                "text/html": ""  # noqa: C0209
                 '<p><a href="about:" onClick="{}">Log</a> | <a href="about:" onClick="{}">Report</a></p>'.format(
                     javascript_uri(log, "log.html"),
                     javascript_uri(report, "report.html"),
@@ -346,7 +346,7 @@ def run_robot_suite(
 
 def process_screenshots(kernel: DisplayKernel, path: str, silent: bool):
     cwd = os.getcwd()
-    with open(os.path.join(path, "output.xml")) as fp:
+    with open(os.path.join(path, "output.xml"), encoding="utf-8") as fp:
         xml = fp.read()
     for src in re.findall('img src="([^"]+)', xml):
         if os.path.exists(src):
@@ -378,16 +378,16 @@ def process_screenshots(kernel: DisplayKernel, path: str, silent: bool):
             with open(filename, "rb") as fp:
                 data = fp.read()
         uri = data_uri(mimetype, data)
-        xml = xml.replace('a href="{}"'.format(src), "a")
+        xml = xml.replace(f'a href="{src}"', "a")
         xml = xml.replace(
-            'img src="{}" width="800px"'.format(src),
-            'img src="{}" style="max-width:800px;"'.format(uri),
+            f'img src="{src}" width="800px"',
+            f'img src="{uri}" style="max-width:800px;"',
         )  # noqa: E501
-        xml = xml.replace('img src="{}"'.format(src), 'img src="{}"'.format(uri))
+        xml = xml.replace(f'img src="{src}"', f'img src="{uri}"')
         if not silent:
             kernel.send_display_data(
                 {mimetype: base64.b64encode(data).decode("utf-8")},
                 {mimetype: {"height": im.height, "width": im.width}},
             )
-    with open(os.path.join(path, "output.xml"), "w") as fp:
+    with open(os.path.join(path, "output.xml"), "w", encoding="utf-8") as fp:
         fp.write(xml)
