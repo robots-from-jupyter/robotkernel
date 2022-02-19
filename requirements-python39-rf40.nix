@@ -243,6 +243,23 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
+  "bcrypt" = super.buildPythonPackage rec {
+    pname = "bcrypt";
+    version = "3.2.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/d8/ba/21c475ead997ee21502d30f76fd93ad8d5858d19a3fad7cd153de698c4dd/bcrypt-3.2.0.tar.gz";
+      sha256 = "0agvzdn7r7jx5y4scl5gjmrmr6njvizwmr9n7h1kmaahdrrc34sv";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."cffi"
+      self."six"
+    ];
+  };
   "black" = super.buildPythonPackage rec {
     pname = "black";
     version = "22.1.0";
@@ -370,6 +387,22 @@ self: super: {
       self."coverage"
       self."docopt"
       self."requests"
+    ];
+  };
+  "cryptography" = super.buildPythonPackage rec {
+    pname = "cryptography";
+    version = "3.4.8";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/cc/98/8a258ab4787e6f835d350639792527d2eb7946ff9fc0caca9c3f4cf5dcfe/cryptography-3.4.8.tar.gz";
+      sha256 = "072awar70cwfd2hnx0pvp1dkc7gw45mbm3wcyddvxz5frva5xk4l";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."cffi"
     ];
   };
   "debugpy" = super.buildPythonPackage rec {
@@ -1507,6 +1540,24 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
+  "paramiko" = super.buildPythonPackage rec {
+    pname = "paramiko";
+    version = "2.9.2";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/60/3e/84c52fb09db84548c5d366bac8863125c6db099b87495e04c8af5527e6f1/paramiko-2.9.2-py2.py3-none-any.whl";
+      sha256 = "00r63ksj28m9n16gsanzl09qlsq6hccdn4scng6r25l7jsyps284";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."bcrypt"
+      self."cryptography"
+      self."pynacl"
+    ];
+  };
   "parso" = super.buildPythonPackage rec {
     pname = "parso";
     version = "0.8.3";
@@ -1839,6 +1890,22 @@ self: super: {
       self."platformdirs"
       self."toml"
       self."typing-extensions"
+    ];
+  };
+  "pynacl" = super.buildPythonPackage rec {
+    pname = "pynacl";
+    version = "1.5.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/a7/22/27582568be639dfe22ddb3902225f91f2f17ceff88ce80e4db396c8986da/PyNaCl-1.5.0.tar.gz";
+      sha256 = "1fi0jbxhh3svajzldlb6gj5sr5a48v11xlmx0wb831db167l9iwa";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."cffi"
     ];
   };
   "pyparsing" = super.buildPythonPackage rec {
@@ -2195,6 +2262,40 @@ self: super: {
       self."furl"
       self."robotframework-seleniumlibrary"
       self."wrapt"
+    ];
+  };
+  "robotframework-sshlibrary" = super.buildPythonPackage rec {
+    pname = "robotframework-sshlibrary";
+    version = "3.8.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/23/e9/74f3345024645a1e874c53064787a324eaecfb0c594c189699474370a147/robotframework-sshlibrary-3.8.0.tar.gz";
+      sha256 = "1hj64hywc1sf7h8y4pdnzk17sv2xlanx0xc5rw248d5pph18mpxf";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."paramiko"
+      self."robotframework"
+      self."scp"
+    ];
+  };
+  "scp" = super.buildPythonPackage rec {
+    pname = "scp";
+    version = "0.14.3";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/2e/01/711507fb4ac2f9a609dcbf0dff04e01f28899c3189e5ccdf2d4459f6b903/scp-0.14.3-py2.py3-none-any.whl";
+      sha256 = "097vy8wzha72ggr3kg7d4liicqqn23hgipc9ixygqcda37jz1cxw";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [
+      self."paramiko"
     ];
   };
   "selenium" = super.buildPythonPackage rec {
