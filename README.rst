@@ -16,9 +16,10 @@ RobotKernel requires Python 3.6 or later with setuptools 40.5.0 later and Robot 
 .. _JupyterLab: https://jupyterlab.readthedocs.io/en/stable/
 .. _RobotLab: https://github.com/robots-from-jupyter/robotlab/releases
 
-For alternative Robot Framework IPython kernel, check out `ipythonrobotframework`_.
+For alternative Robot Framework IPython kernel, check out `ipythonrobotframework`_ or `xeus-robot`_.
 
 .. _ipythonrobotframework: https://github.com/gtri/irobotframework
+.. _xeus-robot: https://github.com/jupyter-xeus/xeus-robot
 
 
 Try RobotKernel

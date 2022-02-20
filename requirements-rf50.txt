@@ -7,7 +7,7 @@ nbformat
 nbimporter
 pillow
 pygments
-robotframework==4.0.3
+robotframework==5.0b1
 
 nbsphinx
 sphinx
@@ -44,11 +44,7 @@ robotframework-seleniumlibrary
 robotframework-seleniumtestability
 robotframework-seleniumscreenshots
 robotframework-jupyterlibrary
-robotframework-sshlibrary
 setuptools-scm
-
-# matches version in nixpkgs-21.11 for matching cargoDeps
-cryptography==3.4.8
 
 text-unidecode
 prompt-toolkit
