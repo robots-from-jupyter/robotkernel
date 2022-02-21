@@ -225,8 +225,8 @@ class RobotKernel(DisplayKernel):
             except BrokenOpenConnection:
                 close_current_connection(self.robot_connections, driver)
 
-        # Support %%sticky libraryName cell magic
-        match = re.findall(r"^%%sticky\s+([a-zA-Z_]+)", code, flags=re.MULTILINE)
+        # Support %sticky library LibraryMagic cell magic
+        match = re.findall(r"^%sticky library ([a-zA-Z_]+)", code, flags=re.MULTILINE)
         for name in match:
             self.robot_libraries.setdefault(name, None)
 
