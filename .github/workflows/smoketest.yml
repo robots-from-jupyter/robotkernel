@@ -22,6 +22,7 @@ jobs:
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "make test"
     - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "python -m robotkernel.install"
-    - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "jupyter nbconvert --execute tests/Smoketest.ipynb --to notebook"
+    - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "jupyter nbconvert --execute tests/Smoketest.ipynb --to html"
+    - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "jupyter nbconvert --execute tests/StickyLibraryMagic.ipynb --to html"
     - run: nix-shell setup.nix -A shell --argstr robotframework ${{ matrix.robotframework-version }} --run "nbrobot -v BROWSER:headlessfirefox -F ipynb tests atest"
     - run: nix-shell --run "echo OK"

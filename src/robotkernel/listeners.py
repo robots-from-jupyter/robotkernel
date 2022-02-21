@@ -355,10 +355,13 @@ class StickyLibraryListener:
             builtin = BuiltIn()
             for library in self.libraries:
                 try:
-                    self.libraries[library] = builtin._namespace._kw_store.libraries[
-                        library
-                    ]
-                except KeyError:
+                    if builtin._namespace._kw_store.libraries[library].scope.is_global:
+                        self.libraries[
+                            library
+                        ] = builtin._namespace._kw_store.libraries[library]
+                    else:
+                        self.libraries[library] = builtin.get_library_instance(library)
+                except (AttributeError, KeyError, RuntimeError):
                     continue
         except RuntimeError:
             pass
@@ -371,8 +374,13 @@ class StickyLibraryListener:
                 if instance is None:
                     continue
                 try:
-                    builtin._namespace._kw_store.libraries[library] = instance
-                except AttributeError:
+                    if builtin._namespace._kw_store.libraries[library].scope.is_global:
+                        builtin._namespace._kw_store.libraries[library] = instance
+                    else:
+                        builtin._namespace._kw_store.libraries[
+                            library
+                        ]._libinst = instance
+                except (AttributeError, KeyError):
                     continue
         except RuntimeError:
             pass
