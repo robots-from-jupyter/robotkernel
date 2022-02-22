@@ -6,6 +6,7 @@ graft atest
 recursive-include src *.js
 include LICENSE *.rst *.nix
 exclude Makefile Dockerfile requirements*.txt *.ipynb *.json
+prune nix
 prune binder
 prune examples
 prune src/jupyterlab_robotmode
