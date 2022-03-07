@@ -84,6 +84,8 @@ let
         mergedInputs old new "nativeBuildInputs" self super;
       propagatedBuildInputs =
         mergedInputs old new "propagatedBuildInputs" self super;
+      propagatedNativeBuildInputs =
+        mergedInputs old new "propagatedNativeBuildInputs" self super;
       doCheck = false;
     });
 

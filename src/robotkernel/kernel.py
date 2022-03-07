@@ -64,7 +64,7 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
     banner = "Robot Framework kernel"
 
     def __init__(self, **kwargs):
-        super()
+        super().__init__(**kwargs)
         # Enable nbreader
         inject_robot_ipynb_support()
         inject_libdoc_ipynb_support()

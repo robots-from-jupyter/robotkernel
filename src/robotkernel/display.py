@@ -68,4 +68,4 @@ class ProgressUpdater(StringIO):
         self.progress["message"] = s.strip()
         self._update()
         self.stdout.write(s)
-        super().write(s)
+        return super().write(s)

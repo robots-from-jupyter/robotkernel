@@ -60,6 +60,7 @@ let self = rec {
       robotframework-seleniumtestability
       robotframework-seleniumscreenshots
       robotframework-jupyterlibrary
+      robotframework-sshlibrary
       robotkernel
       tkinter
       widgetsnbextension

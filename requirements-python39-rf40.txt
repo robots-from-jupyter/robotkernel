@@ -13,6 +13,7 @@ async-generator==1.10
 attrs==21.4.0
 babel==2.9.1
 backcall==0.2.0
+bcrypt==3.2.0
 black==22.1.0
 bleach==4.1.0
 certifi==2021.10.8
@@ -21,6 +22,7 @@ charset-normalizer==2.0.12
 click==8.0.3
 coverage==6.3.1
 coveralls==3.3.1
+cryptography==3.4.8
 debugpy==1.5.1
 decorator==5.1.1
 defusedxml==0.7.1
@@ -86,6 +88,7 @@ orderedmultidict==1.0.1
 outcome==1.1.0
 packaging==21.3
 pandocfilters==1.5.0
+paramiko==2.9.2
 parso==0.8.3
 pathspec==0.9.0
 pdbpp==0.10.3
@@ -108,6 +111,7 @@ pyflakes==2.4.0
 pygments==2.11.2
 pylama==8.3.7
 pylint==2.12.2
+pynacl==1.5.0
 pyparsing==3.0.7
 pyrepl==0.9.0
 pyrsistent==0.18.1
@@ -130,6 +134,8 @@ robotframework-pythonlibcore==3.0.0
 robotframework-seleniumlibrary==6.0.0
 robotframework-seleniumscreenshots==0.9.5
 robotframework-seleniumtestability==1.1.0
+robotframework-sshlibrary==3.8.0
+scp==0.14.3
 selenium==4.1.0
 setuptools-scm==6.4.2
 six==1.16.0
