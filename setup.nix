@@ -1,11 +1,7 @@
-{ pkgs ? import (fetchTarball {
-    # branches nixos-20.03
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/9137f05564eb50cc6f7042039aa9549a2e6e2340.tar.gz";
-    sha256 = "0yh2fnywhiyhzrkdlccp0l3bmdrqj0y1gysln6x7xfl2zj3aij7z";
-  }) {}
-, python ? "python37"
+{ pkgs ? import ./nix {}
+, python ? "python39"
 , pythonPackages ? builtins.getAttr (python + "Packages") pkgs
-, robotframework ? "rf32"
+, robotframework ? "rf40"
 , requirements ?  ./. + "/requirements-${python}-${robotframework}.nix"
 , src ? ./.
 , buildInputs ? with pkgs; [ firefox geckodriver pandoc ]
@@ -128,14 +124,7 @@ let
 
   # Alias packages with different names in requirements and in nixpkgs
   aliases = {
-    "Pillow" = "pillow";
-    "PyYAML" = "pyyaml";
-    "pyyaml" = "PyYAML";
-    "jupyter-client" = "jupyter_client";
     "jupyter-console" = "jupyter_console";
-    "jupyter-core" = "jupyter_core";
-    "prompt-toolkit" = "prompt_toolkit";
-    "setuptools-scm" = "setuptools_scm";
   };
 
   # Final overrides to fix issues all the magic above cannot fix automatically
@@ -147,29 +136,29 @@ let
       '';
     });
 
-    "pylama" = super."pylama".overridePythonAttrs(old: {
-      postInstall = ''
-        rm $out/${self.python.sitePackages}/tests/__pycache__/__init__.*
-      '';
+    "aiohttp" = super."aiohttp".overridePythonAttrs(old: { doCheck = false; });
+
+    "argon2-cffi-bindings" = super."argon2-cffi-bindings".overridePythonAttrs(old: {
+      nativeBuildInputs = old.nativeBuildInputs
+        ++ [ self."setuptools_scm" ];
     });
+
+    "pillow" = super."pillow".overridePythonAttrs(old: { patches = []; });
+
+    "pytest-xdist" = super."pytest-xdist".overridePythonAttrs(old: { doCheck = false; });
+
+    "pytestCheckHook" = super."pytestCheckHook".override { pytest = self."pytest"; };
+
+    "debugpy" = super."debugpy".overridePythonAttrs(old: { patches = []; });
 
     "pdbpp" = super."pdbpp".overridePythonAttrs(old: {
       nativeBuildInputs = old.nativeBuildInputs
         ++ [ self."setuptools_scm" ];
     });
 
-    "RESTinstance" = super."RESTinstance".overridePythonAttrs(old: {
-      postInstall = ''
-        rm $out/bin/robot
-      '';
-    });
-
-    "robotframework-jupyterlibrary" = super."robotframework-jupyterlibrary".overridePythonAttrs(old: {
-      src = builtins.fetchurl {  # master 2019-12-05
-        url = "https://github.com/robots-from-jupyter/robotframework-jupyterlibrary/archive/6a9a8a2c844bf6f435ed806216afe501f0dd0ca2.tar.gz";
-        sha256 = "b750286b3d13411002f10094884b1963b54f45901dfa2fcd40703bd23c85f455";
-      };
-      format = "setuptools";
+    "selenium" = super."selenium".overridePythonAttrs(old: {
+      propagatedBuildInputs = old.propagatedBuildInputs
+        ++ [ self."certifi" self."cryptography" self."pyopenssl" ];
     });
 
   };
@@ -178,15 +167,7 @@ in rec {
 
   # shell with 'pip2nix' for resolving requirements.txt into requirements.nix
   pip2nix = mkShell {
-    buildInputs = [ nix nix-prefetch-git cacert ] ++ [
-      (pythonPackages.python.withPackages(ps: with ps; [
-        (getAttr python
-          ( import (fetchTarball {
-              url = "https://github.com/datakurre/pip2nix/archive/7557e61808bfb5724ccae035d38d385a3c8d4dba.tar.gz";
-              sha256 = "0rwxkbih5ml2mgz6lx23p3jgb6v0wvslyvscki1vv4hl3pd6jcld";
-          } + "/release.nix") { inherit pkgs; }).pip2nix)
-      ]))
-    ];
+    buildInputs = [ nix nix-prefetch-git cacert (getAttr python pkgs.pip2nix) ];
   };
 
   inherit buildPython targetPython;
@@ -223,6 +204,7 @@ in rec {
     nativeBuildInputs = with pkgs; [ cacert gnumake git entr nix env ]
       ++ buildInputs ++ propagatedBuildInputs;
     postShellHook = ''
+      export PYTHONPATH=$(pwd)/src:$PYTHONPATH
       export JUPYTER_PATH=${install}/share/jupyter
       export JUPYTERLAB_DIR=${targetPython.pkgs.jupyterlab}/share/jupyter/lab
     '';

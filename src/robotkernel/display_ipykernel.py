@@ -16,7 +16,7 @@ class DisplayKernel(Kernel):
     shell_class = Type(ZMQInteractiveShell)
 
     def __init__(self, **kwargs):
-        super(DisplayKernel, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Configure IPython shell
         self.shell = self.shell_class.instance(
@@ -52,12 +52,11 @@ class DisplayKernel(Kernel):
 
     def start(self):
         self.shell.exit_now = False
-        super(DisplayKernel, self).start()
+        super().start()
 
-    def set_parent(self, ident, parent):
-        """Overridden from parent to tell the display hook and output streams about the parent message.
-        """
-        super(DisplayKernel, self).set_parent(ident, parent)
+    def set_parent(self, ident, parent, *args, **kwargs):
+        """Overridden from parent to tell the display hook and output streams about the parent message."""
+        super().set_parent(ident, parent, *args, **kwargs)
         self.shell.set_parent(parent)
 
     def do_shutdown(self, restart):

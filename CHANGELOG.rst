@@ -1,11 +1,17 @@
 Changelog
 =========
 
-1.5.1 (unreleased)
+1.5.2 (unreleased)
 ------------------
 
 - Nothing changed yet.
 
+
+1.5.1 (2021-09-28)
+------------------
+
+- Fix set_parent signature
+  [martinRenou]
 
 1.5.0 (2021-04-22)
 ------------------

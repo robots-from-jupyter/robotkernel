@@ -1,8 +1,4 @@
-{ pkgs ? import (builtins.fetchTarball {
-    # branches nixos-20.03
-    url = "https://github.com/NixOS/nixpkgs-channels/archive/9137f05564eb50cc6f7042039aa9549a2e6e2340.tar.gz";
-    sha256 = "0yh2fnywhiyhzrkdlccp0l3bmdrqj0y1gysln6x7xfl2zj3aij7z";
-  }) {}
+{ pkgs ? import ./nix {}
 , sikuli ? false
 , vim ? false
 }:
@@ -58,7 +54,7 @@ let self = rec {
       matplotlib
       rise
       robotframework
-      robotframework-appiumlibrary
+#     robotframework-appiumlibrary
       robotframework-faker
       robotframework-seleniumlibrary
       robotframework-seleniumtestability
@@ -67,7 +63,7 @@ let self = rec {
       robotkernel
       tkinter
       widgetsnbextension
-    ] ++ pkgs.stdenv.lib.optionals sikuli [ sikulilibrary ];
+    ] ++ pkgs.lib.optionals sikuli [ sikulilibrary ];
   });
 
   jupyter_nbconfig = pkgs.stdenv.mkDerivation rec {
@@ -142,12 +138,13 @@ pkgs.stdenv.mkDerivation rec {
     source $stdenv/setup; ln -s $env $out
   '';
   buildInputs = [
+    pkgs.nodejs
     pkgs.firefox
     pkgs.geckodriver
     jupyter
     jupyter_config_dir
-  ] ++ (with pkgs; stdenv.lib.optionals stdenv.isLinux [ bash fontconfig tini ])
-    ++ (with pkgs; stdenv.lib.optionals sikuli [ jre8 ]);
+  ] ++ (with pkgs; lib.optionals stdenv.isLinux [ bash fontconfig tini ])
+    ++ (with pkgs; lib.optionals sikuli [ jre8 ]);
   shellHook = ''
     mkdir -p $(pwd)/.jupyter
     cp -R ${jupyter_config_dir}/share/jupyter/* $(pwd)/.jupyter

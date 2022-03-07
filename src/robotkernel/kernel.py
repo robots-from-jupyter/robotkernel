@@ -49,7 +49,7 @@ if HAS_NBIMPORTER:
 
 
 # noinspection PyAbstractClass,DuplicatedCode
-class RobotKernel(DisplayKernel):
+class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
     implementation = "IRobot"
     implementation_version = __version__
     language = "robotframework"
@@ -64,7 +64,7 @@ class RobotKernel(DisplayKernel):
     banner = "Robot Framework kernel"
 
     def __init__(self, **kwargs):
-        super(RobotKernel, self).__init__(**kwargs)
+        super()
         # Enable nbreader
         inject_robot_ipynb_support()
         inject_libdoc_ipynb_support()
@@ -94,7 +94,7 @@ class RobotKernel(DisplayKernel):
             populator._library_import(keywords, name)
 
     def do_shutdown(self, restart):
-        super(RobotKernel, self).do_shutdown(restart)
+        super().do_shutdown(restart)
         self.robot_history = OrderedDict()
         self.robot_variables = []
         self.robot_suite_variables = {}
@@ -207,7 +207,7 @@ class RobotKernel(DisplayKernel):
             if cell_id in self.robot_history:
                 del self.robot_history[cell_id]
         self.robot_cell_id = (parent.get("metadata") or {}).get("cellId") or None
-        return super(RobotKernel, self).init_metadata(parent)
+        return super().init_metadata(parent)
 
     def do_execute(
         self, code, silent, store_history=True, user_expressions=None, allow_stdin=False
@@ -233,7 +233,7 @@ class RobotKernel(DisplayKernel):
             module = match.groups()[0]
             return execute_python(
                 self,
-                code[len("%%python module {0:s}".format(module)) :],
+                code[len(f"%%python module {module}") :],
                 module,
                 silent,
             )
@@ -257,7 +257,13 @@ class RobotKernel(DisplayKernel):
             ]
 
             # Execute test case
-            result = execute_robot(self, code, self.robot_history, listeners, silent,)
+            result = execute_robot(
+                self,
+                code,
+                self.robot_history,
+                listeners,
+                silent,
+            )
 
             # Save history
             if result["status"] == "ok":

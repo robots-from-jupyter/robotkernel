@@ -1,7 +1,7 @@
 REF_NIXPKGS = branches nixos-20.03
 
-PYTHON ?= python37
-ROBOTFRAMEWORK ?= rf32
+PYTHON ?= python39
+ROBOTFRAMEWORK ?= rf40
 NIX_OPTIONS ?= --argstr python $(PYTHON) --argstr robotframework $(ROBOTFRAMEWORK)
 
 .PHONY: all
@@ -19,7 +19,7 @@ env: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
 .PHONY: test
 test: check
-	pytest tests
+	PYTHONPATH=$(PYTHONPATH):$(PWD)/src pytest tests
 	# pytest --cov=robotkernel tests
 
 .PHONY: check
@@ -42,7 +42,7 @@ coverage: htmlcov
 .PHONY: format
 format:
 	black -t py37 src tests
-	isort -rc -y src tests
+	isort src tests
 
 ###
 

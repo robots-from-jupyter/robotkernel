@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from pyolite import ipython_shell
 from IPython import get_ipython
-
+from pyolite import ipython_shell
 import json
 
 
@@ -50,7 +49,7 @@ class DisplayKernel:
         self.execution_count = 0
         self.shell.exit_now = False
 
-    def set_parent(self, ident, parent):
+    def set_parent(self, ident, parent, *args, **kwargs):
         """Overridden from parent to tell the display hook and output streams about the parent message."""
         self.shell.set_parent(parent)
 
@@ -92,7 +91,7 @@ class DisplayKernel:
         self.shell.displayhook.publish_execution_error(
             f"{content['ename']}",
             f"{content['evalue']}",
-            json.dumps(content['traceback']),
+            json.dumps(content["traceback"]),
         )
 
     def inspect(self, code, cursor_pos, detail_level):

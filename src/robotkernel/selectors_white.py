@@ -111,7 +111,7 @@ class PickSnipTool(Form):
             return {}
 
     def __init__(self, screenshot=None, snip=False):
-        super(PickSnipTool, self).__init__()
+        super().__init__()
         self.snip_enabled = snip
 
         self.Cursor = Cursors.Cross
@@ -186,12 +186,11 @@ class PickSnipTool(Form):
 
 
 class WhiteLibraryCompanion:
-    """Complementary keyword library to use OpenCV based image recognition with RobotKernel and WhiteLibrary.
-    """
+    """Complementary keyword library to use OpenCV based image recognition with RobotKernel and WhiteLibrary."""
 
     def match_template(self, template: str, similarity: float = 0.8):
-        import numpy as np  # noqa
         import cv2 as cv  # noqa
+        import numpy as np  # noqa
 
         screenshot = PickSnipTool.take_screenshot(as_bytes=True)
         image = cv.imdecode(np.frombuffer(screenshot, np.uint8), cv.IMREAD_COLOR)

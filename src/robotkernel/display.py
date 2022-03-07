@@ -31,7 +31,7 @@ class ProgressUpdater(StringIO):
             },
             display_id=self.display_id,
         )
-        super(ProgressUpdater, self).__init__()
+        super().__init__()
 
     def _update(self):
         status_line = " | ".join(
@@ -68,4 +68,4 @@ class ProgressUpdater(StringIO):
         self.progress["message"] = s.strip()
         self._update()
         self.stdout.write(s)
-        return super(ProgressUpdater, self).write(s)
+        super().write(s)
