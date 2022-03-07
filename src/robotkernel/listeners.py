@@ -341,3 +341,46 @@ class WhiteLibraryListener:
                     setattr(instance, "screenshotter", driver["instance"][2])
         except RuntimeError:
             pass
+
+
+class StickyLibraryListener:
+    ROBOT_LISTENER_API_VERSION = 2
+
+    def __init__(self, libraries: dict):
+        self.libraries = libraries
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def end_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            for library in self.libraries:
+                try:
+                    if builtin._namespace._kw_store.libraries[library].scope.is_global:
+                        self.libraries[
+                            library
+                        ] = builtin._namespace._kw_store.libraries[library]
+                    else:
+                        self.libraries[library] = builtin.get_library_instance(library)
+                except (AttributeError, KeyError, RuntimeError):
+                    continue
+        except RuntimeError:
+            pass
+
+    # noinspection PyUnusedLocal,PyProtectedMember
+    def start_suite(self, name, attributes):
+        try:
+            builtin = BuiltIn()
+            for library, instance in self.libraries.items():
+                if instance is None:
+                    continue
+                try:
+                    if builtin._namespace._kw_store.libraries[library].scope.is_global:
+                        builtin._namespace._kw_store.libraries[library] = instance
+                    else:
+                        builtin._namespace._kw_store.libraries[
+                            library
+                        ]._libinst = instance
+                except (AttributeError, KeyError):
+                    continue
+        except RuntimeError:
+            pass

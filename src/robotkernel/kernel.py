@@ -14,6 +14,7 @@ from robotkernel.listeners import JupyterConnectionsListener
 from robotkernel.listeners import RobotKeywordsIndexerListener
 from robotkernel.listeners import RobotVariablesListener
 from robotkernel.listeners import SeleniumConnectionsListener
+from robotkernel.listeners import StickyLibraryListener
 from robotkernel.listeners import WhiteLibraryListener
 from robotkernel.monkeypatches import inject_libdoc_ipynb_support
 from robotkernel.monkeypatches import inject_robot_ipynb_support
@@ -78,6 +79,7 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
 
         # Sticky connection cache (e.g. for webdrivers)
         self.robot_connections = []
+        self.robot_libraries = {}
 
         # Searchable index for keyword autocomplete documentation
         builder = lunr_builder("dottedname", ["dottedname", "name"])
@@ -102,6 +104,7 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
             if hasattr(driver["instance"], "quit"):
                 driver["instance"].quit()
         self.robot_connections = []
+        self.robot_libraries = {}
 
     def do_complete(self, code, cursor_pos):
         context = detect_robot_context(code, cursor_pos)
@@ -227,6 +230,11 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
             except BrokenOpenConnection:
                 close_current_connection(self.robot_connections, driver)
 
+        # Support %sticky library LibraryMagic cell magic
+        match = re.findall(r"^%sticky library ([a-zA-Z_]+)", code, flags=re.MULTILINE)
+        for name in match:
+            self.robot_libraries.setdefault(name, None)
+
         # Support %%python module ModuleName cell magic
         match = re.match("^%%python module ([a-zA-Z_]+)", code)
         if match is not None:
@@ -254,6 +262,7 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
                 WhiteLibraryListener(self.robot_connections),
                 RobotKeywordsIndexerListener(self.robot_catalog),
                 RobotVariablesListener(self.robot_suite_variables),
+                StickyLibraryListener(self.robot_libraries),
             ]
 
             # Execute test case
