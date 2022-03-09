@@ -1,11 +1,11 @@
 Changelog
 =========
 
-1.6a2 (unreleased)
+1.6a2 (2022-03-09)
 ------------------
 
-- Nothing changed yet.
-
+- Add pyolite support
+  [datakurre]
 
 1.6.0a1 (2022-02-22)
 --------------------
