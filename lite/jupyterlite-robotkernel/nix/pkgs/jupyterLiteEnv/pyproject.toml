@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "jupyterlite-env"
+version = "0.1.0"
+description = ""
+authors = ["Asko Soukka <asko.soukka@iki.fi>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+doit = "^0.33"
+flit = "^3.7.1"
+twine = "^3.8.0"
+pkginfo = "^1.8.2"
+entrypoints = "^0.4"
+jupyter-core = "^4.9.2"
+jupyterlite = "^0.1.0-beta.4"
+wheel = "^0.37.1"
+pytest-runner = "^6.0.0"
+pip = "^22.0.4"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

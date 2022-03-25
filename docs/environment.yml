@@ -1,0 +1,29 @@
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  # docs
+  - jupyter-book
+  - black
+  - sphinx-autoapi
+  # apps (for labextension version compatibility)
+  - jupyterlab >=3.2,<4
+  # pretties
+  - ipylab
+  - ipywidgets
+  - jupyterlab-fonts
+  - jupyter-videochat
+  - wxyz_lab
+  # dev stuff
+  - pip
+  - doit
+  - pkginfo
+  - nodejs >=14,<15
+  - setuptools_scm >=6.2
+  # I'm still afraid of jlpm
+  - yarn
+  - pip:
+    # lite deps
+    - jupyterlite[all] ==0.1.0b4
+    - ../lite/jupyterlite-robotkernel

@@ -1,13 +1,18 @@
 graft src/robotkernel
-graft pkgs
 graft docs
 graft tests
 graft atest
+
 recursive-include src *.js
-include LICENSE *.rst *.nix
-exclude Makefile Dockerfile requirements*.txt *.ipynb *.json
-prune nix
+include LICENSE *.rstj
+exclude Makefile Dockerfile requirements*.txt *.nix *.png *.ipynb *.json dodo.py conf.py
+
+prune .github
 prune binder
 prune examples
+prune lite
+prune nix
+prune pkgs
 prune src/jupyterlab_robotmode
+
 global-exclude *.py[co]

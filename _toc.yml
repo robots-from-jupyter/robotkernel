@@ -1,0 +1,4 @@
+format: jb-book
+root: docs/index.rst
+chapters:
+- file: docs/install.rst
