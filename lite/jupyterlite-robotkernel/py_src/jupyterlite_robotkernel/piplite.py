@@ -7,13 +7,37 @@ from jupyterlite.constants import JUPYTER_CONFIG_DATA
 from jupyterlite.constants import JSON_FMT
 from jupyterlite.constants import LITE_PLUGIN_SETTINGS
 from jupyterlite.constants import UTF8
+from jupyterlite.constants import ALL_JSON
+
+from pathlib import Path
 
 import json
+import subprocess
+import sys
 
 
 ROBOLITE_PLUGIN_ID = "@jupyterlite/robolite-kernel-extension:kernel"
+PY = Path(sys.executable)
+PYPI_WHEELS = "pypi"
+
 
 class PipliteAddon(BasePipliteAddon):
+
+    def post_init(self, manager):
+        """update the root jupyter-lite.json with pipliteUrls"""
+        yield from super().post_init(manager)
+        if not set(self.output_wheels.glob("robotkernel-*")):
+            # Install robotkernel
+            self.output_wheels.mkdir(parents=True, exist_ok=True)
+            subprocess.check_call(
+                [PY, "-m", "pip", "wheel", "--prefer-binary", "robotkernel >= 1.6a2"],
+                cwd=self.output_wheels
+            )
+            # Remove wheels that conflict with pyolite shims
+            subprocess.check_call(["rm", *self.output_wheels.glob("ipykernel-*")])
+            subprocess.check_call(["rm", *self.output_wheels.glob("widgetsnbextension-*")])
+            # Remove binary wheels
+            subprocess.check_call(["rm", *(set(self.output_wheels.glob("*")) - (set(self.output_wheels.glob("*-none-any.whl"))))])
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, whl_metas, pkg_jsons):
         """add the piplite wheels to jupyter-lite.json"""

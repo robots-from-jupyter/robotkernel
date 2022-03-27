@@ -116,8 +116,6 @@ def task_labext():
         *(packages / "robolite-kernel" / "src").rglob("tsconfig.buildinfo"),
         *(packages / "robolite-kernel-extension" / "src").rglob("tsconfig.buildinfo"),
     ]
-    pypi = packages / "robolite-kernel" / "pypi/robotkernel"
-    pypi_ts = packages / "robolite-kernel" / "src/_pypi.ts"
     lerna = EXT / "node_modules" / ".bin" / "lerna"
 
     def _do(*args, **kwargs):
@@ -125,19 +123,6 @@ def task_labext():
         return doit.tools.CmdAction([*args], **kwargs, cwd=cwd, shell=False)
 
     def _copy_static():
-        src = sorted(DIST.glob("*.whl"))[-1]
-        dest = pypi / src.name
-
-        if pypi.exists():
-            shutil.rmtree(pypi)
-        copy_one(src, dest)
-        ctx = "!!file-loader?name=pypi/robotkernel/[name].[ext]&context=.!../pypi/robotkernel"
-        lines = [
-            f"""export * as allJSONUrl from '{ctx}/all.json';""",
-            f"""export * as robotkernelWheelUrl from '{ctx}/{dest.name}';""",
-        ]
-        pypi_ts.write_text("\n".join(lines))
-
         copy_one(KERNEL_ICON, EXT_ICON)
         copy_one(LICENSE, EXT_LICENSE)
 
@@ -158,19 +143,19 @@ def task_labext():
     yield dict(
         name="copy:static",
         file_dep=[*DIST.glob("*.any.whl"), KERNEL_ICON, LICENSE],
-        targets=[pypi / "all.json", pypi_ts, EXT_ICON, EXT_LICENSE],
-        actions=[_copy_static, _do("jupyter", "lite", "pip", "index", pypi)],
+        targets=[EXT_ICON, EXT_LICENSE],
+        actions=[_copy_static],
     )
     yield dict(
         name="build:ts",
-        file_dep=[*packages_ts_src, *packages_pkg, *packages_integrity, pypi_ts],
+        file_dep=[*packages_ts_src, *packages_pkg, *packages_integrity],
         targets=[*packages_ts_buildinfo],
         actions=[_do(lerna, "run", "build:lib")],
     )
 
     yield dict(
         name="build:ext",
-        file_dep=[*packages_ts_buildinfo, *packages_integrity, *packages_pkg, pypi_ts, pypi / "all.json"],
+        file_dep=[*packages_ts_buildinfo, *packages_integrity, *packages_pkg],
         targets=[EXT_DIST_PKG],
         actions=[_do(lerna, "run", "build:labextension")],
     )
@@ -205,11 +190,6 @@ def task_lite():
                 cwd=str(LITE / "pypi"),
                 shell=False,
             ),
-            doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--prefer-binary", "jupyterlab-robotmode"],
-                cwd=str(LITE / "pypi"),
-                shell=False,
-            ),
             _clean_wheels,
         ],
     )
@@ -223,10 +203,6 @@ def task_lite():
                 "lite",
                 "build",
                 "--debug",
-                "--LiteBuildConfig.federated_extensions",
-                f"{list((LITE / 'pypi').glob('jupyterlab_widgets*'))[-1]}",
-                "--LiteBuildConfig.federated_extensions",
-                f"{list((LITE / 'pypi').glob('jupyterlab_robotmode*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
                 EXT_WHL,
             ],

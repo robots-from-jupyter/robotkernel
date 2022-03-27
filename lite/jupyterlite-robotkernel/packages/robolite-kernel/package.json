@@ -52,13 +52,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "styleModule": "style/index.js",
-  "jupyterlab": {
-    "extension": true,
-    "outputDir": "../../py_src/jupyterlite_robotkernel/labextension",
-    "webpackConfig": "./webpack.config.js"
-  },
-  "jupyterlite": {
-    "liteExtension": true
-  }
+  "styleModule": "style/index.js"
 }
