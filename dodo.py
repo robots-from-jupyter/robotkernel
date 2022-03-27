@@ -209,7 +209,7 @@ def task_lite():
                 "build",
                 "--debug",
                 "--LiteBuildConfig.federated_extensions",
-                f"{list((LITE / 'pypi').glob('jupyter_videochat*'))[-1]}",
+                f"{list(LITE.glob('jupyter_videochat*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
                 f"{list((LITE / 'pypi').glob('jupyterlab_widgets*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
