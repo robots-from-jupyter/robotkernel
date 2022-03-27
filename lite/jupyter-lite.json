@@ -4,6 +4,9 @@
     "appName": "RobotLabLite",
     "collaborative": true,
     "exposeAppInBrowser": true,
-    "disabledExtensions": ["nbdime-jupyterlab"]
+    "disabledExtensions": [
+      "jupyterlab-videochat:rooms-server",
+      "nbdime-jupyterlab"
+    ]
   }
 }
