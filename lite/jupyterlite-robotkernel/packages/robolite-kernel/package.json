@@ -20,8 +20,7 @@
   "types": "lib/index.d.ts",
   "style": "style/index.css",
   "files": [
-    "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-    "pypi/*.{json,whl}"
+    "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
   ],
   "scripts": {
     "build": "yarn run build:lib && yarn run build:labextension:dev",

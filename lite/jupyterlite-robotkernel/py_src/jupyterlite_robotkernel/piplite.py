@@ -22,26 +22,69 @@ PYPI_WHEELS = "pypi"
 
 
 class PipliteAddon(BasePipliteAddon):
-
     def post_init(self, manager):
         """update the root jupyter-lite.json with pipliteUrls"""
         yield from super().post_init(manager)
-        if not set(self.output_wheels.glob("robotkernel-*")):
+        if not any(
+            [
+                set(self.output_wheels.glob("robotkernel-*")),
+                any(["/robotkernel-" in url for url in manager.piplite_urls]),
+            ]
+        ):
             # Install robotkernel
             self.output_wheels.mkdir(parents=True, exist_ok=True)
             subprocess.check_call(
                 [PY, "-m", "pip", "wheel", "--prefer-binary", "robotkernel >= 1.6a2"],
-                cwd=self.output_wheels
+                cwd=self.output_wheels,
             )
             # Remove wheels that conflict with pyolite shims
             subprocess.check_call(["rm", *self.output_wheels.glob("ipykernel-*")])
-            subprocess.check_call(["rm", *self.output_wheels.glob("widgetsnbextension-*")])
+            subprocess.check_call(
+                ["rm", *self.output_wheels.glob("widgetsnbextension-*")]
+            )
             # Remove binary wheels
-            subprocess.check_call(["rm", *(set(self.output_wheels.glob("*")) - (set(self.output_wheels.glob("*-none-any.whl"))))])
+            subprocess.check_call(
+                [
+                    "rm",
+                    *(
+                        set(self.output_wheels.glob("*"))
+                        - (set(self.output_wheels.glob("*-none-any.whl")))
+                    ),
+                ]
+            )
+            # Freeze
+            PY2_PY3_EXCEPTIONS = ["testpath-0.6.0-py3-none-any.whl"]
+            (manager.output_dir / "jupyter_lite_config.json").write_text(
+                json.dumps(
+                    {
+                        "LiteBuildConfig": {
+                            "piplite_urls": [
+                                f"""https://files.pythonhosted.org/packages/py2.py3/{path.name[0]}/{path.name.split("-")[0]}/{path.name}"""
+                                for path in sorted(
+                                    self.output_wheels.glob("*-none-any.whl")
+                                )
+                                if path.name.endswith("py2.py3-none-any.whl")
+                                or path.name in PY2_PY3_EXCEPTIONS
+                            ]
+                            + [
+                                f"""https://files.pythonhosted.org/packages/py3/{path.name[0]}/{path.name.split("-")[0]}/{path.name}"""
+                                for path in sorted(
+                                    self.output_wheels.glob("*-none-any.whl")
+                                )
+                                if not path.name.endswith("py2.py3-none-any.whl")
+                                and path.name not in PY2_PY3_EXCEPTIONS
+                            ]
+                        }
+                    },
+                    indent=4,
+                )
+            )
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, whl_metas, pkg_jsons):
         """add the piplite wheels to jupyter-lite.json"""
-        super().patch_jupyterlite_json(jupyterlite_json, whl_index, whl_metas, pkg_jsons)
+        super().patch_jupyterlite_json(
+            jupyterlite_json, whl_index, whl_metas, pkg_jsons
+        )
         config = json.loads(jupyterlite_json.read_text(**UTF8))
         old_urls = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
