@@ -5,6 +5,7 @@
     "collaborative": true,
     "exposeAppInBrowser": true,
     "disabledExtensions": [
+      "@jupyterlite/javascript-kernel-extension",
       "jupyterlab-videochat:rooms-server",
       "nbdime-jupyterlab"
     ]

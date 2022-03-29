@@ -1,19 +1,17 @@
 include LICENSE
 include *.md
-include pyproject.toml
 include package.json
 include install.json
-include ts*.json
 include yarn.lock
 
-graft jupyterlite_robotkernel/labextension
+graft py_src/jupyterlite_robotkernel/addons
+graft py_src/jupyterlite_robotkernel/labextension
 
 # Javascript files
-graft src
+graft packages
 graft style
 prune **/node_modules
-prune lib
-prune binder
+prune **/lib
 
 # Patterns to exclude from any directory
 global-exclude *~
