@@ -175,10 +175,17 @@ def task_lite():
 
     def _clean_wheels():
         # Remove wheels that conflict with pyolite shims
-        subprocess.check_call(["rm", *(LITE / "pypi").glob("ipykernel-*")])
-        subprocess.check_call(["rm", *(LITE / "pypi").glob("widgetsnbextension-*")])
+        for path in (LITE / "pypi").glob("ipykernel-*"):
+            os.unlink(path)
+        for path in (LITE / "pypi").glob("widgetsnbextension-*"):
+            os.unlink(path)
         # Remove binary wheels
-        subprocess.check_call(["rm", *(set((LITE / "pypi").glob("*")) - (set((LITE / "pypi").glob("*-none-any.whl"))))])
+        for path in set((LITE / "pypi").glob("*")) - (set((LITE / "pypi").glob("*-none-any.whl"))):
+            os.unlink(path)
+        # Remove addon fetched
+        for path in json.loads((EXT / "py_src" / "jupyterlite_robotkernel" / "addons" / "wheels.json").read_text()):
+            for path_ in (LITE / "pypi").glob(path.rsplit("/")[-1]):
+                os.unlink(path_)
 
     yield dict(
         name="wheels",
@@ -190,9 +197,10 @@ def task_lite():
                 cwd=str(LITE / "pypi"),
                 shell=False,
             ),
+            # Not sure, why these were not discovered from conda environment
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--prefer-binary", "jupyterlab-robotmode", "jupyterlab-widgets", "jupyter-videochat"],
-                cwd=str(LITE / "pypi"),
+                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-robotmode", "jupyterlab-widgets"],
+                cwd=str(LITE),
                 shell=False,
             ),
             _clean_wheels,
@@ -211,9 +219,9 @@ def task_lite():
                 "--LiteBuildConfig.federated_extensions",
                 f"{list(LITE.glob('jupyter_videochat*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
-                f"{list((LITE / 'pypi').glob('jupyterlab_widgets*'))[-1]}",
+                f"{list(LITE.glob('jupyterlab_widgets*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
-                f"{list((LITE / 'pypi').glob('jupyterlab_robotmode*'))[-1]}",
+                f"{list(LITE.glob('jupyterlab_robotmode*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
                 EXT_WHL,
             ],
