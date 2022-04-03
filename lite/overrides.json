@@ -1,0 +1,5 @@
+{
+  "jupyterlab-videochat:plugin": {
+    "disablePublicRooms": false
+  }
+}

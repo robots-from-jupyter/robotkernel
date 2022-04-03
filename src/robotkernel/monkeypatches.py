@@ -45,6 +45,14 @@ def NotebookReader():  # noqa: N802
                 if not cell.cell_type == "code":
                     continue
 
+                # Clear %sticky library LibraryName cell magic
+                cell.source = re.sub(
+                    r"^%sticky library ([a-zA-Z_]+)",
+                    "",
+                    cell.source,
+                    flags=re.MULTILINE,
+                )
+
                 # Execute %%python module magics
                 match = re.match("^%%python module ([a-zA-Z_]+)", cell.source)
                 if match is not None:

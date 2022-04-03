@@ -1,0 +1,142 @@
+<aside class="navbar-demo-box" title="try RobotKernel in your browser right now.">
+  <h2>DEMO</h2>
+  <div class="demo-label">
+    Try <code>RobotKernel</code> right now with <input
+    id="room-name"
+    type="text"
+    placeholder="nobody else"
+    title="give a room name to enable shared editing"
+  /> in...</em>
+  </div>
+  <form
+    action="{{ pathto('_/lab/index.html?path=Example.ipynb', 1) }}"
+    target="_blank"
+    class="demo"
+  >
+    <input
+      type="submit"
+      title="RobotKernel in the la[te]st Jupyter UI"
+      title="JupyterLab UI"
+      value="JupyterLab"
+      class="launch-demo"
+    />
+    <input name="path" type="hidden" value="Example.ipynb" />
+    <input name="room" type="hidden" value="" />
+  </form>
+  <div class="demo-label">
+    ... with <a href="https://github.com/jupyterlite/jupyterlite">JupyterLite</a>
+  </div>
+</aside>
+
+<script>
+  $(function () {
+    const roomName = $("#room-name");
+    roomName.on("input", () =>
+      $("input[name='room']").prop("value", roomName.prop("value"))
+    );
+  });
+</script>
+
+<style>
+  :root {
+    --pg-brand-color0: #000;
+    --pg-layout-color0: #fff;
+    --pg-box-shadow0: 0.25em 0.25em #ccc;
+    --pst-color-link: 252, 4, 4;
+    --pst-color-inline-code: 67, 67, 200;
+  }
+  .navbar-demo-box h2 {
+    margin: 0;
+    padding: 0;
+    color: var(--pg-layout-color0);
+    text-align: center;
+    width: 100%;
+    font-style: italic;
+  }
+  /* card style */
+  .right-next,
+  .left-prev,
+  .navbar-demo-box {
+    background-color: var(--pg-brand-color0);
+    color: var(--pg-layout-color0);
+    box-shadow: var(--pg-box-shadow0);
+    margin-bottom: 1em;
+  }
+  .prev-next-subtitle {
+    font-style: italic;
+  }
+  .navbar-demo-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: 0;
+    border-right: 0;
+    padding: 1em 0 0 0;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    text-align: center;
+  }
+  .prev-next-area a p.prev-next-title,
+  .right-next p, .left-prev p {
+    color: var(--pg-layout-color0);
+  }
+  .navbar-demo-box code,
+  .right-next code,
+  .left-prev code {
+    color: var(--pg-brand-color0);
+    background-color: var(--pg-layout-color0);
+    padding: 0.25em;
+    font-weight: bold;
+  }
+  main.bd-content #main-content .right-next,
+  main.bd-content #main-content .left-prev,
+  .navbar-demo-box a  {
+    color: var(--pg-layout-color0);
+    font-weight: bold;
+  }
+
+
+  .navbar-demo-box > .demo-label {
+    flex: 1;
+    width: 100%;
+    min-width: 100%;
+  }
+  #room-name {
+    margin-left: 0.5em;
+    display: inline-box;
+    max-width: 6em;
+    border: 0;
+    border-bottom: dotted 2px var(--pg-layout-color0);
+    background-color: transparent;
+    color: var(--pg-layout-color0);
+    text-align: center;
+    font-weight: bold;
+  }
+  #room-name::placeholder{
+    font-style: italic;
+    color: var(--pg-layout-color0);
+    font-weight: 400;
+  }
+  .demo {
+    flex: 1;
+    display: flex;
+  }
+  .launch-demo {
+    color: var(--pg-brand-color0);
+    background-color: var(--pg-layout-color0);
+    padding: 0.5em;
+    width: 100%;
+    margin: 0.5em 0;
+    display: block;
+    font-size: 150%;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    border: 0;
+  }
+  .launch-demo:hover,
+  .launch-demo:active,
+  .launch-demo:focus {
+    text-decoration: underline;
+  }
+</style>

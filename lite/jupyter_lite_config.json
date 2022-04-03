@@ -1,0 +1,7 @@
+{
+  "LiteBuildConfig": {
+    "contents": ["./contents"],
+    "ignore_sys_prefix": true,
+    "output_dir": "./_/_"
+  }
+}

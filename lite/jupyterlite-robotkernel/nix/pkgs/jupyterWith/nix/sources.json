@@ -1,0 +1,14 @@
+{
+    "jupyterWith": {
+        "branch": "master",
+        "description": "declarative and reproducible Jupyter environments - powered by Nix",
+        "homepage": "",
+        "owner": "tweag",
+        "repo": "jupyterWith",
+        "rev": "bdd25654f301fd994bf47fe6f846b5b240d63107",
+        "sha256": "0qrcvhcba80lwfpjwp1ndgpy3klqbr4scn2glvi7yyqkdcq1wx6s",
+        "type": "tarball",
+        "url": "https://github.com/tweag/jupyterWith/archive/bdd25654f301fd994bf47fe6f846b5b240d63107.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

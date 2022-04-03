@@ -1,7 +1,18 @@
 syntax: glob
 *.egg-info
 *.pyc
+*.doit.db
+*.log
+*.tsbuildinfo
+_/
+_pypi.ts
+lib/
+pypi/
+dist/
+labextension/
+node_modules/
 .cache
+.eggs
 .DS_Store
 .idea
 .ipynb_checkpoints
@@ -22,4 +33,3 @@ syntax: glob
 /src/jupyterlab_robotmode/node_modules/
 /tmp/
 /Untitle*.ipynb
-

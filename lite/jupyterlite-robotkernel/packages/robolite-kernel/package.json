@@ -1,0 +1,55 @@
+{
+  "name": "@jupyterlite/robolite-kernel",
+  "version": "0.1.0-beta.4",
+  "description": "JupyterLite - Robolite Kernel",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "files": [
+    "{lib,style}/**/*.{css,d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}"
+  ],
+  "scripts": {
+    "build": "yarn run build:lib && yarn run build:labextension:dev",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:lib": "tsc -b",
+    "build:prod": "yarn run clean && yarn run build:lib && yarn run build:labextension",
+    "clean": "yarn run clean:lib",
+    "clean:all": "yarn run clean:lib && yarn run clean:labextension",
+    "clean:labextension": "rimraf jupyterlite_pidgy/labextension",
+    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
+    "eslint": "eslint . --ext .ts,.tsx --fix",
+    "eslint:check": "eslint . --ext .ts,.tsx",
+    "install:extension": "yarn run build",
+    "watch": "run-p watch:src watch:labextension",
+    "watch:labextension": "jupyter labextension watch .",
+    "watch:src": "tsc -bw"
+  },
+  "dependencies": {
+    "@jupyterlite/kernel": "^0.1.0-beta.4",
+    "@jupyterlite/pyolite-kernel": "0.1.0-beta.4"
+  },
+  "devDependencies": {
+    "@jupyterlab/builder": "^3.2.0",
+    "rimraf": "~3.0.0",
+    "typescript": "~4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "styleModule": "style/index.js"
+}
