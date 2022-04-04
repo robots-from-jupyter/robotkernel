@@ -1,11 +1,11 @@
 <aside class="navbar-demo-box" title="try RobotKernel in your browser right now.">
   <h2>DEMO</h2>
   <div class="demo-label">
-    Try <code>RobotKernel</code> right now with <input
+    Try <code>RobotKernel</code> right now with <em><input
     id="room-name"
     type="text"
     placeholder="nobody else"
-    title="give a room name to enable shared editing"
+    title="give a room name to enable shared editing with videochat"
   /> in...</em>
   </div>
   <form
@@ -16,12 +16,12 @@
     <input
       type="submit"
       title="RobotKernel in the la[te]st Jupyter UI"
-      title="JupyterLab UI"
       value="JupyterLab"
       class="launch-demo"
     />
     <input name="path" type="hidden" value="Example.ipynb" />
     <input name="room" type="hidden" value="" />
+    <input name="JVC-PUBLIC" type="hidden" value="" />
   </form>
   <div class="demo-label">
     ... with <a href="https://github.com/jupyterlite/jupyterlite">JupyterLite</a>
@@ -31,9 +31,10 @@
 <script>
   $(function () {
     const roomName = $("#room-name");
-    roomName.on("input", () =>
-      $("input[name='room']").prop("value", roomName.prop("value"))
-    );
+    roomName.on("input", () => {
+      $("input[name='room']").prop("value", roomName.prop("value"));
+      $("input[name='JVC-PUBLIC']").prop("value", roomName.prop("value"));
+    });
   });
 </script>
 
