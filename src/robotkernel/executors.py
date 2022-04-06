@@ -153,7 +153,7 @@ def inject_ipywidget(
 
     ui = ipywidgets.widgets.Box(widgets, layout=layout)
     # noinspection PyTypeChecker
-    display(ui, out, display_id=display_id)
+    display(ipywidgets.widgets.VBox([ui, out]), display_id=display_id)
 
 
 def inject_ipywidgets(
