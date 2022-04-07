@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.6rc1 (unreleased)
-------------------
+1.6rc1 (2022-04-07)
+-------------------
 
 - Fix support for ipywidgets >= 8.0.0rc0
   [datakurre]
