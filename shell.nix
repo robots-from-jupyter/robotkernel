@@ -40,7 +40,7 @@ let self = rec {
   jupyter = pythonPackages.jupyter.overridePythonAttrs (old: {
     propagatedBuildInputs =
     with pythonPackages; old.propagatedBuildInputs ++ [
-      (graphviz.overrideDerivation(old: { doCheck = false; }))
+      (graphviz.overridePythonAttrs(old: { doCheck = false; }))
       iplantuml
       ipywidgets
       jupytext
