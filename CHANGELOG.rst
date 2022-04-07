@@ -1,22 +1,16 @@
 Changelog
 =========
 
-1.6a3 (unreleased)
+1.6rc1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
-
-1.6a2 (2022-03-09)
-------------------
-
+- Fix support for ipywidgets >= 8.0.0rc0
+  [datakurre]
+- Update classic Notebook mode with Robot Framework 5 features
+  [bollwyvl, datakurre]
 - Add pyolite support
   [datakurre]
-
-1.6.0a1 (2022-02-22)
---------------------
-
-- Add %sticky magic LibraryName -magic to preserve state of global and suite scope libraries between executions
+- Add %sticky magic LibraryName -magic to optionally preserve state of global and suite scope libraries between executions
   [datakurre]
 
 1.5.1 (2021-09-28)
