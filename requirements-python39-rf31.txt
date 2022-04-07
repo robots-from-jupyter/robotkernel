@@ -80,7 +80,7 @@ nbformat==5.1.3
 nbimporter==0.3.4
 nbsphinx==0.8.8
 nest-asyncio==1.5.4
-notebook==6.4.8
+notebook==6.4.10
 orderedmultidict==1.0.1
 outcome==1.1.0
 packaging==21.3
