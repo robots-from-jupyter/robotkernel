@@ -2278,10 +2278,10 @@ self: super: {
   };
   "selenium" = super.buildPythonPackage rec {
     pname = "selenium";
-    version = "4.1.3";
+    version = "4.1.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/88/f2/6f584262771d383ad2d21c8b01f8f4af784884f4e25c1f6450265a558a45/selenium-4.1.3-py3-none-any.whl";
-      sha256 = "0nmxr6hnzs65811ci3kjzndijivqkhf8hp1h71fi0743iii8mlhl";
+      url = "https://files.pythonhosted.org/packages/58/76/705b5c776f783d1ba7c630347463d4ae323282bbd859a8e9420c7ff79581/selenium-4.1.0-py3-none-any.whl";
+      sha256 = "0fd9q47bjbrkkvng4f6h4azbnfhjvyhcldvjsprhkmk1z56vdrr7";
     };
     format = "wheel";
     doCheck = false;

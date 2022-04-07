@@ -37,7 +37,7 @@ jupytext
 requests
 RESTinstance
 rise
-selenium
+selenium==4.1.0
 # robotframework-appiumlibrary
 robotframework-faker
 robotframework-seleniumlibrary==5.0.1
