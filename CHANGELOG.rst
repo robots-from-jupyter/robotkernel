@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.6rc2 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
 1.6rc1 (2022-04-07)
 -------------------
 
