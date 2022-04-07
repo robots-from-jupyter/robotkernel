@@ -24,3 +24,4 @@ dependencies:
     - selenium==3.141.0
     - urllib3==1.25.3
     - jupyter-starters==0.3.0a0
+    - jupyterlab-robotmode
