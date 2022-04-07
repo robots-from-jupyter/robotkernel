@@ -4,10 +4,6 @@ pip install -e . -vv
 python -m robotkernel.install --sys-prefix
 jupyter serverextension enable --sys-prefix --py jupyter_starters
 
-jupyter labextension install --no-build \
-    @deathbeds/jupyterlab-starters@0.3.0-a0 \
-    @jupyter-widgets/jupyterlab-manager
-
 jupyter lab build --minimize=False --debug
 
 jupyter labextension list
