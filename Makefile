@@ -7,6 +7,9 @@ NIX_OPTIONS ?= --argstr python $(PYTHON) --argstr robotframework $(ROBOTFRAMEWOR
 .PHONY: all
 all: test
 
+cachix:
+	nix-store --query --references $$(nix-instantiate shell.nix)|xargs nix-store --realise|xargs nix-store --query --requisites|cachix push robots-from-jupyter
+
 nix-%:
 	nix-shell $(NIX_OPTIONS) setup.nix -A develop --run "$(MAKE) $*"
 
