@@ -199,7 +199,7 @@ def task_lite():
             ),
             # Not sure, why these were not discovered from conda environment
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-robotmode", "jupyterlab-widgets", "jupyter-videochat"],
+                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets", "jupyter-videochat"],
                 cwd=str(LITE),
                 shell=False,
             ),

@@ -29,7 +29,5 @@ node_modules/
 /report.html
 /result
 /selenium-screenshot-*.png
-/src/jupyterlab_robotmode/lib/
-/src/jupyterlab_robotmode/node_modules/
 /tmp/
 /Untitle*.ipynb

@@ -13,6 +13,5 @@ prune examples
 prune lite
 prune nix
 prune pkgs
-prune src/jupyterlab_robotmode
 
 global-exclude *.py[co]
