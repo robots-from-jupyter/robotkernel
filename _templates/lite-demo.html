@@ -6,6 +6,11 @@
     type="text"
     placeholder="nobody else"
     title="give a room name to enable shared editing with videochat"
+  /><br/>as <input
+    id="user-name"
+    type="text"
+    placeholder="nobody"
+    title="give your username for shared editing with videochat"
   /> in...</em>
   </div>
   <form
@@ -21,6 +26,7 @@
     />
     <input name="path" type="hidden" value="Example.ipynb" />
     <input name="room" type="hidden" value="" />
+    <input name="username" type="hidden" value="" />
     <input name="JVC-PUBLIC" type="hidden" value="" />
   </form>
   <div class="demo-label">
@@ -31,8 +37,10 @@
 <script>
   $(function () {
     const roomName = $("#room-name");
+    const userName = $("#user-name");
     roomName.on("input", () => {
       $("input[name='room']").prop("value", roomName.prop("value"));
+      $("input[name='username']").prop("value", userName.prop("value"));
       $("input[name='JVC-PUBLIC']").prop("value", roomName.prop("value"));
     });
   });
@@ -95,14 +103,12 @@
     color: var(--pg-layout-color0);
     font-weight: bold;
   }
-
-
   .navbar-demo-box > .demo-label {
     flex: 1;
     width: 100%;
     min-width: 100%;
   }
-  #room-name {
+  #room-name, #user-name {
     margin-left: 0.5em;
     display: inline-box;
     max-width: 6em;
@@ -113,7 +119,7 @@
     text-align: center;
     font-weight: bold;
   }
-  #room-name::placeholder{
+  #room-name::placeholder, #user-name::placeholder {
     font-style: italic;
     color: var(--pg-layout-color0);
     font-weight: 400;
