@@ -199,7 +199,7 @@ def task_lite():
             ),
             # Not sure, why these were not discovered from conda environment
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets", "jupyter-videochat"],
+                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets", "jupyter-videochat", "jupyterlab-drawio"],
                 cwd=str(LITE),
                 shell=False,
             ),
@@ -220,6 +220,8 @@ def task_lite():
                 f"{list(LITE.glob('jupyter_videochat*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
                 f"{list(LITE.glob('jupyterlab_widgets*'))[-1]}",
+                "--LiteBuildConfig.federated_extensions",
+                f"{list(LITE.glob('jupyterlab_drawio*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
                 f"{list(LITE.glob('jupyterlab_robotmode*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
