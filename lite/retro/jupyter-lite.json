@@ -1,6 +1,7 @@
 {
   "jupyter-config-data": {
     "disabledExtensions": [
+      "@jupyterlab/drawio-extension",
       "jupyterlab-videochat:plugin",
       "nbdime-jupyterlab:plugin"
     ]

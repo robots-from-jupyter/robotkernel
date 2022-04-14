@@ -25,5 +25,6 @@ dependencies:
   - yarn
   - pip:
     # lite deps
-    - jupyterlite[all] ==0.1.0b4
+    # - jupyterlite[all] ==0.1.0b4
+    - https://github.com/datakurre/jupyterlite/releases/download/v0.1.0b4.robotkernel/jupyterlite-0.1.0b4-py3-none-any.whl#egg=jupyterlite[all]
     - ../lite/jupyterlite-robotkernel
