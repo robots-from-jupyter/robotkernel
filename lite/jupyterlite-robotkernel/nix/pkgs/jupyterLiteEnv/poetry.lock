@@ -182,7 +182,7 @@ traitlets = "*"
 
 [[package]]
 name = "jupyterlite"
-version = "0.1.0b4"
+version = "0.1.0b7"
 description = "tools for building JupyterLite sites"
 category = "main"
 optional = false
@@ -197,7 +197,7 @@ jupyter_core = ">=4.7"
 all = ["jsonschema (>=3)", "jupyter-server", "jupyter-server-mathjax (>=0.2.3)", "jupyterlab (>=3.0,<4)", "jupyterlab_server (>=2.8.1,<3)", "pkginfo", "tornado (>=6.1)"]
 check = ["jsonschema[format_nongpl] (>=3)"]
 contents = ["jupyter-server"]
-lab = ["jupyterlab (>=3.1,<4)"]
+lab = ["jupyterlab (>=3.4,<4)"]
 mathjax = ["jupyter-server-mathjax (>=0.2.3)"]
 piplite = ["pkginfo"]
 serve = ["tornado (>=6.1)"]
@@ -624,8 +624,8 @@ jupyter-core = [
     {file = "jupyter_core-4.9.2.tar.gz", hash = "sha256:d69baeb9ffb128b8cd2657fcf2703f89c769d1673c851812119e3a2a0e93ad9a"},
 ]
 jupyterlite = [
-    {file = "jupyterlite-0.1.0b4-py3-none-any.whl", hash = "sha256:8320b3ce62066e4ab366f13b36bc93a4f59289b0021b3f34b44afe2b73094ecc"},
-    {file = "jupyterlite-0.1.0b4.tar.gz", hash = "sha256:3afe281025c3238dbe0a8150192c5960e6c6a3b51961226d3fbf65819fa44e41"},
+    {file = "jupyterlite-0.1.0b7-py3-none-any.whl", hash = "sha256:31edc95b633ab5074be029d436a7cfbda64c54730c9f8fa7b1dc05569bece4c9"},
+    {file = "jupyterlite-0.1.0b7.tar.gz", hash = "sha256:6143018c41b43b08b597d1197586dc8663a49238f1507f41dccf3b9a30577171"},
 ]
 keyring = [
     {file = "keyring-23.5.0-py3-none-any.whl", hash = "sha256:b0d28928ac3ec8e42ef4cc227822647a19f1d544f21f96457965dc01cf555261"},

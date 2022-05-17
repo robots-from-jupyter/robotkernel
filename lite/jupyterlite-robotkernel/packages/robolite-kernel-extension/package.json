@@ -40,7 +40,7 @@
     "watch:src": "tsc -bw"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.3.2",
+    "@jupyterlab/coreutils": "~5.4.0",
     "@jupyterlite/kernel": "^0.1.0-beta.7",
     "@jupyterlite/robolite-kernel": "^0.1.0-beta.7",
     "@jupyterlite/server": "^0.1.0-beta.7"
