@@ -170,7 +170,7 @@ if __name__ == "__main__":
         help="update RobotKernel wheel_urls `--inplace` or create/update `jupyter_lite_config.json` (default)",
     )
     args = parser.parse_args()
-    wheel_urls = resolve_wheel_urls(["robotkernel >=1.6a1"])
+    wheel_urls = resolve_wheel_urls(["robotkernel >=1.6rc1"])
     config = Path(os.getcwd()) / "jupyter_lite_config.json"
     if args.inplace:
         (Path(__file__).parent / "wheels.json").write_text(
