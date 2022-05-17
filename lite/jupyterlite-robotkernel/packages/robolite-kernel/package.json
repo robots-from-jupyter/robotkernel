@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/robolite-kernel",
-  "version": "0.1.0-beta.4",
+  "version": "0.1.0-beta.7",
   "description": "JupyterLite - Robolite Kernel",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -40,8 +40,8 @@
     "watch:src": "tsc -bw"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-beta.4",
-    "@jupyterlite/pyolite-kernel": "0.1.0-beta.4"
+    "@jupyterlite/kernel": "^0.1.0-beta.7",
+    "@jupyterlite/pyolite-kernel": "0.1.0-beta.7"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^3.2.0",
