@@ -72,7 +72,7 @@ jupyterlab-widgets==1.1.0
 jupytext==1.13.8
 lazy-object-proxy==1.7.1
 lunr==0.6.2
-lxml==4.8.0
+lxml==4.9.1
 markdown-it-py==2.0.1
 matplotlib-inline==0.1.3
 mccabe==0.6.1
