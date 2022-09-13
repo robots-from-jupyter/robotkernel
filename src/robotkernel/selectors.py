@@ -154,7 +154,7 @@ def get_element_highlight_script(results, old_elements):
 def clear_selector_highlights(driver):
     try:
         script, arguments = get_element_highlight_script(
-            [], driver.find_elements_by_css_selector("[data-robotkernel]")
+            [], driver.find_elements("css selector", "[data-robotkernel]")
         )
     except InvalidSessionIdException as e:
         raise BrokenOpenConnection(driver) from e
@@ -175,7 +175,7 @@ def get_selenium_selector_completions(needle, driver):
     try:
         # Inject supporting JS and CSS
         styles = 'style[data-name="robotkernel"]'
-        if not driver.find_elements_by_css_selector(styles):
+        if not driver.find_elements("css selector", styles):
             with pkg_resources.resource_stream(
                 "robotkernel", "resources/simmerjs/simmer.js"
             ) as fp:
@@ -195,7 +195,7 @@ def get_selenium_selector_completions(needle, driver):
     # Highlight
     if can_highlight:
         script, arguments = get_element_highlight_script(
-            results, driver.find_elements_by_css_selector("[data-robotkernel]")
+            results, driver.find_elements("css selector", "[data-robotkernel]")
         )
         driver.execute_script(script, *arguments)
 
@@ -320,11 +320,11 @@ def get_selenium_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(
+        results = driver.find_elements("css selector", 
             f'[id="{needle}"]'
-        ) or driver.find_elements_by_css_selector(f'[id*="{needle}"]')
+        ) or driver.find_elements("css selector", f'[id*="{needle}"]')
     else:
-        results = driver.find_elements_by_xpath("//*[@id]")
+        results = driver.find_elements("xpath", "//*[@id]")
     for result in visible_or_all(results):
         id_ = result.get_attribute("id")
         matches.append((f"id:{id_}", result))
@@ -335,11 +335,11 @@ def get_appium_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = driver.find_elements_by_xpath(
+        results = driver.find_elements("xpath", 
             f"//*[" f'contains(@resource-id, "{needle}")' f"]"
         )
     else:
-        results = driver.find_elements_by_xpath("//*[@resource-id]")
+        results = driver.find_elements("xpath", "//*[@resource-id]")
     for result in visible_or_all(results):
         id_ = result.get_attribute("resource-id")
         matches.append((f'xpath=//*[@resource-id="{id_}"]', result))
@@ -350,11 +350,11 @@ def get_selenium_name_selector_completions(needle, driver):
     needle = needle[5:]
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(
+        results = driver.find_elements("css selector", 
             f'[name="{needle}"]'
-        ) or driver.find_elements_by_css_selector(f'[name*="{needle}"]')
+        ) or driver.find_elements("css selector", f'[name*="{needle}"]')
     else:
-        results = driver.find_elements_by_xpath("//*[@name]")
+        results = driver.find_elements("xpath", "//*[@name]")
     for result in visible_or_all(results):
         name = result.get_attribute("name")
         matches.append((f"name:{name}", result))
@@ -401,7 +401,7 @@ def get_selenium_css_selector_completions(needle, driver):
     if not needle:
         needle = get_selenium_needle_from_user(driver)
     if needle:
-        results = driver.find_elements_by_css_selector(needle)
+        results = driver.find_elements("css selector", needle)
     for result in visible_or_all(results):
         id_ = result.get_attribute("id")
         if " " in needle:  # always include simmer result for complex needles
@@ -428,7 +428,7 @@ def get_selenium_tag_selector_completions(needle, driver):
     results = []
     matches = []
     if needle:
-        results = driver.find_elements_by_css_selector(needle)
+        results = driver.find_elements("css selector", needle)
     for result in visible_or_all(results):
         id_ = result.get_attribute("id")
         if id_:
@@ -448,9 +448,9 @@ def get_selenium_link_selector_completions(needle, driver):
     needle = needle[5:]
     matches = []
     if needle:
-        results = driver.find_elements_by_partial_link_text(needle)
+        results = driver.find_elements("partial link text", needle)
     else:
-        results = driver.find_elements_by_xpath("//a")
+        results = driver.find_elements("xpath", "//a")
     for result in visible_or_all(results):
         if result.text:
             matches.append((f"link:{result.text}", result))
@@ -463,7 +463,7 @@ def get_selenium_xpath_selector_completions(needle, driver):
     matches = []
     unresolved = []
     if needle:
-        results = driver.find_elements_by_xpath(needle)
+        results = driver.find_elements("xpath", needle)
     for result in visible_or_all(results):
         id_ = result.get_attribute("id")
         if id_:
@@ -483,13 +483,13 @@ def get_appium_xpath_selector_completions(needle, driver):
     needle = needle[6:]
     matches = []
     if IS_TEXT.match(needle):
-        results = driver.find_elements_by_xpath(
+        results = driver.find_elements("xpath", 
             f"//*[" f'contains(@text, "{needle}")' f"]"
         )
     elif needle:
-        results = driver.find_elements_by_xpath(needle)
+        results = driver.find_elements("xpath", needle)
     else:
-        results = driver.find_elements_by_xpath("//*[@resource-id]")
+        results = driver.find_elements("xpath", "//*[@resource-id]")
     for result in visible_or_all(results):
         id_ = result.get_attribute("resource-id")
         if id_:
