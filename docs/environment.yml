@@ -4,7 +4,7 @@ channels:
 
 dependencies:
   # docs
-  - jupyter-book
+  - jupyter-book==0.12.3
   - black
   - sphinx-autoapi
   # apps (for labextension version compatibility)

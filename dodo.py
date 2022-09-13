@@ -193,13 +193,13 @@ def task_lite():
         actions=[
             (doit.tools.create_folder, [LITE / "pypi"]),
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--prefer-binary", wheel],
+                [PY, "-m", "pip", "wheel", "--prefer-binary", "--no-deps", wheel],
                 cwd=str(LITE / "pypi"),
                 shell=False,
             ),
             # Not sure, why these were not discovered from conda environment
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets", "jupyter-videochat", "jupyterlab-drawio", "jupyterlab-webrtc-docprovider"],
+                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets==1.1.0", "jupyter-videochat", "jupyterlab-drawio", "jupyterlab-webrtc-docprovider"],
                 cwd=str(LITE),
                 shell=False,
             ),
