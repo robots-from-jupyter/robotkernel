@@ -1,6 +1,6 @@
 # https://github.com/nmattia/niv
 { sources ? import ./sources.nix
-, nixpkgs ? sources."nixpkgs"
+, nixpkgs ? sources."nixpkgs-22.05"
 }:
 
 let

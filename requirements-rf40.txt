@@ -1,56 +1,51 @@
+# Install requirements
 docutils==0.17.1
 ipykernel
 ipywidgets
 lunr
-mccabe==0.6.1
 nbformat
 nbimporter
 pillow
 pygments
 robotframework==4.0.3
+setuptools
 
+# Test requirements
+pytest-runner
+pytest
+
+# Docs requirements
 nbsphinx
 sphinx
 sphinx-rtd-theme
 
-pytest
-pytest-runner
-
+# QA requirements
 black
-click==8.0.3
 coverage
 coveralls
 isort
-pdbpp
 pydocstyle
 pylama
 pylint
 
+# Misc playground requirements
 faker
 iplantuml
-jsonschema
 jupyter
 jupyter-starters
 jupyter-contrib-nbextensions
 jupyterlab
 jupytext
-requests
 RESTinstance
 rise
 selenium==4.1.0
-# robotframework-appiumlibrary
 robotframework-faker
 robotframework-seleniumlibrary
 robotframework-seleniumtestability
 robotframework-seleniumscreenshots
 robotframework-jupyterlibrary
 robotframework-sshlibrary
-setuptools-scm
 
-# matches version in nixpkgs-21.11 for matching cargoDeps
-cryptography==3.4.8
-
-text-unidecode
-prompt-toolkit
-
-Appium-Python-Client
+## Appium requires selenium < 4
+# robotframework-appiumlibrary
+# Appium-Python-Client

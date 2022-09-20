@@ -63,25 +63,6 @@ requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt: requirements-$(ROBOTFRAMEWORK).txt
 	nix-shell setup.nix $(NIX_OPTIONS) -A pip2nix --run "pip2nix generate -r requirements-$(ROBOTFRAMEWORK).txt --output=requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix"
 	@grep "pname =\|version =" requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix|awk "ORS=NR%2?FS:RS"|sed 's|.*"\(.*\)";.*version = "\(.*\)".*|\1==\2|' > requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt
 
-.PHONY: upgrade
-upgrade:
-	nix-shell --pure -p cacert curl gnumake jq nix --run "make setup.nix"
-
-.PHONY: setup.nix
-setup.nix:
-	@set -e pipefail; \
-	echo "Updating nixpkgs @ setup.nix using $(REF_NIXPKGS)"; \
-	rev=$$(curl https://api.github.com/repos/NixOS/nixpkgs-channels/$(firstword $(REF_NIXPKGS)) \
-		| jq -er '.[]|select(.name == "$(lastword $(REF_NIXPKGS))").commit.sha'); \
-	echo "Latest commit sha: $$rev"; \
-	sha=$$(nix-prefetch-url --unpack https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz); \
-	sed -i \
-		-e "2s|.*|    # $(REF_NIXPKGS)|" \
-		-e "3s|.*|    url = \"https://github.com/NixOS/nixpkgs-channels/archive/$$rev.tar.gz\";|" \
-		-e "4s|.*|    sha256 = \"$$sha\";|" \
-		setup.nix
-
-
 examples/JupyterLab.html: examples/JupyterLab.ipynb
 	jupyter nbconvert \
 		--to html \
