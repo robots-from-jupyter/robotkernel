@@ -7,10 +7,12 @@ let self = rec {
 
   # python packages
 
-  pythonPackages = (import ./setup.nix {
+  python = (import ./setup.nix {
     inherit pkgs;
     pythonPackages = pkgs.python3Packages;
-  }).targetPython.pkgs;
+  }).targetPython;
+
+  pythonPackages = python.pkgs;
 
   sikulilibrary = (import ./pkgs/sikulixlibrary {
     inherit pkgs pythonPackages;
@@ -104,21 +106,21 @@ let self = rec {
       mkdir -p $out/share/jupyter/jupyter_notebook_config.d
 
       ln -s ${jupyter_nbconfig} $out/share/jupyter/nbconfig
-      ln -s ${jupyter-contrib-nbextensions}/${pythonPackages.python.sitePackages}/jupyter-contrib-nbextensions/nbextensions/* $out/share/jupyter/nbextensions
-      ln -s ${rise}/${pythonPackages.python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
+      ln -s ${jupyter-contrib-nbextensions}/${python.sitePackages}/jupyter-contrib-nbextensions/nbextensions/* $out/share/jupyter/nbextensions
+      ln -s ${rise}/${python.sitePackages}/rise/static $out/share/jupyter/nbextensions/rise
       ln -s ${vim_binding} $out/share/jupyter/nbextensions/vim_binding
       ln -s ${widgetsnbextension}/share/jupyter/nbextensions/* $out/share/jupyter/nbextensions
 
-      ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
-      cp -R ${pythonPackages.python.withPackages (ps: with ps; [ robotkernel ])}/etc/jupyter/jupyter_notebook_config.d/* $out/share/jupyter/jupyter_notebook_config.d
+      ${python.withPackages (ps: with ps; [ robotkernel ])}/bin/python -m robotkernel.install --prefix=$out
+      cp -R ${python.withPackages (ps: with ps; [ robotkernel ])}/etc/jupyter/jupyter_notebook_config.d/* $out/share/jupyter/jupyter_notebook_config.d
 
       JUPYTER_CONFIG_DIR=$out/share/jupyter \
-      PATH=${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin \
-      ${pythonPackages.python.withPackages (ps: with ps; [ jupyter-starters ])}/bin/jupyter serverextension enable --py jupyter_starters
+      PATH=${python.withPackages (ps: with ps; [ jupyter-starters ])}/bin \
+      ${python.withPackages (ps: with ps; [ jupyter-starters ])}/bin/jupyter serverextension enable --py jupyter_starters
 
       JUPYTER_CONFIG_DIR=$out/share/jupyter \
-      PATH=${pythonPackages.python.withPackages (ps: with ps; [ notebook jupytext ])}/bin \
-      ${pythonPackages.python.withPackages (ps: with ps; [ notebook jupytext ])}/bin/jupyter serverextension enable jupytext
+      PATH=${python.withPackages (ps: with ps; [ notebook jupytext ])}/bin \
+      ${python.withPackages (ps: with ps; [ notebook jupytext ])}/bin/jupyter serverextension enable jupytext
 
       echo "import rise" >> $out/share/jupyter/jupyter_notebook_config.py
 
@@ -148,8 +150,8 @@ pkgs.stdenv.mkDerivation rec {
     ++ (with pkgs; lib.optionals sikuli [ jre8 ]);
   shellHook = ''
     mkdir -p $(pwd)/.jupyter
-    cp -R ${jupyter_config_dir}/share/jupyter/* $(pwd)/.jupyter
     chmod u+w -R $(pwd)/.jupyter
+    cp -R ${jupyter_config_dir}/share/jupyter/* $(pwd)/.jupyter
     export JUPYTER_CONFIG_DIR=$(pwd)/.jupyter
     export JUPYTER_PATH=$(pwd)/.jupyter
     export JUPYTER_DATA_DIR=$(pwd)/.jupyter

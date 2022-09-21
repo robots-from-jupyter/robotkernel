@@ -32,6 +32,7 @@ let
   # Packages that must override their respective nixpkgs versions
   override = [
     "docutils"
+    "jupytext"
     "robotframework"
     "robotframework-seleniumlibrary"
     "selenium"
@@ -63,7 +64,11 @@ let
           }
           //
           # Change format when package could be overriden with wheel distribution
-          optionalAttrs (hasSuffix "whl" "${pkg.src}") { format = "wheel"; }));
+          optionalAttrs (hasSuffix "whl" "${pkg.src}") {
+            format = "wheel";
+            patchPhase = "";
+            postPatch = "";
+          }));
         })
         (filter (x: (hasAttr x pythonPackages) && (elem x override)) requirementsNames)
       ))
