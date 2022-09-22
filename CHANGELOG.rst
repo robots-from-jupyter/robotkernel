@@ -4,6 +4,9 @@ Changelog
 1.6rc2 (unreleased)
 -------------------
 
+- Fix issue where multiple keyword buttons did not work as expected on ipywidgets >= 8
+  [datakurre]
+
 - Update Selenium helpers to current Selenium API
   [RomaCZ]
 
