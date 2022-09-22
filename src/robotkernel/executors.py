@@ -166,9 +166,11 @@ def inject_ipywidgets(
     rpa: bool,
 ):
     suite_ = build_suite(code, {})
+    counter = 0
     for keyword in suite_.resource.keywords:
         name = keyword.name
         arguments = []
+        counter += 1
         for arg in keyword.args:
             if "=" in arg:
                 arg, default = arg.split("=", 1)
@@ -176,7 +178,15 @@ def inject_ipywidgets(
                 default = None
             arguments.append((arg, normalize_argument(arg), default))
         inject_ipywidget(
-            kernel, code, history, listeners, silent, display_id, rpa, name, arguments
+            kernel,
+            code,
+            history,
+            listeners,
+            silent,
+            f"{display_id}.{counter:02}",
+            rpa,
+            name,
+            arguments,
         )
 
 
