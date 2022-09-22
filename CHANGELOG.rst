@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6rc2 (unreleased)
+1.6rc2 (2022-09-22)
 -------------------
 
 - Fix issue where multiple keyword buttons did not work as expected on ipywidgets >= 8
