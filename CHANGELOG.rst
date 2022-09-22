@@ -4,8 +4,8 @@ Changelog
 1.6rc2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Update Selenium helpers to current Selenium API
+  [RomaCZ]
 
 1.6rc1 (2022-04-07)
 -------------------
