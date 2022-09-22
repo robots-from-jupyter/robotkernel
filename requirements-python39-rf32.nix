@@ -18,6 +18,34 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
+  "MarkupSafe" = super.buildPythonPackage rec {
+    pname = "MarkupSafe";
+    version = "2.1.1";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
+      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
+  };
+  "PySocks" = super.buildPythonPackage rec {
+    pname = "PySocks";
+    version = "1.7.1";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/8d/59/b4572118e098ac8e46e399a1dd0f2d85403ce8bbaad9ec79373ed6badaf9/PySocks-1.7.1-py3-none-any.whl";
+      sha256 = "1ray8fjf7ciqsfd8l4486bl93bibkrgym7kka6drp495k45bs997";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
+  };
   "RESTinstance" = super.buildPythonPackage rec {
     pname = "RESTinstance";
     version = "1.3.0";
@@ -785,7 +813,7 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
-      self."markupsafe"
+      self."MarkupSafe"
     ];
   };
   "json5" = super.buildPythonPackage rec {
@@ -1233,20 +1261,6 @@ self: super: {
       self."mdurl"
     ];
   };
-  "markupsafe" = super.buildPythonPackage rec {
-    pname = "markupsafe";
-    version = "2.1.1";
-    src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
-      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
-    };
-    format = "setuptools";
-    doCheck = false;
-    buildInputs = [];
-    checkInputs = [];
-    nativeBuildInputs = [];
-    propagatedBuildInputs = [];
-  };
   "matplotlib-inline" = super.buildPythonPackage rec {
     pname = "matplotlib-inline";
     version = "0.1.6";
@@ -1399,6 +1413,7 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
+      self."MarkupSafe"
       self."beautifulsoup4"
       self."bleach"
       self."defusedxml"
@@ -1407,7 +1422,6 @@ self: super: {
       self."jupyter-core"
       self."jupyterlab-pygments"
       self."lxml"
-      self."markupsafe"
       self."mistune"
       self."nbclient"
       self."nbformat"
@@ -1420,10 +1434,10 @@ self: super: {
   };
   "nbformat" = super.buildPythonPackage rec {
     pname = "nbformat";
-    version = "5.5.0";
+    version = "5.6.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/be/ce/3af8d4f930ecbc717360cae63856d2964edd64fc21090d90161497784acc/nbformat-5.5.0-py3-none-any.whl";
-      sha256 = "1r62il29m84pkdbcv3yvhpbdlk3rnva6i45jp2jffafvpj5h28gb";
+      url = "https://files.pythonhosted.org/packages/65/a7/2d17f71226896595ccd80ecc10285340796bc6cdf8c5e6963a4ab335c391/nbformat-5.6.0-py3-none-any.whl";
+      sha256 = "0d8b2hpqxi3682cq6k04a6vsy3ikp7y4gxywdnn4rx7mzh5bb79l";
     };
     format = "wheel";
     doCheck = false;
@@ -1831,22 +1845,6 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
-  "pyOpenSSL" = super.buildPythonPackage rec {
-    pname = "pyOpenSSL";
-    version = "22.0.0";
-    src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/d5/9f/9c0e3288b85f907a008f9d31318b0e4de31b2f67724a8745e633741f609c/pyOpenSSL-22.0.0-py2.py3-none-any.whl";
-      sha256 = "1q727s4hyqffzs5kjag40ydyyi56img3a27q2r0vc9blr0w2n9ga";
-    };
-    format = "wheel";
-    doCheck = false;
-    buildInputs = [];
-    checkInputs = [];
-    nativeBuildInputs = [];
-    propagatedBuildInputs = [
-      self."cryptography"
-    ];
-  };
   "pycodestyle" = super.buildPythonPackage rec {
     pname = "pycodestyle";
     version = "2.9.1";
@@ -2102,10 +2100,10 @@ self: super: {
   };
   "pyzmq" = super.buildPythonPackage rec {
     pname = "pyzmq";
-    version = "24.0.0";
+    version = "24.0.1";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/e7/5d/ec9bc6f18d14f9fa6c4aa60e621096f8057c18fc1d2b320e263433abda3f/pyzmq-24.0.0.tar.gz";
-      sha256 = "0iv1hp7gkz0n5dr0xjgax411aagjxq20b8vmmmwn17rc2jyhic0k";
+      url = "https://files.pythonhosted.org/packages/46/0d/b06cf99a64d4187632f4ac9ddf6be99cd35de06fe72d75140496a8e0eef5/pyzmq-24.0.1.tar.gz";
+      sha256 = "0xwfn0zi847bp0kba5b0xndwz2ibm2y7j14vwmcnf5k7pdymsvr1";
     };
     format = "setuptools";
     doCheck = false;
@@ -2355,10 +2353,10 @@ self: super: {
   };
   "selenium" = super.buildPythonPackage rec {
     pname = "selenium";
-    version = "4.1.0";
+    version = "4.4.3";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/58/76/705b5c776f783d1ba7c630347463d4ae323282bbd859a8e9420c7ff79581/selenium-4.1.0-py3-none-any.whl";
-      sha256 = "0fd9q47bjbrkkvng4f6h4azbnfhjvyhcldvjsprhkmk1z56vdrr7";
+      url = "https://files.pythonhosted.org/packages/50/1a/9b92b6be1f6bbcd4e5a5b1d8e5d0c7f8224054c3bf5ea81d371be47122e8/selenium-4.4.3-py3-none-any.whl";
+      sha256 = "030m4i3b4clb4nwdzp5cy4055k0iw9y04axayl5v8ss2iajx8vna";
     };
     format = "wheel";
     doCheck = false;
@@ -2366,6 +2364,7 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
+      self."certifi"
       self."trio"
       self."trio-websocket"
       self."urllib3"
@@ -2797,20 +2796,6 @@ self: super: {
     src = fetchurl {
       url = "https://files.pythonhosted.org/packages/6f/de/5be2e3eed8426f871b170663333a0f627fc2924cc386cd41be065e7ea870/urllib3-1.26.12-py2.py3-none-any.whl";
       sha256 = "15z9xsfhxg94ypa1r7907cg91rsg2hsvnzv3d83gp2jsin3xsc5r";
-    };
-    format = "wheel";
-    doCheck = false;
-    buildInputs = [];
-    checkInputs = [];
-    nativeBuildInputs = [];
-    propagatedBuildInputs = [];
-  };
-  "urllib3-secure-extra" = super.buildPythonPackage rec {
-    pname = "urllib3-secure-extra";
-    version = "0.1.0";
-    src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/90/cd/273b6978ace72ef1d3f35610206e44e4527d557500e3d7b39732f2b4dd3c/urllib3_secure_extra-0.1.0-py2.py3-none-any.whl";
-      sha256 = "1ybfk9gfhvkb77xawxia0lsz91yhcpi61swrdfra84jdic8cpbgp";
     };
     format = "wheel";
     doCheck = false;

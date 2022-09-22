@@ -27,6 +27,7 @@ let
     "jupyter-server" = "jupyter_server";
     "jupyterlab-server" = "jupyterlab_server";
     "pyOpenSSL" = "pyopenssl";
+    "PySocks" = "pysocks";
   };
 
   # Packages that must override their respective nixpkgs versions

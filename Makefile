@@ -54,6 +54,14 @@ format:
 htmlcov: .coverage
 	coverage html
 
+.PHONY: requirements-all
+requirements-all:
+	ROBOTFRAMEWORK=rf31 make requirements
+	ROBOTFRAMEWORK=rf32 make requirements
+	ROBOTFRAMEWORK=rf40 make requirements
+	ROBOTFRAMEWORK=rf41 make requirements
+	ROBOTFRAMEWORK=rf50 make requirements
+
 requirements: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
 requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).txt

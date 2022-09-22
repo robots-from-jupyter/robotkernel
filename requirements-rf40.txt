@@ -38,7 +38,7 @@ jupyterlab
 jupytext
 RESTinstance
 rise
-selenium==4.1.0
+selenium==4.4.3
 robotframework-faker
 robotframework-seleniumlibrary
 robotframework-seleniumtestability
