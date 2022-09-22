@@ -2,9 +2,10 @@ graft src/robotkernel
 graft docs
 graft tests
 graft atest
+graft _templates
 
 recursive-include src *.js
-include LICENSE *.rstj
+include LICENSE *.rst *.yml
 exclude Makefile Dockerfile requirements*.txt *.nix *.png *.ipynb *.json dodo.py conf.py
 
 prune .github
