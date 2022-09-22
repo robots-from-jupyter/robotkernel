@@ -320,8 +320,8 @@ def get_selenium_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = driver.find_elements("css selector", 
-            f'[id="{needle}"]'
+        results = driver.find_elements(
+            "css selector", f'[id="{needle}"]'
         ) or driver.find_elements("css selector", f'[id*="{needle}"]')
     else:
         results = driver.find_elements("xpath", "//*[@id]")
@@ -335,8 +335,8 @@ def get_appium_id_selector_completions(needle, driver):
     needle = needle[3:]
     matches = []
     if needle:
-        results = driver.find_elements("xpath", 
-            f"//*[" f'contains(@resource-id, "{needle}")' f"]"
+        results = driver.find_elements(
+            "xpath", f"//*[" f'contains(@resource-id, "{needle}")' f"]"
         )
     else:
         results = driver.find_elements("xpath", "//*[@resource-id]")
@@ -350,8 +350,8 @@ def get_selenium_name_selector_completions(needle, driver):
     needle = needle[5:]
     matches = []
     if needle:
-        results = driver.find_elements("css selector", 
-            f'[name="{needle}"]'
+        results = driver.find_elements(
+            "css selector", f'[name="{needle}"]'
         ) or driver.find_elements("css selector", f'[name*="{needle}"]')
     else:
         results = driver.find_elements("xpath", "//*[@name]")
@@ -483,8 +483,8 @@ def get_appium_xpath_selector_completions(needle, driver):
     needle = needle[6:]
     matches = []
     if IS_TEXT.match(needle):
-        results = driver.find_elements("xpath", 
-            f"//*[" f'contains(@text, "{needle}")' f"]"
+        results = driver.find_elements(
+            "xpath", f"//*[" f'contains(@text, "{needle}")' f"]"
         )
     elif needle:
         results = driver.find_elements("xpath", needle)
