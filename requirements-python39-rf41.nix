@@ -1118,6 +1118,20 @@ self: super: {
       self."tornado"
     ];
   };
+  "jupyterlab-kernelspy" = super.buildPythonPackage rec {
+    pname = "jupyterlab-kernelspy";
+    version = "3.1.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1d/b7/6aa69688f8ed3c6438184b293930f6b5e4eb7cea11ff36c16477abd2d8c5/jupyterlab_kernelspy-3.1.0-py3-none-any.whl";
+      sha256 = "0vrbvibfqmssxba7cajr9b6bwcdkyqsj0bh81p9sifc15ndid7vd";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
+  };
   "jupyterlab-pygments" = super.buildPythonPackage rec {
     pname = "jupyterlab-pygments";
     version = "0.2.2";

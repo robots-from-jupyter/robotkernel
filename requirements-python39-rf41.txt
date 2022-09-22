@@ -64,6 +64,7 @@ jupyter-nbextensions-configurator==0.5.0
 jupyter-server==1.18.1
 jupyter-starters==1.1.0
 jupyterlab==3.4.7
+jupyterlab-kernelspy==3.1.0
 jupyterlab-pygments==0.2.2
 jupyterlab-server==2.15.1
 jupyterlab-widgets==3.0.3

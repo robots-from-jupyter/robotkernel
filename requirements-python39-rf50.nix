@@ -18,20 +18,6 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
-  "MarkupSafe" = super.buildPythonPackage rec {
-    pname = "MarkupSafe";
-    version = "2.1.1";
-    src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
-      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
-    };
-    format = "setuptools";
-    doCheck = false;
-    buildInputs = [];
-    checkInputs = [];
-    nativeBuildInputs = [];
-    propagatedBuildInputs = [];
-  };
   "PySocks" = super.buildPythonPackage rec {
     pname = "PySocks";
     version = "1.7.1";
@@ -813,7 +799,7 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
-      self."MarkupSafe"
+      self."markupsafe"
     ];
   };
   "json5" = super.buildPythonPackage rec {
@@ -1132,6 +1118,20 @@ self: super: {
       self."tornado"
     ];
   };
+  "jupyterlab-kernelspy" = super.buildPythonPackage rec {
+    pname = "jupyterlab-kernelspy";
+    version = "3.1.0";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1d/b7/6aa69688f8ed3c6438184b293930f6b5e4eb7cea11ff36c16477abd2d8c5/jupyterlab_kernelspy-3.1.0-py3-none-any.whl";
+      sha256 = "0vrbvibfqmssxba7cajr9b6bwcdkyqsj0bh81p9sifc15ndid7vd";
+    };
+    format = "wheel";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
+  };
   "jupyterlab-pygments" = super.buildPythonPackage rec {
     pname = "jupyterlab-pygments";
     version = "0.2.2";
@@ -1260,6 +1260,20 @@ self: super: {
     propagatedBuildInputs = [
       self."mdurl"
     ];
+  };
+  "markupsafe" = super.buildPythonPackage rec {
+    pname = "markupsafe";
+    version = "2.1.1";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
+      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
   };
   "matplotlib-inline" = super.buildPythonPackage rec {
     pname = "matplotlib-inline";
@@ -1413,7 +1427,6 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
-      self."MarkupSafe"
       self."beautifulsoup4"
       self."bleach"
       self."defusedxml"
@@ -1422,6 +1435,7 @@ self: super: {
       self."jupyter-core"
       self."jupyterlab-pygments"
       self."lxml"
+      self."markupsafe"
       self."mistune"
       self."nbclient"
       self."nbformat"

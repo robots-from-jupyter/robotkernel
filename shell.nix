@@ -50,6 +50,7 @@ let self = rec {
       jupyter-contrib-nbextensions
       jupyter-nbextensions-configurator
       jupyterlab
+      jupyterlab-kernelspy
       nbimporter
       opencv3
       RESTinstance

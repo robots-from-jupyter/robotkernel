@@ -35,6 +35,8 @@ jupyter
 jupyter-starters
 jupyter-contrib-nbextensions
 jupyterlab
+jupyterlab-kernelspy
+jupyterlab-widgets
 jupytext
 RESTinstance
 rise

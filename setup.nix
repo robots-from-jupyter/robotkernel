@@ -18,6 +18,7 @@ let
   # Aliases map from generated requirements to available nixpkgs packages
   aliases = {
     "MarkupSafe" = "markupsafe";
+    "PySocks" = "pysocks";
     "Send2Trash" = "send2trash";
     "async-generator" = "async_generator";
     "ipython-genutils" = "ipython_genutils";
@@ -27,13 +28,16 @@ let
     "jupyter-server" = "jupyter_server";
     "jupyterlab-server" = "jupyterlab_server";
     "pyOpenSSL" = "pyopenssl";
-    "PySocks" = "pysocks";
   };
 
   # Packages that must override their respective nixpkgs versions
   override = [
     "docutils"
+    "ipywidgets"
     "jupytext"
+    "jupyterlab"
+    "jupyterlab-widgets"
+    "widgetsnbextension"
     "robotframework"
     "robotframework-seleniumlibrary"
     "selenium"
@@ -95,6 +99,13 @@ let
     # Whatever else is necessary to make your stuff work
     (self: super:
       {
+
+        # Add requirements missing from nixpkgs version
+        "jupyterlab" = super."jupyterlab".overridePythonAttrs(old: {
+          propagatedBuildInputs = old.propagatedBuildInputs ++ [
+            self."tomli"
+          ];
+        });
 
         # Add requirements missing from nixpkgs version
         "robotframework-seleniumlibrary" = super."robotframework-seleniumlibrary".overridePythonAttrs(old: {
