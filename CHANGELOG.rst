@@ -4,35 +4,24 @@ Changelog
 1.6rc4 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
-
-1.6rc3 (2022-09-23)
--------------------
-
 - Add support for robotframework==5.1b2
-  [Asko Soukka]
-
-1.6rc2 (2022-09-22)
--------------------
-
-- Fix issue where multiple keyword buttons did not work as expected on ipywidgets >= 8
   [datakurre]
+
+- Add support for ipywidgets 8
+  [datakurre
+
+- Add pyolite support
+  [datakurre]
+
+- Add %sticky magic LibraryName -magic to optionally preserve state of global
+  and suite scope libraries between executions
+  [datakurre]
+
+- Update classic Notebook mode with Robot Framework 5 features
+  [bollwyvl, datakurre]
 
 - Update Selenium helpers to current Selenium API
   [RomaCZ]
-
-1.6rc1 (2022-04-07)
--------------------
-
-- Fix support for ipywidgets >= 8.0.0rc0
-  [datakurre]
-- Update classic Notebook mode with Robot Framework 5 features
-  [bollwyvl, datakurre]
-- Add pyolite support
-  [datakurre]
-- Add %sticky magic LibraryName -magic to optionally preserve state of global and suite scope libraries between executions
-  [datakurre]
 
 1.5.1 (2021-09-28)
 ------------------
