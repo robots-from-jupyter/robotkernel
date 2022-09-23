@@ -4,8 +4,8 @@ Changelog
 1.6rc3 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Add support for robotframework==5.1b2
+  [datakurre]
 
 1.6rc2 (2022-09-22)
 -------------------
