@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6rc3 (unreleased)
+1.6rc3 (2022-09-23)
 -------------------
 
 - Add support for robotframework==5.1b2
