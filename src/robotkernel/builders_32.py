@@ -3,12 +3,16 @@ from io import StringIO
 from robot.api import get_model
 from robot.errors import DataError
 from robot.running.builder.parsers import ErrorReporter
-from robot.running.builder.testsettings import TestDefaults
 from robot.running.builder.transformers import SettingsBuilder
 from robot.running.builder.transformers import SuiteBuilder
 from robot.running.model import TestSuite
 from typing import Dict
 import os
+
+try:
+    from robot.running.builder.testsettings import TestDefaults
+except ImportError:
+    from robot.running.builder.settings import Defaults as TestDefaults
 
 
 def _get_rpa_mode(data):
