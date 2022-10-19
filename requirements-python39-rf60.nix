@@ -18,20 +18,6 @@ self: super: {
     nativeBuildInputs = [];
     propagatedBuildInputs = [];
   };
-  "MarkupSafe" = super.buildPythonPackage rec {
-    pname = "MarkupSafe";
-    version = "2.1.1";
-    src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
-      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
-    };
-    format = "setuptools";
-    doCheck = false;
-    buildInputs = [];
-    checkInputs = [];
-    nativeBuildInputs = [];
-    propagatedBuildInputs = [];
-  };
   "PySocks" = super.buildPythonPackage rec {
     pname = "PySocks";
     version = "1.7.1";
@@ -827,7 +813,7 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
-      self."MarkupSafe"
+      self."markupsafe"
     ];
   };
   "json5" = super.buildPythonPackage rec {
@@ -1289,6 +1275,20 @@ self: super: {
       self."mdurl"
     ];
   };
+  "markupsafe" = super.buildPythonPackage rec {
+    pname = "markupsafe";
+    version = "2.1.1";
+    src = fetchurl {
+      url = "https://files.pythonhosted.org/packages/1d/97/2288fe498044284f39ab8950703e88abbac2abbdf65524d576157af70556/MarkupSafe-2.1.1.tar.gz";
+      sha256 = "0jqxp5sfrc0byp6bk0gwdmildi4mck2gprp42afri3z4r5y1k4bz";
+    };
+    format = "setuptools";
+    doCheck = false;
+    buildInputs = [];
+    checkInputs = [];
+    nativeBuildInputs = [];
+    propagatedBuildInputs = [];
+  };
   "matplotlib-inline" = super.buildPythonPackage rec {
     pname = "matplotlib-inline";
     version = "0.1.6";
@@ -1441,7 +1441,6 @@ self: super: {
     checkInputs = [];
     nativeBuildInputs = [];
     propagatedBuildInputs = [
-      self."MarkupSafe"
       self."beautifulsoup4"
       self."bleach"
       self."defusedxml"
@@ -1449,6 +1448,7 @@ self: super: {
       self."jinja2"
       self."jupyter-core"
       self."jupyterlab-pygments"
+      self."markupsafe"
       self."mistune"
       self."nbclient"
       self."nbformat"
@@ -2230,10 +2230,10 @@ self: super: {
   };
   "robotframework" = super.buildPythonPackage rec {
     pname = "robotframework";
-    version = "5.1b2";
+    version = "6.0";
     src = fetchurl {
-      url = "https://files.pythonhosted.org/packages/99/9d/b75327aa1458dcce65a9d5042bd206bbb8efbf352dff22ac7b2e09e9e2ba/robotframework-5.1b2-py3-none-any.whl";
-      sha256 = "1jn0x173lwm78fxzv0f8j5b29wrw4rg8swhj9v09v1zs5djcji0l";
+      url = "https://files.pythonhosted.org/packages/cf/05/114e46ad02b01856f06f44caaae2ebaf26cea73382329abe0a77c22ba4b2/robotframework-6.0-py3-none-any.whl";
+      sha256 = "07sv8h0vbp8xclz54iqp7257w8rd09gc7gnd9i08nfx9i1m4qgzy";
     };
     format = "wheel";
     doCheck = false;
