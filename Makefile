@@ -62,6 +62,7 @@ requirements-all:
 	ROBOTFRAMEWORK=rf41 make requirements
 	ROBOTFRAMEWORK=rf50 make requirements
 	ROBOTFRAMEWORK=rf51 make requirements
+	ROBOTFRAMEWORK=rf60 make requirements
 
 requirements: requirements-$(PYTHON)-$(ROBOTFRAMEWORK).nix
 
