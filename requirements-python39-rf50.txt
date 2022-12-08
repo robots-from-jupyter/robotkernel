@@ -16,7 +16,7 @@ bcrypt==4.0.0
 beautifulsoup4==4.11.1
 black==22.8.0
 bleach==5.0.1
-certifi==2022.9.14
+certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer==2.1.1
 click==8.1.3
