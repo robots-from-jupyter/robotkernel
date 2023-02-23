@@ -74,7 +74,7 @@ jupytext==1.14.1
 lazy-object-proxy==1.7.1
 lunr==0.6.2
 lxml==4.9.1
-markdown-it-py==2.1.0
+markdown-it-py==2.2.0
 matplotlib-inline==0.1.6
 mccabe==0.7.0
 mdit-py-plugins==0.3.1
