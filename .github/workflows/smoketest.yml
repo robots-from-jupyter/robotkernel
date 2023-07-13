@@ -7,13 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        robotframework-version: [rf32, rf40, rf41, rf50, rf51, rf60]
+        robotframework-version: [rf32, rf40, rf41, rf50, rf51, rf60, rf61]
     steps:
     - uses: actions/checkout@v2.4.0
-    - uses: cachix/install-nix-action@v16
+    - uses: cachix/install-nix-action@v22
       with:
         nix_path: nixpkgs=channel:nixos-unstable
-    - uses: cachix/cachix-action@v10
+    - uses: cachix/cachix-action@v12
       with:
         name: robots-from-jupyter
         # If you chose signing key for write access
