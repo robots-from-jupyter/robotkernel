@@ -5,6 +5,12 @@ import re
 
 
 try:
+    pkg_resources.get_distribution("robotframework>=6.1b1")
+    HAS_RF61_PARSER = True
+except pkg_resources.VersionConflict:
+    HAS_RF61_PARSER = False
+
+try:
     pkg_resources.get_distribution("robotframework>=3.2a1")
     HAS_RF32_PARSER = True
 except pkg_resources.VersionConflict:

@@ -3,6 +3,7 @@ from io import BytesIO
 from io import StringIO
 from robot.errors import DataError
 from robotkernel.constants import HAS_RF32_PARSER
+from robotkernel.constants import HAS_RF61_PARSER
 import os
 import re
 import sys
@@ -80,7 +81,10 @@ def _get_ipynb_file(old):
         path = self._get_path(source, accept_text)
         if path and os.path.splitext(path)[1].lower() == ".ipynb":
             file = StringIO(NotebookReader().read(path, ""))
-            return file, os.path.basename(path), True
+            if HAS_RF61_PARSER:
+                return file, os.path.basename(path)
+            else:
+                return file, os.path.basename(path), True
         else:
             return old(self, source, accept_text)
 
@@ -99,7 +103,10 @@ def inject_robot_ipynb_support():
     if HAS_RF32_PARSER:
         # noinspection PyNoneFunctionAssignment,PyProtectedMember
         FileReader._get_file = _get_ipynb_file(FileReader._get_file)
-        importer.RESOURCE_EXTENSIONS += (".ipynb",)
+        if HAS_RF61_PARSER:
+            importer.RESOURCE_EXTENSIONS = importer.RESOURCE_EXTENSIONS | {".ipynb"}
+        else:
+            importer.RESOURCE_EXTENSIONS += (".ipynb",)
     elif "ipynb" not in populators.READERS:
         populators.READERS["ipynb"] = NotebookReader
         TEST_EXTENSIONS.add("ipynb")

@@ -2,17 +2,27 @@
 from io import StringIO
 from robot.api import get_model
 from robot.errors import DataError
-from robot.running.builder.parsers import ErrorReporter
 from robot.running.builder.transformers import SettingsBuilder
 from robot.running.builder.transformers import SuiteBuilder
 from robot.running.model import TestSuite
+from robotkernel.constants import HAS_RF61_PARSER
 from typing import Dict
 import os
 
+
 try:
-    from robot.running.builder.testsettings import TestDefaults
+    from robot.running.builder.transformers import ErrorReporter
 except ImportError:
-    from robot.running.builder.settings import Defaults as TestDefaults
+    from robot.running.builder.parsers import ErrorReporter
+
+if HAS_RF61_PARSER:
+    from robot.running.builder.settings import FileSettings
+    from robot.running.builder.settings import TestDefaults
+else:
+    try:
+        from robot.running.builder.testsettings import TestDefaults
+    except ImportError:
+        from robot.running.builder.settings import Defaults as TestDefaults
 
 
 def _get_rpa_mode(data):
@@ -31,7 +41,10 @@ def _get_rpa_mode(data):
 def build_suite(code: str, cell_history: Dict[str, str], data_only: bool = False):
     # Init
     suite = TestSuite(name="Jupyter", source=os.getcwd())
-    defaults = TestDefaults(None)
+    if HAS_RF61_PARSER:
+        defaults = FileSettings(TestDefaults(None))
+    else:
+        defaults = TestDefaults(None)
 
     # Populate history
     for historical in cell_history.values():
