@@ -141,11 +141,15 @@ def get_keyword_doc(keyword):
             body = "\n\n" + keyword.doc.value.replace("\\n", "\n")
         else:
             body = "\n\n" + keyword.doc
+    try:
+        doc_format = keyword.doc_format
+    except AttributeError:
+        doc_format = "REST"
     return {
         "text/plain": title + "\n\n" + body,
         "text/html": f"<p>{title_html}</p>"
         + NAME_REGEXP.sub(
-            lambda m: f"<code>{m.group(1)}</code>", DocToHtml(keyword.doc_format)(body)
+            lambda m: f"<code>{m.group(1)}</code>", DocToHtml(doc_format)(body)
         ),
     }
 

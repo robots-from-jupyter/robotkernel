@@ -85,9 +85,15 @@ class RobotKeywordsIndexerListener:
             doc_format = "REST"
         else:
             keywords = lib_doc.keywords
-            doc_format = lib_doc.doc_format
+            try:
+                doc_format = lib_doc.doc_format
+            except AttributeError:
+                doc_format = "REST"
         for keyword in keywords:
-            keyword.doc_format = doc_format
+            try:
+                keyword.doc_format = doc_format
+            except AttributeError:
+                pass
             self.catalog["builder"].add(
                 {"name": keyword.name, "dottedname": f"{alias}.{keyword.name}"}
             )
@@ -107,7 +113,10 @@ class RobotKeywordsIndexerListener:
 
     def _resource_import(self, keywords):
         for keyword in keywords:
-            keyword.doc_format = "REST"
+            try:
+                keyword.doc_format = "REST"
+            except AttributeError:
+                pass
             self.catalog["builder"].add(
                 {"name": keyword.name, "dottedname": keyword.name}
             )
