@@ -171,7 +171,7 @@ class RobotKernel(DisplayKernel):  # noqa: R0901 Too many ancestors
             "status": "ok",
         }
 
-    def do_inspect(self, code, cursor_pos, detail_level=0):
+    def do_inspect(self, code, cursor_pos, detail_level=0, _=None):
         cursor_pos = cursor_pos is None and len(code) or cursor_pos
         line, offset = line_at_cursor(code, cursor_pos)
         line_cursor = cursor_pos - offset

@@ -1,0 +1,53 @@
+# Install requirements
+docutils==0.17.1
+ipykernel
+ipywidgets
+lunr
+nbformat
+nbimporter
+pillow
+pygments
+robotframework==6.1
+setuptools
+
+# Test requirements
+pytest-runner
+pytest
+
+# Docs requirements
+nbsphinx
+sphinx
+sphinx-rtd-theme
+
+# QA requirements
+black
+coverage
+coveralls
+isort
+pydocstyle
+pylama
+pylint
+
+# Misc playground requirements
+faker
+iplantuml
+jupyter
+jupyter-starters
+jupyter-contrib-nbextensions
+jupyterlab
+jupyterlab-kernelspy
+jupyterlab-widgets
+jupytext
+RESTinstance
+rise
+selenium==4.4.3
+robotframework-faker
+robotframework-seleniumlibrary
+robotframework-seleniumtestability
+robotframework-seleniumscreenshots
+robotframework-jupyterlibrary
+robotframework-sshlibrary
+
+## Appium requires selenium < 4
+# robotframework-appiumlibrary
+# Appium-Python-Client

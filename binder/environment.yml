@@ -17,11 +17,11 @@ dependencies:
     - requests==2.22.0
     - RESTinstance==1.0.2
     - rise==5.6.1
-    - robotframework==5.0
+    - robotframework==6.1
     - robotframework-faker==5.0.0
-    - robotframework-seleniumlibrary==5.1.3
+    - robotframework-seleniumlibrary==6.1.0
     - robotframework-seleniumscreenshots==0.9.5
-    - selenium==3.141.0
+    - selenium==4.4.3
     - urllib3==1.25.3
     - jupyter-starters==1.1.0
     - jupyterlab-widgets==1.0.2

@@ -26,7 +26,6 @@ import time
 
 
 class PickSnipTool(Form):
-
     mouse_down = None
     mouse_down_button = None
     mouse_down_seconds = 0

@@ -199,7 +199,7 @@ def task_lite():
             ),
             # Not sure, why these were not discovered from conda environment
             doit.tools.CmdAction(
-                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-widgets==1.1.0", "jupyter-videochat", "jupyterlab-drawio", "jupyterlab-webrtc-docprovider"],
+                [PY, "-m", "pip", "wheel", "--no-deps", "--prefer-binary", "jupyterlab-drawio"],
                 cwd=str(LITE),
                 shell=False,
             ),
@@ -216,18 +216,28 @@ def task_lite():
                 "lite",
                 "build",
                 "--debug",
-                "--LiteBuildConfig.federated_extensions",
-                f"{list(LITE.glob('jupyterlab_webrtc_docprovider*'))[-1]}",
-                "--LiteBuildConfig.federated_extensions",
-                f"{list(LITE.glob('jupyter_videochat*'))[-1]}",
-                "--LiteBuildConfig.federated_extensions",
-                f"{list(LITE.glob('jupyterlab_widgets*'))[-1]}",
+                "--contents",
+                str(LITE / "contents"),
                 "--LiteBuildConfig.federated_extensions",
                 f"{list(LITE.glob('jupyterlab_drawio*'))[-1]}",
                 "--LiteBuildConfig.federated_extensions",
-                f"{list(LITE.glob('jupyterlab_robotmode*'))[-1]}",
-                "--LiteBuildConfig.federated_extensions",
                 EXT_WHL,
+            ],
+            cwd=str(LITE)
+        )
+        subprocess.check_call(
+            [
+                "mkdir",
+                "-p",
+                "_",
+            ],
+            cwd=str(LITE)
+        )
+        subprocess.check_call(
+            [
+                "mv",
+                "_output",
+                "_/_",
             ],
             cwd=str(LITE)
         )

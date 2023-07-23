@@ -12,7 +12,6 @@ dependencies:
   # pretties
   - ipylab
   - ipywidgets
-  - jupyterlab-fonts
   - jupyter-videochat
   - jupyterlab-webrtc-docprovider
   - wxyz_lab
@@ -23,7 +22,7 @@ dependencies:
   - nodejs >=14,<15
   - setuptools_scm >=6.2
   # I'm still afraid of jlpm
-  - yarn
+  - yarn==1.22.19
   - pip:
     # lite deps
     - jupyterlite[all] ==0.1.0b7
