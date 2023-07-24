@@ -16,7 +16,7 @@ dependencies:
   - opencv
   - pillow
   - pip
-  - python
+  - python =3.9
   - requests
   - restinstance
   - rise
