@@ -5,24 +5,26 @@ channels:
   - nodefaults
 
 dependencies:
+  - faker
+  - geckodriver
+  - ipywidgets
+  - jupyter-starters
+  - jupyterlab <4
+  - jupyterlab_robotmode
+  - matplotlib-base
+  - nodejs >=18,<19
   - opencv
-  - python >=3.6,<3.9.0a0
-  - jupyterlab >=3.2.9,<3.3
-  - nodejs >=14,<15
-  - geckodriver >=0.26.0,<0.27.0
+  - pillow
   - pip
+  - python =3.9
+  - requests
+  - restinstance
+  - rise
+  - robotframework
+  - robotframework-seleniumlibrary
+  - robotframework-seleniumscreenshots
+  - selenium
+  - urllib3
+  - wrapt
   - pip:
-    - matplotlib==3.1.2
-    - pillow==7.1.2
-    - requests==2.22.0
-    - RESTinstance==1.0.2
-    - rise==5.6.1
-    - robotframework==6.1
-    - robotframework-faker==5.0.0
-    - robotframework-seleniumlibrary==6.1.0
-    - robotframework-seleniumscreenshots==0.9.5
-    - selenium==4.4.3
-    - urllib3==1.25.3
-    - jupyter-starters==1.1.0
-    - jupyterlab-widgets==1.0.2
-    - jupyterlab-robotmode
+    - robotframework-faker
