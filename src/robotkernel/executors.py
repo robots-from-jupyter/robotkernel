@@ -30,6 +30,7 @@ import sys
 import types
 import uuid
 
+LOGLEVEL='DEBUG:INFO'
 
 def execute_python(kernel: DisplayKernel, code: str, module: str, silent: bool):
     """Execute Python code str in the context of named module.
@@ -275,7 +276,11 @@ def run_robot_suite(
     if progress is not None:
         sys.__stdout__ = progress
     try:
-        results = suite.run(outputdir=path, stdout=stdout, listener=listeners)
+        results = suite.run(outputdir=path,
+                            stdout=stdout,
+                            listener=listeners,
+                            loglevel=LOGLEVEL,
+        )
     finally:
         if progress is not None:
             sys.__stdout__ = progress.stdout
@@ -314,6 +319,7 @@ def run_robot_suite(
         log=os.path.join(path, "log.html"),
         report=os.path.join(path, "report.html"),
         rpa=getattr(suite, "rpa", False),
+        loglevel=LOGLEVEL,
     )
 
     with open(os.path.join(path, "log.html"), "rb") as fp:
