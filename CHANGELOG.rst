@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.7 (unreleased)
-----------------
+1.7rc1 (2023-10-02)
+-------------------
 
 - Known issue: https://github.com/robots-from-jupyter/robotkernel/issues/147
 
