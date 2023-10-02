@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.7rc2 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
 1.7rc1 (2023-10-02)
 -------------------
 
