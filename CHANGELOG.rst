@@ -4,8 +4,13 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Known issue: https://github.com/robots-from-jupyter/robotkernel/issues/147
 
+- Add support for robotframework 6.1
+  [Asko Soukka]
+
+- Change ot include debug logging in Robot log.html (#148)
+  [JFoederer]
 
 1.6 (2022-09-24)
 ----------------
