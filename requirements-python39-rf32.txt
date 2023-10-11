@@ -98,7 +98,7 @@ parso==0.8.3
 pathspec==0.10.1
 pexpect==4.8.0
 pickleshare==0.7.5
-pillow==9.2.0
+pillow==9.3.0
 plantweb==1.2.1
 platformdirs==2.5.2
 pluggy==1.0.0
